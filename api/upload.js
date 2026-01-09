@@ -15,7 +15,7 @@ export const config = {
   },
 };
 
-// Parse multipart form data manually
+// Parse multipart form data
 async function parseMultipart(req) {
   return new Promise((resolve, reject) => {
     const chunks = [];
@@ -112,12 +112,15 @@ export default async function handler(req, res) {
   try {
     const parts = await parseMultipart(req);
     
+    console.log('Received parts:', Object.keys(parts));
+    
     const file = parts.file;
     const tournamentCode = parts.tournamentCode || '26prague';
     const teamName = parts.teamName;
-    const playerNames = parts.playerNames;
+    const fileName = parts.fileName; // Frontend sends the complete filename
     
-    if (!file || !teamName || !playerNames) {
+    if (!file || !teamName || !fileName) {
+      console.log('Missing fields - file:', !!file, 'teamName:', teamName, 'fileName:', fileName);
       return res.status(400).json({ error: 'Missing required fields' });
     }
     
@@ -132,11 +135,10 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: validation.error });
     }
     
-    // Generate safe filename
-    const safeTeamName = sanitize(teamName);
-    const safePlayerNames = sanitize(playerNames);
-    const fileName = `${safeTeamName}_${safePlayerNames}.pdf`;
+    // Use the filename from frontend (already sanitized)
     const key = `${tournamentCode}/CC/${fileName}`;
+    
+    console.log('Uploading to R2:', key);
     
     // Upload to R2
     await R2.send(new PutObjectCommand({
@@ -148,6 +150,8 @@ export default async function handler(req, res) {
     }));
     
     const publicUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
+    
+    console.log('Upload successful:', publicUrl);
     
     return res.status(200).json({
       success: true,
