@@ -1,11 +1,12 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/**/*.js", "use": "@vercel/node" },
+    { "src": "api/*.js", "use": "@vercel/node" },
     { "src": "public/**", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/api/teams", "dest": "/api/teams.js" },
+    { "src": "/api/upload", "dest": "/api/upload.js" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
