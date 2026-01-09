@@ -348,32 +348,37 @@
 // ============================================
 // CONFIGURATION - Change for each tournament
 // ============================================
+// ============================================
+// CONFIGURATION - Reads from URL parameter
+// ============================================
+const urlParams = new URLSearchParams(window.location.search);
+const tournamentCode = urlParams.get('tournament') || '26prague';
+
+const TOURNAMENT_NAMES = {
+  '26prague': 'European Winter Transnational Championships 2026',
+  '26eyoc': 'European Youth Online Championships 2026',
+  // Add more tournaments here
+};
+
 const CONFIG = {
-  tournamentName: "European Winter Transnational Championships 2026",
-  tournamentCode: "26prague",
-  // Backend API URL - AGGIORNA dopo deploy Vercel!
-  apiEndpoint: "https://ebl-system-cards.vercel.app/api",
+  tournamentName: TOURNAMENT_NAMES[tournamentCode] || tournamentCode,
+  tournamentCode: tournamentCode,
+  // Backend API URL
+  apiEndpoint: window.location.origin + "/api",
   // Storage pubblico per i PDF
   storageBaseUrl: "https://pub-c200d1e403b242f8b4a343cb4974cab0.r2.dev",
-  // Cambia a false quando il backend è pronto
-  useLocalData: false
 };
 
 // ============================================
-// SCRAPING LOCALE (per test senza backend)
-// In produzione, questo gira sul server
+// FETCH TEAMS FROM OUR API
 // ============================================
 async function scrapeTeamsFromASP() {
-  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(
-    `https://db.eurobridge.org/repository/competitions/${CONFIG.tournamentCode}/Reg/displayteamsparticipanalytical.asp`
-  )}`;
-  
   try {
-    const response = await fetch(proxyUrl);
-    const html = await response.text();
-    return parseTeamsHtml(html);
+    const response = await fetch(`${CONFIG.apiEndpoint}/teams?tournament=${CONFIG.tournamentCode}`);
+    const data = await response.json();
+    return data.teams || [];
   } catch (error) {
-    console.error('Scraping failed:', error);
+    console.error('Failed to load teams:', error);
     return [];
   }
 }
