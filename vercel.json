@@ -6,9 +6,11 @@
   ],
   "routes": [
     { "src": "/api/teams", "dest": "/api/teams.js" },
+    { "src": "/api/pairs", "dest": "/api/pairs.js" },
     { "src": "/api/upload", "dest": "/api/upload.js" },
     { "src": "/api/cards", "dest": "/api/cards.js" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
+
 
