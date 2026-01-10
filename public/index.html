@@ -9,294 +9,328 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
     :root {
-      --primary-start: #86efac;
-      --primary-end: #5eead4;
-      --bg-dark: #0f172a;
-      --bg-medium: #1e293b;
-      --text-primary: #ffffff;
-      --text-secondary: rgba(255,255,255,0.7);
-      --text-muted: rgba(255,255,255,0.5);
-      --border-color: rgba(255,255,255,0.1);
-      --success: #22c55e;
-      --warning: #eab308;
-      --error: #ef4444;
+      --primary: #0066cc;
+      --primary-dark: #004999;
+      --primary-light: #e6f0ff;
+      --bg-light: #f8fafc;
+      --bg-white: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --border-color: #e2e8f0;
+      --success: #16a34a;
+      --success-light: #dcfce7;
+      --warning: #ca8a04;
+      --error: #dc2626;
+      --error-light: #fee2e2;
     }
     
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 50%, var(--bg-dark) 100%);
+      background: var(--bg-light);
       color: var(--text-primary);
       min-height: 100vh;
-      line-height: 1.5;
+      line-height: 1.6;
     }
     
-    .container { max-width: 1000px; margin: 0 auto; padding: 40px 24px; position: relative; }
+    .container { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
     
-    .bg-glow {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(ellipse at 20% 20%, rgba(134, 239, 172, 0.08) 0%, transparent 50%),
-                  radial-gradient(ellipse at 80% 80%, rgba(94, 234, 212, 0.08) 0%, transparent 50%);
-      pointer-events: none; z-index: 0;
-    }
-    
-    .header { text-align: center; margin-bottom: 48px; position: relative; z-index: 1; }
+    .header { text-align: center; margin-bottom: 32px; }
     
     .badge {
+      display: inline-block; padding: 6px 16px;
+      background: var(--primary-light); border: 1px solid var(--primary);
+      border-radius: 100px; font-size: 13px; color: var(--primary); 
+      font-weight: 600; margin-bottom: 12px;
+    }
+    
+    .event-badge {
       display: inline-block; padding: 8px 20px;
-      background: rgba(134, 239, 172, 0.1); border: 1px solid rgba(134, 239, 172, 0.3);
-      border-radius: 100px; font-size: 13px; color: var(--primary-start); margin-bottom: 16px;
+      background: var(--primary); color: white;
+      border-radius: 100px; font-size: 14px; font-weight: 600;
+      margin-bottom: 16px;
     }
     
     .title {
-      font-size: clamp(32px, 5vw, 48px); font-weight: 800; margin: 0 0 16px 0;
-      background: linear-gradient(135deg, #fff 0%, var(--primary-start) 50%, var(--primary-end) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      font-size: clamp(28px, 4vw, 40px); font-weight: 800; margin: 0 0 8px 0;
+      color: var(--text-primary);
     }
     
-    .subtitle { color: var(--text-muted); font-size: 16px; }
+    .subtitle { color: var(--text-secondary); font-size: 15px; }
     
-    .card {
-      background: rgba(255,255,255,0.03); border: 1px solid var(--border-color);
-      border-radius: 16px; padding: 24px; margin-bottom: 16px;
+    /* Tab Buttons - More Prominent */
+    .tab-buttons {
+      display: flex; gap: 12px; margin-bottom: 24px; justify-content: center;
     }
     
-    .form-card {
-      background: linear-gradient(180deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
-      margin-bottom: 40px;
+    .tab-btn {
+      padding: 16px 32px; border: 2px solid var(--border-color); border-radius: 12px;
+      background: var(--bg-white); color: var(--text-secondary);
+      font-size: 16px; font-weight: 600; cursor: pointer;
+      transition: all 0.2s ease; display: flex; align-items: center; gap: 10px;
     }
     
-    .form-title {
-      font-size: 24px; font-weight: 700; margin-bottom: 8px;
-      background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    .tab-btn:hover { border-color: var(--primary); color: var(--primary); }
+    
+    .tab-btn.active {
+      background: var(--primary); border-color: var(--primary); color: white;
     }
     
-    .form-group { margin-bottom: 16px; }
-    .form-label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--text-secondary); }
-    
-    .form-select, .form-input {
-      width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.2); border-radius: 10px;
-      color: var(--text-primary); font-size: 15px; font-family: inherit;
-      cursor: pointer; transition: border-color 0.3s ease;
-    }
-    
-    .form-select:focus, .form-input:focus { outline: none; border-color: var(--primary-start); }
-    .form-select option { background: var(--bg-medium); color: var(--text-primary); }
-    
-    .upload-area {
-      border: 2px dashed rgba(255,255,255,0.3); border-radius: 16px; padding: 40px;
-      text-align: center; background: rgba(255,255,255,0.05);
-      transition: all 0.3s ease; cursor: pointer; margin-top: 20px;
-    }
-    
-    .upload-area:hover, .upload-area.dragover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
-    .upload-icon { font-size: 48px; margin-bottom: 16px; }
-    .upload-text { font-size: 16px; margin-bottom: 8px; }
-    .upload-hint { font-size: 13px; color: var(--text-muted); }
-    
-    .status {
-      display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px;
-      border-radius: 20px; font-size: 13px; font-weight: 500;
-    }
-    .status-complete { background: rgba(34, 197, 94, 0.15); border: 1px solid var(--success); }
-    .status-partial { background: rgba(234, 179, 8, 0.15); border: 1px solid var(--warning); }
-    .status-missing { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--error); }
-    
-    .team-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-    
-    .team-name {
-      font-size: 20px; font-weight: 700; margin: 0 0 8px 0;
-      background: linear-gradient(135deg, var(--primary-start), var(--primary-end));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    
-    .team-meta { font-size: 13px; color: var(--text-muted); }
-    .expand-icon { font-size: 20px; transition: transform 0.3s ease; }
-    .expand-icon.expanded { transform: rotate(180deg); }
-    
-    .pairs-container {
-      margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);
-      display: none;
-    }
-    .pairs-container.visible { display: block; }
-    .pairs-title { font-size: 14px; color: var(--text-secondary); margin-bottom: 12px; }
-    
-    .pair-item {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px; border-radius: 8px; margin-bottom: 8px;
-    }
-    .pair-uploaded { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); }
-    .pair-missing { background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); }
-    .pair-info { display: flex; align-items: center; gap: 12px; }
-    .pair-names { font-weight: 500; line-height: 1.6; }
-    
-    .btn {
-      display: inline-block; padding: 6px 16px;
-      background: linear-gradient(135deg, var(--success), #16a34a);
-      border-radius: 6px; color: #fff; text-decoration: none;
-      font-size: 13px; font-weight: 500; border: none; cursor: pointer;
-    }
-    
-    .info-box {
-      padding: 16px; background: rgba(59, 130, 246, 0.1);
-      border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px;
-      color: #93c5fd; font-size: 14px;
-    }
-    .info-box strong { color: #fff; }
-    
-    .alert { padding: 12px 16px; border-radius: 8px; margin-top: 16px; }
-    .alert-error { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--error); color: #fca5a5; }
-    .alert-success { background: rgba(34, 197, 94, 0.15); border: 1px solid var(--success); color: var(--primary-start); }
-    
-    .tabs {
-      display: flex; gap: 8px; margin-bottom: 32px; background: rgba(255,255,255,0.05);
-      padding: 6px; border-radius: 12px; width: fit-content;
-    }
-    
-    .tab {
-      padding: 12px 24px; background: transparent; border: none; border-radius: 8px;
-      color: var(--text-secondary); font-weight: 600; font-size: 14px;
-      cursor: pointer; transition: all 0.3s ease; font-family: inherit;
-    }
-    .tab.active { background: linear-gradient(135deg, var(--primary-start), var(--primary-end)); color: var(--bg-dark); }
-    
-    .instructions { margin-top: 48px; }
-    .instructions h3 { color: var(--primary-start); margin-bottom: 16px; }
-    .instructions ul { padding-left: 20px; color: var(--text-secondary); line-height: 1.8; }
-    .instructions a { color: var(--primary-end); }
-    
-    .filters { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-    .search-input { flex: 1; min-width: 200px; }
-    
-    .spinner {
-      width: 40px; height: 40px; border: 3px solid rgba(96, 165, 250, 0.3);
-      border-top: 3px solid #60a5fa; border-radius: 50%;
-      animation: spin 1s linear infinite; margin: 0 auto 16px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .tab-btn .icon { font-size: 20px; }
     
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     
-    .loading-container { text-align: center; padding: 60px; }
+    /* Cards */
+    .card {
+      background: var(--bg-white); border: 1px solid var(--border-color);
+      border-radius: 16px; padding: 24px; margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
     
+    .form-title {
+      font-size: 20px; font-weight: 700; margin-bottom: 4px;
+      color: var(--text-primary); display: flex; align-items: center; gap: 10px;
+    }
+    
+    .form-subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; }
+    
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500; color: var(--text-primary); }
+    
+    .form-select, .form-input {
+      width: 100%; padding: 12px 14px; background: var(--bg-white);
+      border: 1px solid var(--border-color); border-radius: 8px;
+      color: var(--text-primary); font-size: 15px; font-family: inherit;
+      cursor: pointer; transition: border-color 0.2s ease;
+    }
+    
+    .form-select:focus, .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    
+    /* Players Checkboxes */
     .players-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 10px; margin-top: 12px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px; margin-top: 8px;
     }
     
     .player-checkbox {
-      display: flex; align-items: center; gap: 10px;
-      padding: 12px 16px; background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
-      cursor: pointer; transition: all 0.2s ease; user-select: none;
+      display: flex; align-items: center; gap: 10px; padding: 12px;
+      background: var(--bg-light); border: 2px solid transparent;
+      border-radius: 10px; cursor: pointer; transition: all 0.2s ease;
     }
     
-    .player-checkbox:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
-    .player-checkbox.selected { border-color: var(--primary-start); background: rgba(134, 239, 172, 0.15); }
+    .player-checkbox:hover { background: var(--primary-light); }
+    .player-checkbox.selected { background: var(--primary-light); border-color: var(--primary); }
     
-    .player-checkbox input[type="checkbox"] {
-      width: 18px; height: 18px; accent-color: var(--primary-start); cursor: pointer;
-    }
-    
-    .player-checkbox .player-name { font-weight: 500; }
-    .player-checkbox .player-id { font-size: 12px; color: var(--text-muted); }
+    .player-checkbox input { width: 18px; height: 18px; accent-color: var(--primary); }
+    .player-name { font-weight: 500; font-size: 14px; }
+    .player-id { font-size: 12px; color: var(--text-muted); }
     
     .hint-text { font-size: 13px; color: var(--text-muted); margin-top: 8px; }
-    .hint-text.error { color: var(--error); }
     .hint-text.success { color: var(--success); }
+    .hint-text.error { color: var(--error); }
     
-    .team-details-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    /* File Preview */
+    .file-preview {
+      background: var(--success-light); border: 1px solid var(--success);
+      border-radius: 10px; padding: 12px 16px; margin-top: 16px;
+      display: flex; align-items: center; gap: 10px;
     }
     
-    .players-list { display: flex; flex-direction: column; gap: 6px; }
+    .file-preview-icon { font-size: 24px; }
+    .file-preview-name { font-weight: 600; color: var(--success); font-size: 14px; }
+    .file-preview-label { font-size: 12px; color: var(--text-secondary); }
     
-    .player-item {
+    /* Upload Area */
+    .upload-area {
+      border: 2px dashed var(--border-color); border-radius: 12px; padding: 40px;
+      text-align: center; background: var(--bg-light);
+      transition: all 0.2s ease; cursor: pointer; margin-top: 16px;
+    }
+    
+    .upload-area:hover, .upload-area.dragover { 
+      border-color: var(--primary); background: var(--primary-light); 
+    }
+    
+    .upload-icon { font-size: 40px; margin-bottom: 12px; }
+    .upload-text { font-size: 15px; font-weight: 500; margin-bottom: 4px; color: var(--text-primary); }
+    .upload-hint { font-size: 13px; color: var(--text-muted); }
+    
+    /* Alerts */
+    .alert {
+      padding: 14px 18px; border-radius: 10px; margin-top: 16px;
+      font-size: 14px; font-weight: 500;
+    }
+    
+    .alert-success { background: var(--success-light); color: var(--success); border: 1px solid var(--success); }
+    .alert-error { background: var(--error-light); color: var(--error); border: 1px solid var(--error); }
+    
+    /* Teams List */
+    .filters {
+      display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    
+    .search-input { flex: 1; min-width: 200px; }
+    
+    .team-card {
+      background: var(--bg-white); border: 1px solid var(--border-color);
+      border-radius: 12px; margin-bottom: 12px; overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    .team-header {
+      padding: 16px; display: flex; justify-content: space-between;
+      align-items: center; cursor: pointer; transition: background 0.2s ease;
+    }
+    
+    .team-header:hover { background: var(--bg-light); }
+    
+    .team-name { font-weight: 600; font-size: 16px; }
+    .team-event { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    
+    .team-status {
       display: flex; align-items: center; gap: 8px;
-      padding: 8px 12px; border-radius: 6px; font-size: 14px;
-    }
-    .player-item.has-card { background: rgba(34, 197, 94, 0.1); }
-    .player-item.no-card { background: rgba(255, 255, 255, 0.03); }
-    .player-id-small { color: var(--text-muted); font-size: 12px; }
-    
-    .cards-list { display: flex; flex-direction: column; gap: 8px; }
-    
-    .uploaded-card {
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 14px; background: rgba(34, 197, 94, 0.1);
-      border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 8px;
-    }
-    .uploaded-card a {
-      color: var(--primary-start); text-decoration: none; font-size: 13px;
-      word-break: break-all;
-    }
-    .uploaded-card a:hover { text-decoration: underline; }
-    
-    @media (max-width: 768px) {
-      .team-details-grid { grid-template-columns: 1fr; }
+      font-size: 13px; color: var(--text-secondary);
     }
     
-    @media (max-width: 640px) {
-      .team-header { flex-direction: column; align-items: flex-start; gap: 12px; }
-      .pair-item { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .status-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    
+    .status-dot.complete { background: var(--success); }
+    .status-dot.partial { background: var(--warning); }
+    .status-dot.none { background: var(--border-color); }
+    
+    .team-details {
+      padding: 0 16px 16px; border-top: 1px solid var(--border-color);
+      display: none;
+    }
+    
+    .team-details.open { display: block; }
+    
+    .cards-list { margin-top: 12px; }
+    
+    .card-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 14px; background: var(--bg-light); border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .card-info { display: flex; align-items: center; gap: 10px; }
+    .card-icon { font-size: 20px; }
+    .card-name { font-weight: 500; font-size: 14px; }
+    .card-date { font-size: 12px; color: var(--text-muted); }
+    
+    .card-actions { display: flex; gap: 8px; }
+    
+    .btn-small {
+      padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s ease; border: none;
+    }
+    
+    .btn-view { background: var(--primary-light); color: var(--primary); }
+    .btn-view:hover { background: var(--primary); color: white; }
+    
+    .btn-copy { background: var(--bg-white); color: var(--text-secondary); border: 1px solid var(--border-color); }
+    .btn-copy:hover { background: var(--bg-light); }
+    .btn-copy.copied { background: var(--success-light); color: var(--success); border-color: var(--success); }
+    
+    .no-cards { color: var(--text-muted); font-size: 14px; font-style: italic; }
+    
+    /* Instructions */
+    .instructions {
+      background: var(--bg-white); border: 1px solid var(--border-color);
+      border-radius: 12px; padding: 20px; margin-top: 24px;
+    }
+    
+    .instructions h3 { font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .instructions ul { margin-left: 24px; color: var(--text-secondary); font-size: 14px; }
+    .instructions li { margin-bottom: 6px; }
+    .instructions a { color: var(--primary); }
+    
+    /* Contact Banner */
+    .contact-banner {
+      background: var(--primary-light); border: 1px solid var(--primary);
+      border-radius: 10px; padding: 14px 20px; margin-top: 20px;
+      text-align: center; font-size: 14px;
+    }
+    
+    .contact-banner strong { color: var(--primary); }
+    .contact-banner a { color: var(--primary); font-weight: 600; }
+    
+    /* Loading */
+    .loading-container { text-align: center; padding: 40px; }
+    
+    .spinner {
+      width: 36px; height: 36px; border: 3px solid var(--border-color);
+      border-top-color: var(--primary); border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+    }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Responsive */
+    @media (max-width: 600px) {
+      .tab-buttons { flex-direction: column; }
+      .tab-btn { justify-content: center; }
       .filters { flex-direction: column; }
+      .card-item { flex-direction: column; align-items: flex-start; gap: 10px; }
+      .card-actions { width: 100%; }
+      .btn-small { flex: 1; text-align: center; }
     }
   </style>
 </head>
 <body>
-  <div class="bg-glow"></div>
-  
   <div class="container">
-    <header class="header">
-      <div class="badge" id="tournament-badge">🏆 Loading...</div>
+    <!-- Header -->
+    <div class="header">
+      <div class="badge">🏆 European Bridge League</div>
+      <div class="event-badge" id="event-badge">Loading...</div>
       <h1 class="title">System Cards Portal</h1>
-      <p class="subtitle">Upload and manage convention cards for all registered teams</p>
-    </header>
+      <p class="subtitle">Upload and manage convention cards for registered teams</p>
+    </div>
     
-    <div class="tabs">
-      <button class="tab active" data-tab="upload">📤 Upload Card</button>
-      <button class="tab" data-tab="view">📋 View All Cards</button>
+    <!-- Tab Buttons - More Prominent -->
+    <div class="tab-buttons">
+      <button class="tab-btn active" onclick="showTab('upload')">
+        <span class="icon">📤</span> Upload Card
+      </button>
+      <button class="tab-btn" onclick="showTab('view')">
+        <span class="icon">📋</span> View All Cards
+      </button>
     </div>
     
     <!-- Upload Tab -->
     <div id="upload-tab" class="tab-content active">
-      <div class="card form-card">
+      <div class="card">
         <h2 class="form-title">📤 Upload Your System Card</h2>
-        <p style="color: var(--text-muted); margin-bottom: 24px;">
-          Select your team and pair, then upload your convention card (PDF format)
-        </p>
-        
-        <div class="form-group">
-          <label class="form-label">Event</label>
-          <select id="event-select" class="form-select">
-            <option value="">All Events</option>
-          </select>
-        </div>
+        <p class="form-subtitle">Select your team and players, then upload your convention card (PDF format)</p>
         
         <div class="form-group">
           <label class="form-label">Team</label>
-          <select id="team-select" class="form-select">
+          <select id="team-select" class="form-select" onchange="handleTeamChange()">
             <option value="">Loading teams...</option>
           </select>
         </div>
         
         <div class="form-group" id="players-group" style="display: none;">
           <label class="form-label">Select players for this System Card (minimum 2)</label>
-          <div id="players-checkboxes" class="players-grid">
-            <!-- Checkboxes will be populated here -->
-          </div>
-          <p id="players-hint" class="hint-text">Select at least 2 players who share this convention card</p>
+          <div class="players-grid" id="players-checkboxes"></div>
+          <p class="hint-text" id="players-hint">Select at least 2 players who share this convention card</p>
         </div>
         
-        <div id="file-preview" class="info-box" style="display: none;">
-          📁 Your file will be saved as:<br>
-          <strong id="file-name-preview"></strong>
+        <div id="file-preview" style="display: none;">
+          <div class="file-preview">
+            <span class="file-preview-icon">📄</span>
+            <div>
+              <div class="file-preview-label">Your file will be saved as:</div>
+              <div class="file-preview-name" id="file-name-preview"></div>
+            </div>
+          </div>
         </div>
         
         <div id="upload-container" style="display: none;">
-          <div class="upload-area" id="drop-zone">
+          <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
             <div class="upload-icon">📄</div>
             <p class="upload-text">Drop your PDF here or click to browse</p>
             <p class="upload-hint">Max 2MB • PDF only • Will be renamed automatically</p>
@@ -310,222 +344,146 @@
     
     <!-- View Tab -->
     <div id="view-tab" class="tab-content">
-      <div class="filters">
-        <input type="text" id="search-input" class="form-input search-input" placeholder="🔍 Search teams or players...">
-        <select id="filter-event" class="form-select" style="width: auto; min-width: 180px;">
-          <option value="">All Events</option>
-        </select>
-      </div>
-      
-      <div id="teams-list">
-        <div class="loading-container">
-          <div class="spinner"></div>
-          <p style="color: var(--text-muted);">Loading teams...</p>
+      <div class="card">
+        <h2 class="form-title">📋 All Uploaded Cards</h2>
+        <p class="form-subtitle">View and download all system cards for this event</p>
+        
+        <div class="filters">
+          <input type="text" id="search-input" class="form-input search-input" placeholder="🔍 Search teams or players..." oninput="filterTeams()">
+        </div>
+        
+        <div id="teams-list">
+          <div class="loading-container">
+            <div class="spinner"></div>
+            <p style="color: var(--text-muted);">Loading teams...</p>
+          </div>
         </div>
       </div>
     </div>
     
     <!-- Instructions -->
-    <div class="card instructions">
+    <div class="instructions">
       <h3>📌 Instructions</h3>
       <ul>
         <li>All files must be in <strong>PDF format</strong></li>
         <li>System Cards must be in <strong>English</strong></li>
-        <li>Maximum 6 pages per card (including supplemental sheets)</li>
         <li>Player names must <strong>exactly match</strong> registration</li>
         <li>Handwritten cards are <strong>not allowed</strong></li>
       </ul>
-      <p style="margin-top: 16px;">
+      <p style="margin-top: 12px;">
         Need a blank template? 
         <a href="http://www.eurobridge.org/wp-content/uploads/2025/12/BlankEBLSystemcardWord.doc" target="_blank">
           📄 Download Blank System Card (Word)
         </a>
       </p>
     </div>
+    
+    <!-- Contact Banner -->
+    <div class="contact-banner">
+      <strong>Any problems?</strong> Contact us at <a href="mailto:info@eurobridge.org">info@eurobridge.org</a>
+    </div>
   </div>
 
 <script>
 // ============================================
-// CONFIGURATION - Change for each tournament
-// ============================================
-// ============================================
-// CONFIGURATION - Reads from URL parameter
+// CONFIGURATION - Reads from URL parameters
 // ============================================
 const urlParams = new URLSearchParams(window.location.search);
 const tournamentCode = urlParams.get('tournament') || '26prague';
+const eventFilter = urlParams.get('event') || '';
 
 const TOURNAMENT_NAMES = {
   '26prague': 'European Winter Transnational Championships 2026',
   '26eyoc': 'European Youth Online Championships 2026',
-  // Add more tournaments here
 };
 
 const CONFIG = {
   tournamentName: TOURNAMENT_NAMES[tournamentCode] || tournamentCode,
   tournamentCode: tournamentCode,
-  // Backend API URL
+  eventFilter: eventFilter,
   apiEndpoint: window.location.origin + "/api",
-  // Storage pubblico per i PDF
   storageBaseUrl: "https://pub-c200d1e403b242f8b4a343cb4974cab0.r2.dev",
 };
 
+// Update header
+document.getElementById('event-badge').textContent = eventFilter || CONFIG.tournamentName;
+
 // ============================================
-// FETCH TEAMS FROM OUR API
+// STATE
 // ============================================
-async function scrapeTeamsFromASP() {
+let teams = [];
+let uploadedCards = [];
+let selectedTeam = null;
+let selectedPlayers = [];
+
+// ============================================
+// INIT
+// ============================================
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadTeams();
+  await loadUploadedCards();
+  setupDragDrop();
+  setupFileInput();
+});
+
+// ============================================
+// API CALLS
+// ============================================
+async function loadTeams() {
   try {
     const response = await fetch(`${CONFIG.apiEndpoint}/teams?tournament=${CONFIG.tournamentCode}`);
     const data = await response.json();
-    return data.teams || [];
+    teams = data.teams || [];
+    
+    // Filter by event if specified
+    if (CONFIG.eventFilter) {
+      teams = teams.filter(t => t.event === CONFIG.eventFilter);
+    }
+    
+    console.log(`Loaded ${teams.length} teams`);
+    populateTeamSelect();
+    renderTeamsList();
   } catch (error) {
     console.error('Failed to load teams:', error);
-    return [];
   }
 }
 
-function parseTeamsHtml(html) {
-  const teams = [];
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const rows = doc.querySelectorAll('table tr');
-  
-  rows.forEach(row => {
-    const cells = row.querySelectorAll('td');
-    if (cells.length >= 4) {
-      const event = cells[0]?.textContent?.trim();
-      const teamId = cells[1]?.textContent?.trim();
-      const teamName = cells[2]?.textContent?.trim();
-      const roster = cells[3]?.textContent?.trim();
-      
-      if (teamName && teamId && !teamName.includes('Team Name')) {
-        const players = parseRoster(roster);
-        if (players.length >= 2) {
-          teams.push({
-            id: teamId,
-            event: event,
-            name: teamName,
-            players: players,
-            pairs: generatePairs(players),
-            uploadedCards: [] // Da popolare con i file esistenti
-          });
-        }
-      }
-    }
-  });
-  
-  return teams;
-}
-
-function parseRoster(rosterText) {
-  const players = [];
-  const regex = /([A-Za-zÀ-ÿ\s\-'\.]+)\s*\((\d+)\)/g;
-  let match;
-  const seen = new Set();
-  
-  while ((match = regex.exec(rosterText)) !== null) {
-    const fullName = match[1].trim();
-    const wbfId = match[2];
-    
-    if (!seen.has(wbfId)) {
-      seen.add(wbfId);
-      const parts = fullName.split(/\s+/);
-      const surnameIdx = parts.findIndex(p => p === p.toUpperCase() && p.length > 1);
-      const surname = surnameIdx >= 0 ? parts[surnameIdx] : parts[parts.length - 1];
-      
-      players.push({
-        fullName,
-        surname: surname.toUpperCase(),
-        wbfId
-      });
-    }
-  }
-  
-  return players;
-}
-
-function generatePairs(players) {
-  const pairs = [];
-  for (let i = 0; i < players.length; i++) {
-    for (let j = i + 1; j < players.length; j++) {
-      pairs.push({
-        id: `${players[i].wbfId}-${players[j].wbfId}`,
-        player1: players[i],
-        player2: players[j],
-        fileName: sanitize(`${players[i].surname}_${players[j].surname}`)
-      });
-    }
-  }
-  return pairs;
-}
-
-function sanitize(str) {
-  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_]/g, '').toUpperCase();
-}
-
-// ============================================
-// APP STATE
-// ============================================
-let teams = [];
-let selectedTeam = null;
-let selectedPlayers = []; // Array di giocatori selezionati
-
-// ============================================
-// INITIALIZATION
-// ============================================
-async function init() {
-  // Set tournament name
-  document.getElementById('tournament-badge').textContent = `🏆 ${CONFIG.tournamentName}`;
-  
-  // Load teams
+async function loadUploadedCards() {
   try {
-    teams = await scrapeTeamsFromASP();
-    console.log(`Loaded ${teams.length} teams`);
-  } catch (e) {
-    console.error('Failed to load teams:', e);
-    teams = [];
+    const response = await fetch(`${CONFIG.apiEndpoint}/cards?tournament=${CONFIG.tournamentCode}`);
+    const data = await response.json();
+    uploadedCards = data.cards || [];
+    console.log(`Loaded ${uploadedCards.length} cards`);
+    renderTeamsList();
+  } catch (error) {
+    console.error('Failed to load cards:', error);
   }
-  
-  // Populate event filters
-  const events = [...new Set(teams.map(t => t.event))].filter(Boolean);
-  const eventSelect = document.getElementById('event-select');
-  const filterEvent = document.getElementById('filter-event');
-  
-  events.forEach(evt => {
-    eventSelect.innerHTML += `<option value="${evt}">${evt}</option>`;
-    filterEvent.innerHTML += `<option value="${evt}">${evt}</option>`;
-  });
-  
-  // Initial render
-  updateTeamOptions();
-  renderTeamsList();
-  
-  // Setup event listeners
-  setupEventListeners();
 }
 
 // ============================================
-// FORM HANDLING
+// UI FUNCTIONS
 // ============================================
-function updateTeamOptions() {
-  const eventSelect = document.getElementById('event-select');
-  const teamSelect = document.getElementById('team-select');
-  const selectedEvent = eventSelect.value;
+function showTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
   
-  const filtered = selectedEvent ? teams.filter(t => t.event === selectedEvent) : teams;
-  
-  teamSelect.innerHTML = '<option value="">Select your team...</option>';
-  filtered.forEach(team => {
-    teamSelect.innerHTML += `<option value="${team.id}">${team.name}</option>`;
-  });
-  
-  document.getElementById('players-group').style.display = 'none';
-  document.getElementById('file-preview').style.display = 'none';
-  document.getElementById('upload-container').style.display = 'none';
-  selectedTeam = null;
-  selectedPlayers = [];
+  document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active');
+  document.getElementById(`${tab}-tab`).classList.add('active');
 }
 
-function updatePlayersCheckboxes() {
+function populateTeamSelect() {
+  const select = document.getElementById('team-select');
+  select.innerHTML = '<option value="">Select your team...</option>';
+  
+  teams.forEach(team => {
+    const option = document.createElement('option');
+    option.value = team.id;
+    option.textContent = CONFIG.eventFilter ? team.name : `${team.name} (${team.event})`;
+    select.appendChild(option);
+  });
+}
+
+function handleTeamChange() {
   const teamSelect = document.getElementById('team-select');
   const playersGroup = document.getElementById('players-group');
   const playersContainer = document.getElementById('players-checkboxes');
@@ -541,7 +499,6 @@ function updatePlayersCheckboxes() {
     return;
   }
   
-  // Genera checkboxes per ogni giocatore
   playersContainer.innerHTML = selectedTeam.players.map(player => `
     <label class="player-checkbox" data-wbf-id="${player.wbfId}">
       <input type="checkbox" value="${player.wbfId}" onchange="handlePlayerSelection()">
@@ -600,7 +557,6 @@ function updateFilePreviewFromPlayers() {
     return;
   }
   
-  // Ordina per cognome e genera nome file
   const sortedPlayers = [...selectedPlayers].sort((a, b) => a.surname.localeCompare(b.surname));
   const playerNames = sortedPlayers.map(p => p.surname).join('_');
   const fileName = `${sanitize(selectedTeam.name)}_${sanitize(playerNames)}.pdf`;
@@ -610,9 +566,147 @@ function updateFilePreviewFromPlayers() {
   document.getElementById('upload-container').style.display = 'block';
 }
 
+function sanitize(str) {
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9_]/g, '')
+    .toUpperCase();
+}
+
+// ============================================
+// VIEW ALL CARDS
+// ============================================
+function renderTeamsList() {
+  const container = document.getElementById('teams-list');
+  
+  if (teams.length === 0) {
+    container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No teams found</p>';
+    return;
+  }
+  
+  container.innerHTML = teams.map(team => {
+    const teamCards = getCardsForTeam(team);
+    const hasCards = teamCards.length > 0;
+    const statusClass = hasCards ? 'complete' : 'none';
+    const statusText = hasCards ? `${teamCards.length} card(s)` : 'No cards yet';
+    
+    return `
+      <div class="team-card" data-team-name="${team.name.toLowerCase()}" data-event="${team.event}">
+        <div class="team-header" onclick="toggleTeam(this)">
+          <div>
+            <div class="team-name">${team.name}</div>
+            ${!CONFIG.eventFilter ? `<div class="team-event">${team.event}</div>` : ''}
+          </div>
+          <div class="team-status">
+            <span class="status-dot ${statusClass}"></span>
+            ${statusText}
+          </div>
+        </div>
+        <div class="team-details">
+          <div class="cards-list">
+            ${teamCards.length > 0 ? teamCards.map(card => `
+              <div class="card-item">
+                <div class="card-info">
+                  <span class="card-icon">📄</span>
+                  <div>
+                    <div class="card-name">${card.fileName}</div>
+                    <div class="card-date">Uploaded: ${formatDate(card.lastModified)}</div>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <a href="${card.url}" target="_blank" class="btn-small btn-view">View PDF</a>
+                  <button class="btn-small btn-copy" onclick="copyLink('${card.url}', this)">Copy Link</button>
+                </div>
+              </div>
+            `).join('') : '<p class="no-cards">No system cards uploaded yet</p>'}
+          </div>
+          <div style="margin-top: 12px;">
+            <strong>Players:</strong>
+            <span style="color: var(--text-secondary); font-size: 14px;">
+              ${team.players.map(p => p.fullName).join(', ')}
+            </span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getCardsForTeam(team) {
+  const teamNameSanitized = sanitize(team.name);
+  return uploadedCards.filter(card => {
+    const cardTeamName = card.fileName.split('_')[0];
+    return cardTeamName === teamNameSanitized;
+  });
+}
+
+function toggleTeam(header) {
+  const details = header.nextElementSibling;
+  details.classList.toggle('open');
+}
+
+function filterTeams() {
+  const searchTerm = document.getElementById('search-input').value.toLowerCase();
+  
+  document.querySelectorAll('.team-card').forEach(card => {
+    const teamName = card.dataset.teamName;
+    const event = card.dataset.event.toLowerCase();
+    const matches = teamName.includes(searchTerm) || event.includes(searchTerm);
+    card.style.display = matches ? 'block' : 'none';
+  });
+}
+
+function formatDate(dateString) {
+  if (!dateString) return 'Unknown';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', {
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+
+function copyLink(url, button) {
+  navigator.clipboard.writeText(url).then(() => {
+    button.textContent = 'Copied!';
+    button.classList.add('copied');
+    setTimeout(() => {
+      button.textContent = 'Copy Link';
+      button.classList.remove('copied');
+    }, 2000);
+  });
+}
+
 // ============================================
 // FILE UPLOAD
 // ============================================
+function setupDragDrop() {
+  const dropZone = document.getElementById('drop-zone');
+  
+  dropZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+  });
+  
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragover');
+  });
+  
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  });
+}
+
+function setupFileInput() {
+  document.getElementById('file-input').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) handleFile(file);
+  });
+}
+
 async function handleFile(file) {
   const uploadStatus = document.getElementById('upload-status');
   const dropZone = document.getElementById('drop-zone');
@@ -620,13 +714,11 @@ async function handleFile(file) {
   if (!file) return;
   uploadStatus.innerHTML = '';
   
-  // Check players selection
   if (selectedPlayers.length < 2) {
     uploadStatus.innerHTML = '<div class="alert alert-error">❌ Please select at least 2 players first</div>';
     return;
   }
   
-  // Validate
   if (file.type !== 'application/pdf') {
     uploadStatus.innerHTML = '<div class="alert alert-error">❌ Only PDF files are allowed</div>';
     return;
@@ -637,11 +729,9 @@ async function handleFile(file) {
     return;
   }
   
-  // Show loading
-  dropZone.innerHTML = '<div class="spinner"></div><p style="color: #60a5fa;">Uploading and validating...</p>';
+  dropZone.innerHTML = '<div class="spinner"></div><p style="color: var(--primary);">Uploading and validating...</p>';
   
   try {
-    // Validate PDF magic bytes
     const buffer = await file.arrayBuffer();
     const bytes = new Uint8Array(buffer);
     const header = String.fromCharCode(...bytes.slice(0, 5));
@@ -650,32 +740,24 @@ async function handleFile(file) {
       throw new Error('Invalid PDF file (corrupted or fake extension)');
     }
     
-    // Generate filename from selected players
     const sortedPlayers = [...selectedPlayers].sort((a, b) => a.surname.localeCompare(b.surname));
     const playerNames = sortedPlayers.map(p => p.surname).join('_');
     const fileName = `${sanitize(selectedTeam.name)}_${sanitize(playerNames)}.pdf`;
     
-    // In production: upload to backend
-    if (!CONFIG.useLocalData) {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('tournamentCode', CONFIG.tournamentCode);
-      formData.append('teamName', selectedTeam.name);
-      formData.append('playerIds', selectedPlayers.map(p => p.wbfId).join(','));
-      formData.append('fileName', fileName);
-      
-      const response = await fetch(`${CONFIG.apiEndpoint}/upload`, {
-        method: 'POST',
-        body: formData
-      });
-      
-      if (!response.ok) throw new Error('Upload failed');
-    } else {
-      // Demo: simulate delay
-      await new Promise(r => setTimeout(r, 1500));
-    }
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('tournamentCode', CONFIG.tournamentCode);
+    formData.append('teamName', selectedTeam.name);
+    formData.append('playerIds', selectedPlayers.map(p => p.wbfId).join(','));
+    formData.append('fileName', fileName);
     
-    // Show success with player names
+    const response = await fetch(`${CONFIG.apiEndpoint}/upload`, {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!response.ok) throw new Error('Upload failed');
+    
     const playerNamesDisplay = sortedPlayers.map(p => p.fullName).join(', ');
     uploadStatus.innerHTML = `
       <div class="alert alert-success">
@@ -685,165 +767,19 @@ async function handleFile(file) {
       </div>
     `;
     
+    // Reload cards
+    await loadUploadedCards();
+    
   } catch (error) {
     uploadStatus.innerHTML = `<div class="alert alert-error">❌ ${error.message || 'Upload failed'}</div>`;
   }
   
-  // Restore drop zone
   dropZone.innerHTML = `
     <div class="upload-icon">📄</div>
     <p class="upload-text">Drop your PDF here or click to browse</p>
     <p class="upload-hint">Max 2MB • PDF only • Will be renamed automatically</p>
   `;
 }
-
-// ============================================
-// TEAMS LIST RENDERING
-// ============================================
-function renderTeamsList() {
-  const container = document.getElementById('teams-list');
-  const searchQuery = document.getElementById('search-input').value.toLowerCase();
-  const filterEvent = document.getElementById('filter-event').value;
-  
-  const filtered = teams.filter(t => {
-    const matchesSearch = t.name.toLowerCase().includes(searchQuery) ||
-      t.players.some(p => p.fullName.toLowerCase().includes(searchQuery));
-    const matchesEvent = !filterEvent || t.event === filterEvent;
-    return matchesSearch && matchesEvent;
-  });
-  
-  if (filtered.length === 0) {
-    container.innerHTML = '<div class="card" style="text-align:center;padding:40px;color:var(--text-muted);">No teams found</div>';
-    return;
-  }
-  
-  container.innerHTML = filtered.map(team => {
-    const uploaded = team.uploadedCards.length;
-    // For status, we check if there's at least one card uploaded
-    // (we can't know exactly how many are needed since players can have shared cards)
-    const status = uploaded === 0 ? 'missing' : 'partial';
-    const statusLabel = uploaded === 0 ? 'No cards uploaded' : `${uploaded} card${uploaded > 1 ? 's' : ''} uploaded`;
-    const statusEmoji = uploaded === 0 ? '🔴' : '🟡';
-    
-    // Show players list with indication of who has cards
-    const playersHtml = team.players.map(player => {
-      // Check if this player appears in any uploaded card filename
-      const hasCard = team.uploadedCards.some(card => 
-        card.toUpperCase().includes(player.surname.toUpperCase())
-      );
-      
-      return `
-        <div class="player-item ${hasCard ? 'has-card' : 'no-card'}">
-          <span>${hasCard ? '✅' : '❓'}</span>
-          <span>👤 ${player.fullName}</span>
-          <span class="player-id-small">(${player.wbfId})</span>
-        </div>
-      `;
-    }).join('');
-    
-    // Show uploaded cards
-    const cardsHtml = team.uploadedCards.length > 0 
-      ? team.uploadedCards.map(card => `
-          <div class="uploaded-card">
-            <span>📄</span>
-            <a href="${CONFIG.storageBaseUrl}/${CONFIG.tournamentCode}/CC/${card}" target="_blank">${card}</a>
-          </div>
-        `).join('')
-      : '<p style="color:var(--text-muted);font-style:italic;">No system cards uploaded yet</p>';
-    
-    return `
-      <div class="card" data-team-id="${team.id}">
-        <div class="team-header" onclick="toggleTeam('${team.id}')">
-          <div>
-            <h3 class="team-name">${team.name}</h3>
-            <p class="team-meta">${team.event} • ${team.players.length} players</p>
-          </div>
-          <div style="display:flex;align-items:center;gap:16px;">
-            <span class="status status-${status}">${statusEmoji} ${statusLabel}</span>
-            <span class="expand-icon" id="icon-${team.id}">▼</span>
-          </div>
-        </div>
-        <div class="pairs-container" id="pairs-${team.id}">
-          <div class="team-details-grid">
-            <div>
-              <h4 class="pairs-title">👥 Players:</h4>
-              <div class="players-list">
-                ${playersHtml}
-              </div>
-            </div>
-            <div>
-              <h4 class="pairs-title">📄 Uploaded Cards:</h4>
-              <div class="cards-list">
-                ${cardsHtml}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function toggleTeam(teamId) {
-  const pairs = document.getElementById(`pairs-${teamId}`);
-  const icon = document.getElementById(`icon-${teamId}`);
-  
-  pairs.classList.toggle('visible');
-  icon.classList.toggle('expanded');
-}
-
-// ============================================
-// EVENT LISTENERS
-// ============================================
-function setupEventListeners() {
-  // Tabs
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      tab.classList.add('active');
-      document.getElementById(tab.dataset.tab + '-tab').classList.add('active');
-    });
-  });
-  
-  // Form selects
-  document.getElementById('event-select').addEventListener('change', updateTeamOptions);
-  document.getElementById('team-select').addEventListener('change', updatePlayersCheckboxes);
-  
-  // Search and filter
-  document.getElementById('search-input').addEventListener('input', renderTeamsList);
-  document.getElementById('filter-event').addEventListener('change', renderTeamsList);
-  
-  // File upload
-  const dropZone = document.getElementById('drop-zone');
-  const fileInput = document.getElementById('file-input');
-  
-  dropZone.addEventListener('click', () => fileInput.click());
-  
-  dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.classList.add('dragover');
-  });
-  
-  dropZone.addEventListener('dragleave', () => {
-    dropZone.classList.remove('dragover');
-  });
-  
-  dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('dragover');
-    handleFile(e.dataTransfer.files[0]);
-  });
-  
-  fileInput.addEventListener('change', (e) => {
-    handleFile(e.target.files[0]);
-  });
-}
-
-// ============================================
-// START
-// ============================================
-document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
