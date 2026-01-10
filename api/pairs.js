@@ -15,7 +15,14 @@ export default async function handler(req, res) {
     const response = await fetch(aspUrl);
     const html = await response.text();
     
-    const pairs = parsePairsHtml(html);
+    let pairs = parsePairsHtml(html);
+    
+    // Sort pairs alphabetically by first player's surname
+    pairs.sort((a, b) => {
+      const surnameA = a.players[0]?.surname || '';
+      const surnameB = b.players[0]?.surname || '';
+      return surnameA.localeCompare(surnameB);
+    });
     
     return res.status(200).json({ pairs });
     
@@ -53,17 +60,23 @@ function parsePairsHtml(html) {
       if (!pairId || pairId === 'ID' || !pairNames || pairNames === 'Pair') continue;
       
       // Parse pair names: "Nome1 COGNOME1-Nome2 COGNOME2"
-      const players = parsePairNames(pairNames);
+      let players = parsePairNames(pairNames);
       
       if (players.length === 2) {
+        // Sort players within pair alphabetically by surname
+        players.sort((a, b) => a.surname.localeCompare(b.surname));
+        
         // Map short event names to full names
         const fullEventName = mapEventName(event);
+        
+        // Create display name with sorted players
+        const displayName = players.map(p => p.fullName).join(' - ');
         
         pairs.push({
           id: pairId,
           event: fullEventName,
           eventShort: event,
-          name: pairNames.replace('-', ' - '), // Display name
+          name: displayName,
           country,
           players
         });
