@@ -37,22 +37,24 @@
     
     .header { text-align: center; margin-bottom: 32px; }
     
-    .badge {
+    .tournament-badge {
       display: inline-block; padding: 6px 16px;
       background: var(--primary-light); border: 1px solid var(--primary);
-      border-radius: 100px; font-size: 13px; color: var(--primary); 
-      font-weight: 600; margin-bottom: 12px;
+      border-radius: 100px; font-size: 12px; color: var(--primary); 
+      font-weight: 600; margin-bottom: 12px; text-transform: uppercase;
     }
     
-    .event-badge {
-      display: inline-block; padding: 8px 20px;
-      background: var(--primary); color: white;
-      border-radius: 100px; font-size: 14px; font-weight: 600;
-      margin-bottom: 16px;
+    .event-title {
+      font-size: clamp(22px, 4vw, 32px); font-weight: 800; margin: 0 0 8px 0;
+      color: var(--primary); line-height: 1.2;
+      padding: 16px 20px;
+      background: linear-gradient(135deg, var(--primary-light) 0%, #f0f7ff 100%);
+      border-radius: 12px;
+      border: 2px solid var(--primary);
     }
     
-    .title {
-      font-size: clamp(28px, 4vw, 40px); font-weight: 800; margin: 0 0 8px 0;
+    .page-title {
+      font-size: clamp(24px, 4vw, 36px); font-weight: 800; margin: 16px 0 8px 0;
       color: var(--text-primary);
     }
     
@@ -165,7 +167,7 @@
     .alert-success { background: var(--success-light); color: var(--success); border: 1px solid var(--success); }
     .alert-error { background: var(--error-light); color: var(--error); border: 1px solid var(--error); }
     
-    /* Teams List */
+    /* Teams/Pairs List */
     .filters {
       display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
     }
@@ -186,7 +188,7 @@
     .team-header:hover { background: var(--bg-light); }
     
     .team-name { font-weight: 600; font-size: 16px; }
-    .team-event { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .team-country { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
     
     .team-status {
       display: flex; align-items: center; gap: 8px;
@@ -226,6 +228,7 @@
     .btn-small {
       padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 500;
       cursor: pointer; transition: all 0.2s ease; border: none;
+      text-decoration: none;
     }
     
     .btn-view { background: var(--primary-light); color: var(--primary); }
@@ -284,10 +287,10 @@
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <div class="badge">🏆 European Bridge League</div>
-      <div class="event-badge" id="event-badge">Loading...</div>
-      <h1 class="title">System Cards Portal</h1>
-      <p class="subtitle">Upload and manage convention cards for registered teams</p>
+      <div class="tournament-badge">🏆 European Bridge League</div>
+      <div class="event-title" id="event-title">Loading...</div>
+      <h1 class="page-title">System Cards Portal</h1>
+      <p class="subtitle">Upload and manage convention cards</p>
     </div>
     
     <!-- Tab Buttons - More Prominent -->
@@ -304,12 +307,12 @@
     <div id="upload-tab" class="tab-content active">
       <div class="card">
         <h2 class="form-title">📤 Upload Your System Card</h2>
-        <p class="form-subtitle">Select your team and players, then upload your convention card (PDF format)</p>
+        <p class="form-subtitle" id="upload-subtitle">Select your team and players, then upload your convention card (PDF format)</p>
         
         <div class="form-group">
-          <label class="form-label">Team</label>
-          <select id="team-select" class="form-select" onchange="handleTeamChange()">
-            <option value="">Loading teams...</option>
+          <label class="form-label" id="entity-label">Team</label>
+          <select id="entity-select" class="form-select" onchange="handleEntityChange()">
+            <option value="">Loading...</option>
           </select>
         </div>
         
@@ -349,13 +352,13 @@
         <p class="form-subtitle">View and download all system cards for this event</p>
         
         <div class="filters">
-          <input type="text" id="search-input" class="form-input search-input" placeholder="🔍 Search teams or players..." oninput="filterTeams()">
+          <input type="text" id="search-input" class="form-input search-input" placeholder="🔍 Search..." oninput="filterEntities()">
         </div>
         
-        <div id="teams-list">
+        <div id="entities-list">
           <div class="loading-container">
             <div class="spinner"></div>
-            <p style="color: var(--text-muted);">Loading teams...</p>
+            <p style="color: var(--text-muted);">Loading...</p>
           </div>
         </div>
       </div>
@@ -392,35 +395,46 @@ const urlParams = new URLSearchParams(window.location.search);
 const tournamentCode = urlParams.get('tournament') || '26prague';
 const eventFilter = urlParams.get('event') || '';
 
-const TOURNAMENT_NAMES = {
-  '26prague': 'European Winter Transnational Championships 2026',
-  '26eyoc': 'European Youth Online Championships 2026',
+// Event configuration: maps event names to their type (teams or pairs)
+const EVENT_CONFIG = {
+  'EUROPEAN WINTER OPEN TEAMS CHAMPIONSHIP': { type: 'teams', short: 'Open Teams' },
+  'EUROPEAN WINTER SWISS CUP': { type: 'teams', short: 'Swiss Cup' },
+  'EUROPEAN WINTER MIXED TEAMS CHAMPIONSHIP': { type: 'teams', short: 'Mixed Teams' },
+  'EUROPEAN WINTER OPEN BAM': { type: 'teams', short: 'Open BAM' },
+  'EUROPEAN WINTER OPEN PAIRS': { type: 'pairs', short: 'Open Pairs' },
+  'EUROPEAN WINTER MIXED PAIRS': { type: 'pairs', short: 'Mixed Pairs' },
 };
 
 const CONFIG = {
-  tournamentName: TOURNAMENT_NAMES[tournamentCode] || tournamentCode,
   tournamentCode: tournamentCode,
   eventFilter: eventFilter,
+  eventType: EVENT_CONFIG[eventFilter]?.type || 'teams',
   apiEndpoint: window.location.origin + "/api",
   storageBaseUrl: "https://pub-c200d1e403b242f8b4a343cb4974cab0.r2.dev",
 };
 
-// Update header
-document.getElementById('event-badge').textContent = eventFilter || CONFIG.tournamentName;
+// Update header with event title
+document.getElementById('event-title').textContent = eventFilter || 'All Events';
+
+// Update labels based on type
+if (CONFIG.eventType === 'pairs') {
+  document.getElementById('entity-label').textContent = 'Pair';
+  document.getElementById('upload-subtitle').textContent = 'Select your pair, then upload your convention card (PDF format)';
+}
 
 // ============================================
 // STATE
 // ============================================
-let teams = [];
+let entities = []; // teams or pairs
 let uploadedCards = [];
-let selectedTeam = null;
+let selectedEntity = null;
 let selectedPlayers = [];
 
 // ============================================
 // INIT
 // ============================================
 document.addEventListener('DOMContentLoaded', async () => {
-  await loadTeams();
+  await loadEntities();
   await loadUploadedCards();
   setupDragDrop();
   setupFileInput();
@@ -429,22 +443,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ============================================
 // API CALLS
 // ============================================
-async function loadTeams() {
+async function loadEntities() {
   try {
-    const response = await fetch(`${CONFIG.apiEndpoint}/teams?tournament=${CONFIG.tournamentCode}`);
-    const data = await response.json();
-    teams = data.teams || [];
+    let data;
+    
+    if (CONFIG.eventType === 'pairs') {
+      const response = await fetch(`${CONFIG.apiEndpoint}/pairs?tournament=${CONFIG.tournamentCode}`);
+      data = await response.json();
+      entities = data.pairs || [];
+    } else {
+      const response = await fetch(`${CONFIG.apiEndpoint}/teams?tournament=${CONFIG.tournamentCode}`);
+      data = await response.json();
+      entities = data.teams || [];
+    }
     
     // Filter by event if specified
     if (CONFIG.eventFilter) {
-      teams = teams.filter(t => t.event === CONFIG.eventFilter);
+      entities = entities.filter(e => e.event === CONFIG.eventFilter);
     }
     
-    console.log(`Loaded ${teams.length} teams`);
-    populateTeamSelect();
-    renderTeamsList();
+    console.log(`Loaded ${entities.length} ${CONFIG.eventType}`);
+    populateEntitySelect();
+    renderEntitiesList();
   } catch (error) {
-    console.error('Failed to load teams:', error);
+    console.error('Failed to load entities:', error);
   }
 }
 
@@ -454,7 +476,7 @@ async function loadUploadedCards() {
     const data = await response.json();
     uploadedCards = data.cards || [];
     console.log(`Loaded ${uploadedCards.length} cards`);
-    renderTeamsList();
+    renderEntitiesList();
   } catch (error) {
     console.error('Failed to load cards:', error);
   }
@@ -471,40 +493,50 @@ function showTab(tab) {
   document.getElementById(`${tab}-tab`).classList.add('active');
 }
 
-function populateTeamSelect() {
-  const select = document.getElementById('team-select');
-  select.innerHTML = '<option value="">Select your team...</option>';
+function populateEntitySelect() {
+  const select = document.getElementById('entity-select');
+  const label = CONFIG.eventType === 'pairs' ? 'Select your pair...' : 'Select your team...';
+  select.innerHTML = `<option value="">${label}</option>`;
   
-  teams.forEach(team => {
+  entities.forEach(entity => {
     const option = document.createElement('option');
-    option.value = team.id;
-    option.textContent = CONFIG.eventFilter ? team.name : `${team.name} (${team.event})`;
+    option.value = entity.id;
+    option.textContent = entity.name + (entity.country ? ` (${entity.country})` : '');
     select.appendChild(option);
   });
 }
 
-function handleTeamChange() {
-  const teamSelect = document.getElementById('team-select');
+function handleEntityChange() {
+  const select = document.getElementById('entity-select');
   const playersGroup = document.getElementById('players-group');
   const playersContainer = document.getElementById('players-checkboxes');
-  const teamId = teamSelect.value;
+  const entityId = select.value;
   
-  selectedTeam = teams.find(t => t.id === teamId);
+  selectedEntity = entities.find(e => e.id === entityId);
   selectedPlayers = [];
   
-  if (!selectedTeam) {
+  if (!selectedEntity) {
     playersGroup.style.display = 'none';
     document.getElementById('file-preview').style.display = 'none';
     document.getElementById('upload-container').style.display = 'none';
     return;
   }
   
-  playersContainer.innerHTML = selectedTeam.players.map(player => `
-    <label class="player-checkbox" data-wbf-id="${player.wbfId}">
-      <input type="checkbox" value="${player.wbfId}" onchange="handlePlayerSelection()">
+  // For pairs, auto-select both players
+  if (CONFIG.eventType === 'pairs' && selectedEntity.players.length === 2) {
+    selectedPlayers = [...selectedEntity.players];
+    playersGroup.style.display = 'none';
+    updateFilePreviewFromPlayers();
+    return;
+  }
+  
+  // For teams, show player checkboxes
+  playersContainer.innerHTML = selectedEntity.players.map(player => `
+    <label class="player-checkbox" data-wbf-id="${player.wbfId || ''}">
+      <input type="checkbox" value="${player.wbfId || player.surname}" onchange="handlePlayerSelection()">
       <div>
         <div class="player-name">👤 ${player.fullName}</div>
-        <div class="player-id">WBF ID: ${player.wbfId}</div>
+        ${player.wbfId ? `<div class="player-id">WBF ID: ${player.wbfId}</div>` : ''}
       </div>
     </label>
   `).join('');
@@ -523,7 +555,7 @@ function handlePlayerSelection() {
     const label = cb.closest('.player-checkbox');
     if (cb.checked) {
       label.classList.add('selected');
-      const player = selectedTeam.players.find(p => p.wbfId === cb.value);
+      const player = selectedEntity.players.find(p => (p.wbfId || p.surname) === cb.value);
       if (player) selectedPlayers.push(player);
     } else {
       label.classList.remove('selected');
@@ -559,7 +591,7 @@ function updateFilePreviewFromPlayers() {
   
   const sortedPlayers = [...selectedPlayers].sort((a, b) => a.surname.localeCompare(b.surname));
   const playerNames = sortedPlayers.map(p => p.surname).join('_');
-  const fileName = `${sanitize(selectedTeam.name)}_${sanitize(playerNames)}.pdf`;
+  const fileName = `${sanitize(selectedEntity.name)}_${sanitize(playerNames)}.pdf`;
   
   document.getElementById('file-name-preview').textContent = fileName;
   document.getElementById('file-preview').style.display = 'block';
@@ -577,26 +609,26 @@ function sanitize(str) {
 // ============================================
 // VIEW ALL CARDS
 // ============================================
-function renderTeamsList() {
-  const container = document.getElementById('teams-list');
+function renderEntitiesList() {
+  const container = document.getElementById('entities-list');
   
-  if (teams.length === 0) {
-    container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No teams found</p>';
+  if (entities.length === 0) {
+    container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No entries found</p>';
     return;
   }
   
-  container.innerHTML = teams.map(team => {
-    const teamCards = getCardsForTeam(team);
-    const hasCards = teamCards.length > 0;
+  container.innerHTML = entities.map(entity => {
+    const entityCards = getCardsForEntity(entity);
+    const hasCards = entityCards.length > 0;
     const statusClass = hasCards ? 'complete' : 'none';
-    const statusText = hasCards ? `${teamCards.length} card(s)` : 'No cards yet';
+    const statusText = hasCards ? `${entityCards.length} card(s)` : 'No cards yet';
     
     return `
-      <div class="team-card" data-team-name="${team.name.toLowerCase()}" data-event="${team.event}">
-        <div class="team-header" onclick="toggleTeam(this)">
+      <div class="team-card" data-name="${entity.name.toLowerCase()}">
+        <div class="team-header" onclick="toggleEntity(this)">
           <div>
-            <div class="team-name">${team.name}</div>
-            ${!CONFIG.eventFilter ? `<div class="team-event">${team.event}</div>` : ''}
+            <div class="team-name">${entity.name}</div>
+            ${entity.country ? `<div class="team-country">${entity.country}</div>` : ''}
           </div>
           <div class="team-status">
             <span class="status-dot ${statusClass}"></span>
@@ -605,7 +637,7 @@ function renderTeamsList() {
         </div>
         <div class="team-details">
           <div class="cards-list">
-            ${teamCards.length > 0 ? teamCards.map(card => `
+            ${entityCards.length > 0 ? entityCards.map(card => `
               <div class="card-item">
                 <div class="card-info">
                   <span class="card-icon">📄</span>
@@ -624,7 +656,7 @@ function renderTeamsList() {
           <div style="margin-top: 12px;">
             <strong>Players:</strong>
             <span style="color: var(--text-secondary); font-size: 14px;">
-              ${team.players.map(p => p.fullName).join(', ')}
+              ${entity.players.map(p => p.fullName).join(', ')}
             </span>
           </div>
         </div>
@@ -633,26 +665,25 @@ function renderTeamsList() {
   }).join('');
 }
 
-function getCardsForTeam(team) {
-  const teamNameSanitized = sanitize(team.name);
+function getCardsForEntity(entity) {
+  const entityNameSanitized = sanitize(entity.name);
   return uploadedCards.filter(card => {
-    const cardTeamName = card.fileName.split('_')[0];
-    return cardTeamName === teamNameSanitized;
+    const cardEntityName = card.fileName.split('_')[0];
+    return cardEntityName === entityNameSanitized;
   });
 }
 
-function toggleTeam(header) {
+function toggleEntity(header) {
   const details = header.nextElementSibling;
   details.classList.toggle('open');
 }
 
-function filterTeams() {
+function filterEntities() {
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
   
   document.querySelectorAll('.team-card').forEach(card => {
-    const teamName = card.dataset.teamName;
-    const event = card.dataset.event.toLowerCase();
-    const matches = teamName.includes(searchTerm) || event.includes(searchTerm);
+    const name = card.dataset.name;
+    const matches = name.includes(searchTerm);
     card.style.display = matches ? 'block' : 'none';
   });
 }
@@ -742,13 +773,13 @@ async function handleFile(file) {
     
     const sortedPlayers = [...selectedPlayers].sort((a, b) => a.surname.localeCompare(b.surname));
     const playerNames = sortedPlayers.map(p => p.surname).join('_');
-    const fileName = `${sanitize(selectedTeam.name)}_${sanitize(playerNames)}.pdf`;
+    const fileName = `${sanitize(selectedEntity.name)}_${sanitize(playerNames)}.pdf`;
     
     const formData = new FormData();
     formData.append('file', file);
     formData.append('tournamentCode', CONFIG.tournamentCode);
-    formData.append('teamName', selectedTeam.name);
-    formData.append('playerIds', selectedPlayers.map(p => p.wbfId).join(','));
+    formData.append('teamName', selectedEntity.name);
+    formData.append('playerIds', selectedPlayers.map(p => p.wbfId || p.surname).join(','));
     formData.append('fileName', fileName);
     
     const response = await fetch(`${CONFIG.apiEndpoint}/upload`, {
