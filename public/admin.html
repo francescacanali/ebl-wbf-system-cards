@@ -67,13 +67,15 @@
     .form-group { margin-bottom: 16px; }
     .form-label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500; }
     
-    .form-input {
+    .form-input, .form-textarea {
       width: 100%; padding: 12px 14px; background: var(--bg-white);
       border: 1px solid var(--border-color); border-radius: 8px;
       font-size: 15px; font-family: inherit;
     }
     
-    .form-input:focus { outline: none; border-color: var(--primary); }
+    .form-textarea { resize: vertical; min-height: 80px; }
+    
+    .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--primary); }
     
     .btn {
       width: 100%; padding: 14px; border: none; border-radius: 8px;
@@ -91,7 +93,7 @@
     .admin-panel.active { display: block; }
     
     .stats-row {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 16px; margin-bottom: 24px;
     }
     
@@ -100,8 +102,12 @@
       border-radius: 12px; padding: 20px; text-align: center;
     }
     
-    .stat-value { font-size: 32px; font-weight: 800; color: var(--primary); }
-    .stat-label { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+    .stat-value { font-size: 28px; font-weight: 800; color: var(--primary); }
+    .stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+    
+    .stat-card.green .stat-value { color: var(--success); }
+    .stat-card.yellow .stat-value { color: var(--warning); }
+    .stat-card.red .stat-value { color: var(--error); }
     
     .card {
       background: var(--bg-white); border: 1px solid var(--border-color);
@@ -138,38 +144,35 @@
     
     .entity-row:last-child { border-bottom: none; }
     
-    .entity-info { flex: 1; }
+    .entity-info { flex: 1; min-width: 150px; }
     .entity-name { font-weight: 600; font-size: 15px; }
     .entity-country { font-size: 13px; color: var(--text-muted); }
     
-    .entity-cards { flex: 1; }
+    .entity-cards { flex: 2; }
     
     .card-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      padding: 6px 12px; border-radius: 6px; font-size: 13px;
-      margin-right: 8px; margin-bottom: 6px;
+      padding: 6px 12px; border-radius: 6px; font-size: 12px;
+      margin-right: 8px; margin-bottom: 6px; cursor: pointer;
+      transition: all 0.2s;
     }
     
+    .card-badge:hover { opacity: 0.8; }
     .card-badge.pending { background: var(--warning-light); color: var(--warning); }
     .card-badge.validated { background: var(--success-light); color: var(--success); }
+    .card-badge.refused { background: var(--error-light); color: var(--error); }
     .card-badge.none { background: var(--bg-light); color: var(--text-muted); }
     
-    .entity-status { width: 140px; text-align: center; }
+    .entity-status { width: 120px; text-align: center; }
     
-    .status-select {
-      padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;
-      font-size: 13px; cursor: pointer; width: 100%;
+    .status-indicator {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 500;
     }
     
-    .entity-actions { width: 100px; }
-    
-    .btn-small {
-      padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 500;
-      cursor: pointer; border: none; width: 100%;
-    }
-    
-    .btn-validate { background: var(--success-light); color: var(--success); }
-    .btn-validate:hover { background: var(--success); color: white; }
+    .status-indicator.green { background: var(--success-light); color: var(--success); }
+    .status-indicator.yellow { background: var(--warning-light); color: var(--warning); }
+    .status-indicator.red { background: var(--error-light); color: var(--error); }
     
     /* Cards Modal */
     .modal-overlay {
@@ -185,35 +188,77 @@
       width: 100%; max-height: 80vh; overflow-y: auto;
     }
     
-    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
-    .modal-close { float: right; cursor: pointer; font-size: 24px; color: var(--text-muted); }
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .modal-title { font-size: 18px; font-weight: 700; }
+    .modal-close { cursor: pointer; font-size: 24px; color: var(--text-muted); background: none; border: none; }
     
     .card-row {
+      padding: 16px; background: var(--bg-light); border-radius: 10px;
+      margin-bottom: 12px;
+    }
+    
+    .card-row-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 12px; background: var(--bg-light); border-radius: 8px;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
     
     .card-row-info { display: flex; align-items: center; gap: 12px; }
-    .card-row-name { font-weight: 500; }
+    .card-row-name { font-weight: 600; font-size: 15px; }
     .card-row-date { font-size: 12px; color: var(--text-muted); }
     
-    .card-row-actions { display: flex; gap: 8px; }
+    .card-row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
     
-    .btn-icon {
-      padding: 8px 12px; border-radius: 6px; cursor: pointer; border: none;
-      font-size: 13px; transition: all 0.2s;
+    .btn-action {
+      padding: 8px 14px; border-radius: 6px; cursor: pointer; border: none;
+      font-size: 13px; font-weight: 500; transition: all 0.2s;
     }
     
     .btn-view { background: var(--primary-light); color: var(--primary); }
+    .btn-view:hover { background: var(--primary); color: white; }
+    
+    .btn-validate { background: var(--success-light); color: var(--success); }
+    .btn-validate:hover { background: var(--success); color: white; }
+    
     .btn-pending { background: var(--warning-light); color: var(--warning); }
-    .btn-validated { background: var(--success-light); color: var(--success); }
+    .btn-pending:hover { background: var(--warning); color: white; }
+    
+    .btn-refuse { background: var(--error-light); color: var(--error); }
+    .btn-refuse:hover { background: var(--error); color: white; }
+    
+    .refuse-form {
+      margin-top: 12px; padding: 12px; background: var(--error-light);
+      border-radius: 8px; display: none;
+    }
+    
+    .refuse-form.active { display: block; }
+    
+    .refuse-form label { font-size: 13px; font-weight: 500; color: var(--error); display: block; margin-bottom: 6px; }
+    
+    .refuse-form textarea {
+      width: 100%; padding: 10px; border: 1px solid var(--error); border-radius: 6px;
+      font-size: 14px; font-family: inherit; resize: vertical; min-height: 60px;
+    }
+    
+    .refuse-form-buttons { display: flex; gap: 8px; margin-top: 10px; }
+    
+    .current-status {
+      padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-top: 8px;
+    }
+    
+    .current-status.validated { background: var(--success-light); color: var(--success); }
+    .current-status.pending { background: var(--warning-light); color: var(--warning); }
+    .current-status.refused { background: var(--error-light); color: var(--error); }
     
     /* Responsive */
     @media (max-width: 768px) {
       .entity-row { flex-wrap: wrap; }
       .entity-cards { width: 100%; margin: 10px 0; }
-      .entity-status, .entity-actions { width: auto; }
+      .entity-status { width: auto; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -248,19 +293,23 @@
       <div class="stats-row">
         <div class="stat-card">
           <div class="stat-value" id="stat-total">0</div>
-          <div class="stat-label">Total Teams/Pairs</div>
+          <div class="stat-label">Total Teams</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-value" id="stat-uploaded">0</div>
-          <div class="stat-label">With Cards</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="stat-validated">0</div>
-          <div class="stat-label">Validated</div>
-        </div>
-        <div class="stat-card">
+        <div class="stat-card green">
           <div class="stat-value" id="stat-complete">0</div>
-          <div class="stat-label">Complete</div>
+          <div class="stat-label">Complete ✓</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-value" id="stat-pending">0</div>
+          <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-value" id="stat-nocards">0</div>
+          <div class="stat-label">No Cards</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-value" id="stat-refused">0</div>
+          <div class="stat-label">Refused</div>
         </div>
       </div>
       
@@ -271,10 +320,10 @@
         <div class="filters">
           <input type="text" id="search-input" class="search-input" placeholder="🔍 Search..." oninput="filterEntities()">
           <button class="filter-btn active" onclick="setFilter('all')">All</button>
-          <button class="filter-btn" onclick="setFilter('pending')">Pending</button>
-          <button class="filter-btn" onclick="setFilter('validated')">Validated</button>
-          <button class="filter-btn" onclick="setFilter('nocards')">No Cards</button>
           <button class="filter-btn" onclick="setFilter('complete')">Complete</button>
+          <button class="filter-btn" onclick="setFilter('pending')">Pending</button>
+          <button class="filter-btn" onclick="setFilter('nocards')">No Cards</button>
+          <button class="filter-btn" onclick="setFilter('refused')">Refused</button>
         </div>
         
         <div id="entities-list"></div>
@@ -285,8 +334,10 @@
   <!-- Cards Modal -->
   <div class="modal-overlay" id="cards-modal">
     <div class="modal">
-      <span class="modal-close" onclick="closeCardsModal()">×</span>
-      <div class="modal-title" id="modal-entity-name"></div>
+      <div class="modal-header">
+        <div class="modal-title" id="modal-entity-name"></div>
+        <button class="modal-close" onclick="closeCardsModal()">×</button>
+      </div>
       <div id="modal-cards-list"></div>
     </div>
   </div>
@@ -325,8 +376,8 @@ let isLoggedIn = false;
 let entities = [];
 let uploadedCards = [];
 let validationStatus = {};
-let completionStatus = {};
 let currentFilter = 'all';
+let currentModalEntity = null;
 
 // ============================================
 // LOGIN
@@ -413,7 +464,6 @@ async function loadValidationStatus() {
     if (response.ok) {
       const data = await response.json();
       validationStatus = data.validationStatus || {};
-      completionStatus = data.completionStatus || {};
     }
   } catch (error) {
     console.log('Could not load validation status');
@@ -425,24 +475,24 @@ async function loadValidationStatus() {
 // ============================================
 function updateStats() {
   const total = entities.length;
-  let withCards = 0;
-  let validated = 0;
   let complete = 0;
+  let pending = 0;
+  let nocards = 0;
+  let refused = 0;
   
   entities.forEach(entity => {
-    const cards = getCardsForEntity(entity);
-    if (cards.length > 0) withCards++;
-    
-    const allValidated = cards.length > 0 && cards.every(c => validationStatus[c.fileName] === 'validated');
-    if (allValidated && cards.length > 0) validated++;
-    
-    if (completionStatus[entity.id] === 'complete') complete++;
+    const status = getEntityStatusInfo(entity);
+    if (status.color === 'green') complete++;
+    else if (status.color === 'yellow') pending++;
+    else if (status.hasRefused) refused++;
+    else nocards++;
   });
   
   document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-uploaded').textContent = withCards;
-  document.getElementById('stat-validated').textContent = validated;
   document.getElementById('stat-complete').textContent = complete;
+  document.getElementById('stat-pending').textContent = pending;
+  document.getElementById('stat-nocards').textContent = nocards;
+  document.getElementById('stat-refused').textContent = refused;
 }
 
 // ============================================
@@ -451,24 +501,15 @@ function updateStats() {
 function renderEntitiesList() {
   const container = document.getElementById('entities-list');
   
-  let filtered = entities;
-  
-  // Apply filter
-  if (currentFilter === 'pending') {
-    filtered = entities.filter(e => {
-      const cards = getCardsForEntity(e);
-      return cards.some(c => validationStatus[c.fileName] !== 'validated');
-    });
-  } else if (currentFilter === 'validated') {
-    filtered = entities.filter(e => {
-      const cards = getCardsForEntity(e);
-      return cards.length > 0 && cards.every(c => validationStatus[c.fileName] === 'validated');
-    });
-  } else if (currentFilter === 'nocards') {
-    filtered = entities.filter(e => getCardsForEntity(e).length === 0);
-  } else if (currentFilter === 'complete') {
-    filtered = entities.filter(e => completionStatus[e.id] === 'complete');
-  }
+  let filtered = entities.filter(entity => {
+    const status = getEntityStatusInfo(entity);
+    
+    if (currentFilter === 'complete') return status.color === 'green';
+    if (currentFilter === 'pending') return status.color === 'yellow';
+    if (currentFilter === 'nocards') return status.color === 'red' && !status.hasRefused;
+    if (currentFilter === 'refused') return status.hasRefused;
+    return true;
+  });
   
   // Apply search
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
@@ -478,7 +519,7 @@ function renderEntitiesList() {
   
   container.innerHTML = filtered.map(entity => {
     const cards = getCardsForEntity(entity);
-    const isComplete = completionStatus[entity.id] === 'complete';
+    const status = getEntityStatusInfo(entity);
     
     return `
       <div class="entity-row">
@@ -488,19 +529,13 @@ function renderEntitiesList() {
         </div>
         <div class="entity-cards">
           ${cards.length > 0 ? cards.map(card => {
-            const status = validationStatus[card.fileName] || 'pending';
-            const players = getPlayersFromFileName(card.fileName);
-            return `<span class="card-badge ${status}" onclick="openCardsModal('${entity.id}')">${players}: ${status === 'validated' ? '✓' : '⏳'}</span>`;
+            const cardStatus = getCardStatusInfo(card.fileName);
+            const players = getPlayersFromFileName(card.fileName, entity);
+            return `<span class="card-badge ${cardStatus.class}" onclick="openCardsModal('${entity.id}')">${players}: ${cardStatus.icon}</span>`;
           }).join('') : '<span class="card-badge none">No cards uploaded</span>'}
         </div>
         <div class="entity-status">
-          <select class="status-select" onchange="setCompletion('${entity.id}', this.value)">
-            <option value="incomplete" ${!isComplete ? 'selected' : ''}>Incomplete</option>
-            <option value="complete" ${isComplete ? 'selected' : ''}>✓ Complete</option>
-          </select>
-        </div>
-        <div class="entity-actions">
-          ${cards.length > 0 ? `<button class="btn-small btn-validate" onclick="openCardsModal('${entity.id}')">Manage</button>` : ''}
+          <span class="status-indicator ${status.color}">${status.text}</span>
         </div>
       </div>
     `;
@@ -515,10 +550,81 @@ function getCardsForEntity(entity) {
   });
 }
 
-function getPlayersFromFileName(fileName) {
+function getCardStatusInfo(fileName) {
+  const status = validationStatus[fileName];
+  
+  if (!status || status === 'pending') {
+    return { class: 'pending', icon: '⏳', label: 'Pending' };
+  } else if (status === 'validated') {
+    return { class: 'validated', icon: '✓', label: 'Validated' };
+  } else if (typeof status === 'object' && status.status === 'refused') {
+    return { class: 'refused', icon: '✗', label: 'Refused', reason: status.reason };
+  }
+  
+  return { class: 'pending', icon: '⏳', label: 'Pending' };
+}
+
+function getEntityStatusInfo(entity) {
+  const cards = getCardsForEntity(entity);
+  const playablePlayers = entity.players.filter(p => !isCoachOrCaptain(p));
+  
+  // Check for refused cards
+  const hasRefused = cards.some(card => {
+    const status = validationStatus[card.fileName];
+    return typeof status === 'object' && status.status === 'refused';
+  });
+  
+  if (hasRefused) {
+    return { color: 'red', text: 'Refused', hasRefused: true };
+  }
+  
+  if (cards.length === 0) {
+    return { color: 'red', text: 'No cards', hasRefused: false };
+  }
+  
+  // Check coverage
+  const playersWithCards = new Set();
+  cards.forEach(card => {
+    const surnames = card.fileName.replace('.pdf', '').split('_').slice(1);
+    surnames.forEach(surname => {
+      playablePlayers.forEach(player => {
+        if (sanitize(player.surname) === surname) {
+          playersWithCards.add(player.wbfId || player.surname);
+        }
+      });
+    });
+  });
+  
+  const allPlayersHaveCards = playablePlayers.every(p => 
+    playersWithCards.has(p.wbfId || p.surname)
+  );
+  
+  const allValidated = cards.every(card => validationStatus[card.fileName] === 'validated');
+  
+  if (allPlayersHaveCards && allValidated) {
+    return { color: 'green', text: 'Complete', hasRefused: false };
+  }
+  
+  return { color: 'yellow', text: 'Pending', hasRefused: false };
+}
+
+function isCoachOrCaptain(player) {
+  const name = player.fullName.toLowerCase();
+  const role = (player.role || '').toLowerCase();
+  return role.includes('coach') || role.includes('captain') || 
+         name.includes('(coach)') || name.includes('(captain)') ||
+         name.includes('(npc)') || role.includes('npc');
+}
+
+function getPlayersFromFileName(fileName, entity) {
   const parts = fileName.replace('.pdf', '').split('_');
   if (parts.length >= 3) {
-    return parts.slice(1).join(' & ');
+    const surnames = parts.slice(1);
+    const fullNames = surnames.map(surname => {
+      const player = entity.players.find(p => sanitize(p.surname) === surname);
+      return player ? player.fullName : surname;
+    });
+    return fullNames.join(' & ');
   }
   return fileName;
 }
@@ -548,28 +654,47 @@ function openCardsModal(entityId) {
   const entity = entities.find(e => e.id === entityId);
   if (!entity) return;
   
+  currentModalEntity = entity;
   const cards = getCardsForEntity(entity);
   
   document.getElementById('modal-entity-name').textContent = entity.name;
-  document.getElementById('modal-cards-list').innerHTML = cards.map(card => {
-    const status = validationStatus[card.fileName] || 'pending';
-    const players = getPlayersFromFileName(card.fileName);
+  document.getElementById('modal-cards-list').innerHTML = cards.map((card, index) => {
+    const statusInfo = getCardStatusInfo(card.fileName);
+    const players = getPlayersFromFileName(card.fileName, entity);
     
     return `
-      <div class="card-row">
-        <div class="card-row-info">
-          <span>📄</span>
-          <div>
-            <div class="card-row-name">${players}</div>
-            <div class="card-row-date">Uploaded: ${formatDate(card.lastModified)}</div>
+      <div class="card-row" id="card-row-${index}">
+        <div class="card-row-header">
+          <div class="card-row-info">
+            <span>📄</span>
+            <div>
+              <div class="card-row-name">${players}</div>
+              <div class="card-row-date">Uploaded: ${formatDate(card.lastModified)}</div>
+            </div>
+          </div>
+          <div class="card-row-actions">
+            <a href="${card.url}" target="_blank" class="btn-action btn-view">View PDF</a>
           </div>
         </div>
-        <div class="card-row-actions">
-          <a href="${card.url}" target="_blank" class="btn-icon btn-view">View</a>
-          ${status === 'validated' 
-            ? `<button class="btn-icon btn-pending" onclick="setValidation('${card.fileName}', 'pending')">Mark Pending</button>`
-            : `<button class="btn-icon btn-validated" onclick="setValidation('${card.fileName}', 'validated')">✓ Validate</button>`
-          }
+        
+        <div class="current-status ${statusInfo.class}">
+          Current status: <strong>${statusInfo.label}</strong>
+          ${statusInfo.reason ? `<br>Reason: ${statusInfo.reason}` : ''}
+        </div>
+        
+        <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
+          <button class="btn-action btn-validate" onclick="setValidation('${card.fileName}', 'validated', ${index})">✓ Validate</button>
+          <button class="btn-action btn-pending" onclick="setValidation('${card.fileName}', 'pending', ${index})">⏳ Set Pending</button>
+          <button class="btn-action btn-refuse" onclick="showRefuseForm(${index})">✗ Refuse</button>
+        </div>
+        
+        <div class="refuse-form" id="refuse-form-${index}">
+          <label>Reason for refusal:</label>
+          <textarea id="refuse-reason-${index}" placeholder="Enter the reason why this card is refused..."></textarea>
+          <div class="refuse-form-buttons">
+            <button class="btn-action btn-refuse" onclick="submitRefusal('${card.fileName}', ${index})">Confirm Refusal</button>
+            <button class="btn-action" style="background: var(--bg-light);" onclick="hideRefuseForm(${index})">Cancel</button>
+          </div>
         </div>
       </div>
     `;
@@ -580,6 +705,15 @@ function openCardsModal(entityId) {
 
 function closeCardsModal() {
   document.getElementById('cards-modal').classList.remove('active');
+  currentModalEntity = null;
+}
+
+function showRefuseForm(index) {
+  document.getElementById(`refuse-form-${index}`).classList.add('active');
+}
+
+function hideRefuseForm(index) {
+  document.getElementById(`refuse-form-${index}`).classList.remove('active');
 }
 
 function formatDate(dateString) {
@@ -594,11 +728,11 @@ function formatDate(dateString) {
 // ============================================
 // API ACTIONS
 // ============================================
-async function setValidation(fileName, status) {
+async function setValidation(fileName, status, index) {
   const token = sessionStorage.getItem('adminToken');
   
   try {
-    await fetch(`${CONFIG.apiEndpoint}/admin-validate`, {
+    const response = await fetch(`${CONFIG.apiEndpoint}/admin-validate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -612,25 +746,32 @@ async function setValidation(fileName, status) {
       })
     });
     
-    validationStatus[fileName] = status;
-    updateStats();
-    renderEntitiesList();
-    
-    // Re-open modal to refresh
-    const entityName = fileName.split('_')[0];
-    const entity = entities.find(e => sanitize(e.name) === entityName);
-    if (entity) openCardsModal(entity.id);
-    
+    if (response.ok) {
+      validationStatus[fileName] = status;
+      updateStats();
+      renderEntitiesList();
+      if (currentModalEntity) {
+        openCardsModal(currentModalEntity.id);
+      }
+    }
   } catch (error) {
     console.error('Failed to update validation:', error);
+    alert('Failed to update. Please try again.');
   }
 }
 
-async function setCompletion(entityId, status) {
+async function submitRefusal(fileName, index) {
+  const reason = document.getElementById(`refuse-reason-${index}`).value.trim();
+  
+  if (!reason) {
+    alert('Please enter a reason for the refusal.');
+    return;
+  }
+  
   const token = sessionStorage.getItem('adminToken');
   
   try {
-    await fetch(`${CONFIG.apiEndpoint}/admin-completion`, {
+    const response = await fetch(`${CONFIG.apiEndpoint}/admin-validate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -639,16 +780,22 @@ async function setCompletion(entityId, status) {
       body: JSON.stringify({
         tournament: CONFIG.tournamentCode,
         event: CONFIG.eventFilter,
-        entityId,
-        status
+        fileName,
+        status: { status: 'refused', reason }
       })
     });
     
-    completionStatus[entityId] = status;
-    updateStats();
-    
+    if (response.ok) {
+      validationStatus[fileName] = { status: 'refused', reason };
+      updateStats();
+      renderEntitiesList();
+      if (currentModalEntity) {
+        openCardsModal(currentModalEntity.id);
+      }
+    }
   } catch (error) {
-    console.error('Failed to update completion:', error);
+    console.error('Failed to update validation:', error);
+    alert('Failed to update. Please try again.');
   }
 }
 </script>
