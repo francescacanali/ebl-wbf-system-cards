@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
 
 const R2 = new S3Client({
   region: 'auto',
@@ -87,6 +87,56 @@ function validatePDF(buffer) {
   return { valid: true };
 }
 
+// Reset validation status when a file is overwritten
+async function resetValidationStatus(tournamentCode, event, fileName) {
+  try {
+    // Try to find which event this file belongs to by checking all event configs
+    const events = [
+      'Winter Open Teams',
+      'Winter Swiss Cup', 
+      'Winter Mixed Teams',
+      'Winter Open BAM',
+      'Winter Open Pairs',
+      'Winter Mixed Pairs'
+    ];
+    
+    for (const eventName of events) {
+      const adminKey = `${tournamentCode}/admin/${encodeURIComponent(eventName)}.json`;
+      
+      try {
+        // Get current admin data
+        const getResponse = await R2.send(new GetObjectCommand({
+          Bucket: process.env.R2_BUCKET_NAME,
+          Key: adminKey,
+        }));
+        
+        const body = await getResponse.Body.transformToString();
+        const data = JSON.parse(body);
+        
+        // Check if this file exists in validation status
+        if (data.validationStatus && data.validationStatus[fileName]) {
+          // Reset to pending
+          data.validationStatus[fileName] = 'pending';
+          
+          // Save back
+          await R2.send(new PutObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME,
+            Key: adminKey,
+            Body: JSON.stringify(data),
+            ContentType: 'application/json',
+          }));
+          
+          console.log(`Reset validation status for ${fileName} in ${eventName}`);
+        }
+      } catch (e) {
+        // File doesn't exist for this event, skip
+      }
+    }
+  } catch (error) {
+    console.log('Could not reset validation status:', error.message);
+  }
+}
+
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -139,6 +189,9 @@ export default async function handler(req, res) {
       ContentType: 'application/pdf',
       CacheControl: 'public, max-age=31536000',
     }));
+    
+    // Reset validation status since file was overwritten
+    await resetValidationStatus(tournamentCode, '', fileName);
     
     const publicUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
     
