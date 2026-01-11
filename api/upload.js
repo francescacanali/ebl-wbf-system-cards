@@ -64,14 +64,6 @@ async function parseMultipart(req) {
   });
 }
 
-function sanitize(str) {
-  return str
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-zA-Z0-9_]/g, '')
-    .toUpperCase();
-}
-
 function validatePDF(buffer) {
   if (buffer.length < 5) {
     return { valid: false, error: 'File too small' };
@@ -117,16 +109,16 @@ export default async function handler(req, res) {
     const file = parts.file;
     const tournamentCode = parts.tournamentCode || '26prague';
     const teamName = parts.teamName;
-    const fileName = parts.fileName; // Frontend sends the complete filename
+    const fileName = parts.fileName;
     
     if (!file || !teamName || !fileName) {
       console.log('Missing fields - file:', !!file, 'teamName:', teamName, 'fileName:', fileName);
       return res.status(400).json({ error: 'Missing required fields' });
     }
     
-    // Validate file size (2MB max)
-    if (file.data.length > 2 * 1024 * 1024) {
-      return res.status(400).json({ error: 'File too large (max 2MB)' });
+    // Validate file size (10MB max)
+    if (file.data.length > 10 * 1024 * 1024) {
+      return res.status(400).json({ error: 'File too large (max 10MB)' });
     }
     
     // Validate PDF
@@ -135,12 +127,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: validation.error });
     }
     
-    // Use the filename from frontend (already sanitized)
+    // Upload to R2
     const key = `${tournamentCode}/CC/${fileName}`;
     
     console.log('Uploading to R2:', key);
     
-    // Upload to R2
     await R2.send(new PutObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME,
       Key: key,
