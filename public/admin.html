@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Console - System Cards</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #00854A;
+      --primary-dark: #006838;
+      --primary-light: #e6f5ed;
+      --bg-light: #f8fafc;
+      --bg-white: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --border-color: #e2e8f0;
+      --success: #16a34a;
+      --success-light: #dcfce7;
+      --warning: #ca8a04;
+      --warning-light: #fef9c3;
+      --error: #dc2626;
+      --error-light: #fee2e2;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-light);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    
+    .container { max-width: 1100px; margin: 0 auto; padding: 32px 20px; }
+    
+    .header { text-align: center; margin-bottom: 32px; }
+    
+    .admin-badge {
+      display: inline-block; padding: 6px 16px;
+      background: var(--error-light); border: 1px solid var(--error);
+      border-radius: 100px; font-size: 12px; color: var(--error); 
+      font-weight: 600; margin-bottom: 12px; text-transform: uppercase;
+    }
+    
+    .event-title {
+      font-size: clamp(18px, 3vw, 24px); font-weight: 800;
+      color: var(--primary); margin-bottom: 8px;
+    }
+    
+    .page-title {
+      font-size: clamp(24px, 4vw, 32px); font-weight: 800;
+      color: var(--text-primary);
+    }
+    
+    /* Login */
+    .login-card {
+      background: var(--bg-white); border: 1px solid var(--border-color);
+      border-radius: 16px; padding: 32px; max-width: 400px; margin: 60px auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .login-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; text-align: center; }
+    
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500; }
+    
+    .form-input {
+      width: 100%; padding: 12px 14px; background: var(--bg-white);
+      border: 1px solid var(--border-color); border-radius: 8px;
+      font-size: 15px; font-family: inherit;
+    }
+    
+    .form-input:focus { outline: none; border-color: var(--primary); }
+    
+    .btn {
+      width: 100%; padding: 14px; border: none; border-radius: 8px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+      background: var(--primary); color: white;
+      transition: background 0.2s;
+    }
+    
+    .btn:hover { background: var(--primary-dark); }
+    
+    .error-msg { color: var(--error); font-size: 14px; margin-top: 12px; text-align: center; }
+    
+    /* Admin Panel */
+    .admin-panel { display: none; }
+    .admin-panel.active { display: block; }
+    
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px; margin-bottom: 24px;
+    }
+    
+    .stat-card {
+      background: var(--bg-white); border: 1px solid var(--border-color);
+      border-radius: 12px; padding: 20px; text-align: center;
+    }
+    
+    .stat-value { font-size: 32px; font-weight: 800; color: var(--primary); }
+    .stat-label { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+    
+    .card {
+      background: var(--bg-white); border: 1px solid var(--border-color);
+      border-radius: 16px; padding: 24px; margin-bottom: 16px;
+    }
+    
+    .card-title {
+      font-size: 18px; font-weight: 700; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    
+    .filters {
+      display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+      align-items: center;
+    }
+    
+    .search-input { flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 8px; }
+    
+    .filter-btn {
+      padding: 10px 16px; border: 1px solid var(--border-color); border-radius: 8px;
+      background: var(--bg-white); cursor: pointer; font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    .filter-btn:hover { border-color: var(--primary); }
+    .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+    
+    /* Entity Row */
+    .entity-row {
+      display: flex; align-items: center; padding: 16px;
+      border-bottom: 1px solid var(--border-color);
+      gap: 16px;
+    }
+    
+    .entity-row:last-child { border-bottom: none; }
+    
+    .entity-info { flex: 1; }
+    .entity-name { font-weight: 600; font-size: 15px; }
+    .entity-country { font-size: 13px; color: var(--text-muted); }
+    
+    .entity-cards { flex: 1; }
+    
+    .card-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 6px; font-size: 13px;
+      margin-right: 8px; margin-bottom: 6px;
+    }
+    
+    .card-badge.pending { background: var(--warning-light); color: var(--warning); }
+    .card-badge.validated { background: var(--success-light); color: var(--success); }
+    .card-badge.none { background: var(--bg-light); color: var(--text-muted); }
+    
+    .entity-status { width: 140px; text-align: center; }
+    
+    .status-select {
+      padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;
+      font-size: 13px; cursor: pointer; width: 100%;
+    }
+    
+    .entity-actions { width: 100px; }
+    
+    .btn-small {
+      padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 500;
+      cursor: pointer; border: none; width: 100%;
+    }
+    
+    .btn-validate { background: var(--success-light); color: var(--success); }
+    .btn-validate:hover { background: var(--success); color: white; }
+    
+    /* Cards Modal */
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    
+    .modal-overlay.active { display: flex; }
+    
+    .modal {
+      background: white; border-radius: 16px; padding: 24px; max-width: 700px;
+      width: 100%; max-height: 80vh; overflow-y: auto;
+    }
+    
+    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+    .modal-close { float: right; cursor: pointer; font-size: 24px; color: var(--text-muted); }
+    
+    .card-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px; background: var(--bg-light); border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    
+    .card-row-info { display: flex; align-items: center; gap: 12px; }
+    .card-row-name { font-weight: 500; }
+    .card-row-date { font-size: 12px; color: var(--text-muted); }
+    
+    .card-row-actions { display: flex; gap: 8px; }
+    
+    .btn-icon {
+      padding: 8px 12px; border-radius: 6px; cursor: pointer; border: none;
+      font-size: 13px; transition: all 0.2s;
+    }
+    
+    .btn-view { background: var(--primary-light); color: var(--primary); }
+    .btn-pending { background: var(--warning-light); color: var(--warning); }
+    .btn-validated { background: var(--success-light); color: var(--success); }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .entity-row { flex-wrap: wrap; }
+      .entity-cards { width: 100%; margin: 10px 0; }
+      .entity-status, .entity-actions { width: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Login Form -->
+    <div id="login-section">
+      <div class="login-card">
+        <div class="login-title">🔐 Admin Login</div>
+        <div class="form-group">
+          <label class="form-label">Event</label>
+          <input type="text" id="event-display" class="form-input" readonly>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="password-input" class="form-input" placeholder="Enter admin password">
+        </div>
+        <button class="btn" onclick="login()">Login</button>
+        <div id="login-error" class="error-msg" style="display: none;"></div>
+      </div>
+    </div>
+    
+    <!-- Admin Panel -->
+    <div id="admin-panel" class="admin-panel">
+      <div class="header">
+        <div class="admin-badge">🔐 Admin Console</div>
+        <div class="event-title" id="event-title"></div>
+        <h1 class="page-title">System Cards Validation</h1>
+      </div>
+      
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">Total Teams/Pairs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-uploaded">0</div>
+          <div class="stat-label">With Cards</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-validated">0</div>
+          <div class="stat-label">Validated</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-complete">0</div>
+          <div class="stat-label">Complete</div>
+        </div>
+      </div>
+      
+      <!-- Entities List -->
+      <div class="card">
+        <div class="card-title">📋 All Entries</div>
+        
+        <div class="filters">
+          <input type="text" id="search-input" class="search-input" placeholder="🔍 Search..." oninput="filterEntities()">
+          <button class="filter-btn active" onclick="setFilter('all')">All</button>
+          <button class="filter-btn" onclick="setFilter('pending')">Pending</button>
+          <button class="filter-btn" onclick="setFilter('validated')">Validated</button>
+          <button class="filter-btn" onclick="setFilter('nocards')">No Cards</button>
+          <button class="filter-btn" onclick="setFilter('complete')">Complete</button>
+        </div>
+        
+        <div id="entities-list"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Cards Modal -->
+  <div class="modal-overlay" id="cards-modal">
+    <div class="modal">
+      <span class="modal-close" onclick="closeCardsModal()">×</span>
+      <div class="modal-title" id="modal-entity-name"></div>
+      <div id="modal-cards-list"></div>
+    </div>
+  </div>
+
+<script>
+// ============================================
+// CONFIGURATION
+// ============================================
+const urlParams = new URLSearchParams(window.location.search);
+const tournamentCode = urlParams.get('tournament') || '26prague';
+const eventFilter = urlParams.get('event') || '';
+
+const EVENT_CONFIG = {
+  'Winter Open Teams': { type: 'teams', title: 'EUROPEAN WINTER OPEN TEAMS CHAMPIONSHIP' },
+  'Winter Swiss Cup': { type: 'teams', title: 'EUROPEAN WINTER SWISS CUP' },
+  'Winter Mixed Teams': { type: 'teams', title: 'EUROPEAN WINTER MIXED TEAMS CHAMPIONSHIP' },
+  'Winter Open BAM': { type: 'teams', title: 'EUROPEAN WINTER OPEN BAM' },
+  'Winter Open Pairs': { type: 'pairs', title: 'EUROPEAN WINTER OPEN PAIRS' },
+  'Winter Mixed Pairs': { type: 'pairs', title: 'EUROPEAN WINTER MIXED PAIRS' },
+};
+
+const CONFIG = {
+  tournamentCode,
+  eventFilter,
+  eventType: EVENT_CONFIG[eventFilter]?.type || 'teams',
+  eventTitle: EVENT_CONFIG[eventFilter]?.title || eventFilter,
+  apiEndpoint: window.location.origin + "/api",
+};
+
+document.getElementById('event-display').value = CONFIG.eventTitle;
+
+// ============================================
+// STATE
+// ============================================
+let isLoggedIn = false;
+let entities = [];
+let uploadedCards = [];
+let validationStatus = {};
+let completionStatus = {};
+let currentFilter = 'all';
+
+// ============================================
+// LOGIN
+// ============================================
+async function login() {
+  const password = document.getElementById('password-input').value;
+  const errorDiv = document.getElementById('login-error');
+  
+  try {
+    const response = await fetch(`${CONFIG.apiEndpoint}/admin-login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tournament: CONFIG.tournamentCode,
+        event: CONFIG.eventFilter,
+        password
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      isLoggedIn = true;
+      sessionStorage.setItem('adminToken', data.token);
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('admin-panel').classList.add('active');
+      document.getElementById('event-title').textContent = CONFIG.eventTitle;
+      await loadData();
+    } else {
+      errorDiv.textContent = 'Invalid password';
+      errorDiv.style.display = 'block';
+    }
+  } catch (error) {
+    errorDiv.textContent = 'Login failed. Please try again.';
+    errorDiv.style.display = 'block';
+  }
+}
+
+// ============================================
+// DATA LOADING
+// ============================================
+async function loadData() {
+  await Promise.all([
+    loadEntities(),
+    loadUploadedCards(),
+    loadValidationStatus()
+  ]);
+  updateStats();
+  renderEntitiesList();
+}
+
+async function loadEntities() {
+  try {
+    const endpoint = CONFIG.eventType === 'pairs' ? 'pairs' : 'teams';
+    const response = await fetch(`${CONFIG.apiEndpoint}/${endpoint}?tournament=${CONFIG.tournamentCode}`);
+    const data = await response.json();
+    entities = data[endpoint] || data.teams || data.pairs || [];
+    
+    if (CONFIG.eventFilter) {
+      entities = entities.filter(e => e.event === CONFIG.eventFilter);
+    }
+  } catch (error) {
+    console.error('Failed to load entities:', error);
+  }
+}
+
+async function loadUploadedCards() {
+  try {
+    const response = await fetch(`${CONFIG.apiEndpoint}/cards?tournament=${CONFIG.tournamentCode}`);
+    const data = await response.json();
+    uploadedCards = data.cards || [];
+  } catch (error) {
+    console.error('Failed to load cards:', error);
+  }
+}
+
+async function loadValidationStatus() {
+  try {
+    const token = sessionStorage.getItem('adminToken');
+    const response = await fetch(
+      `${CONFIG.apiEndpoint}/admin-data?tournament=${CONFIG.tournamentCode}&event=${encodeURIComponent(CONFIG.eventFilter)}`,
+      { headers: { 'Authorization': `Bearer ${token}` } }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      validationStatus = data.validationStatus || {};
+      completionStatus = data.completionStatus || {};
+    }
+  } catch (error) {
+    console.log('Could not load validation status');
+  }
+}
+
+// ============================================
+// STATS
+// ============================================
+function updateStats() {
+  const total = entities.length;
+  let withCards = 0;
+  let validated = 0;
+  let complete = 0;
+  
+  entities.forEach(entity => {
+    const cards = getCardsForEntity(entity);
+    if (cards.length > 0) withCards++;
+    
+    const allValidated = cards.length > 0 && cards.every(c => validationStatus[c.fileName] === 'validated');
+    if (allValidated && cards.length > 0) validated++;
+    
+    if (completionStatus[entity.id] === 'complete') complete++;
+  });
+  
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-uploaded').textContent = withCards;
+  document.getElementById('stat-validated').textContent = validated;
+  document.getElementById('stat-complete').textContent = complete;
+}
+
+// ============================================
+// RENDERING
+// ============================================
+function renderEntitiesList() {
+  const container = document.getElementById('entities-list');
+  
+  let filtered = entities;
+  
+  // Apply filter
+  if (currentFilter === 'pending') {
+    filtered = entities.filter(e => {
+      const cards = getCardsForEntity(e);
+      return cards.some(c => validationStatus[c.fileName] !== 'validated');
+    });
+  } else if (currentFilter === 'validated') {
+    filtered = entities.filter(e => {
+      const cards = getCardsForEntity(e);
+      return cards.length > 0 && cards.every(c => validationStatus[c.fileName] === 'validated');
+    });
+  } else if (currentFilter === 'nocards') {
+    filtered = entities.filter(e => getCardsForEntity(e).length === 0);
+  } else if (currentFilter === 'complete') {
+    filtered = entities.filter(e => completionStatus[e.id] === 'complete');
+  }
+  
+  // Apply search
+  const searchTerm = document.getElementById('search-input').value.toLowerCase();
+  if (searchTerm) {
+    filtered = filtered.filter(e => e.name.toLowerCase().includes(searchTerm));
+  }
+  
+  container.innerHTML = filtered.map(entity => {
+    const cards = getCardsForEntity(entity);
+    const isComplete = completionStatus[entity.id] === 'complete';
+    
+    return `
+      <div class="entity-row">
+        <div class="entity-info">
+          <div class="entity-name">${entity.name}</div>
+          ${entity.country ? `<div class="entity-country">${entity.country}</div>` : ''}
+        </div>
+        <div class="entity-cards">
+          ${cards.length > 0 ? cards.map(card => {
+            const status = validationStatus[card.fileName] || 'pending';
+            const players = getPlayersFromFileName(card.fileName);
+            return `<span class="card-badge ${status}" onclick="openCardsModal('${entity.id}')">${players}: ${status === 'validated' ? '✓' : '⏳'}</span>`;
+          }).join('') : '<span class="card-badge none">No cards uploaded</span>'}
+        </div>
+        <div class="entity-status">
+          <select class="status-select" onchange="setCompletion('${entity.id}', this.value)">
+            <option value="incomplete" ${!isComplete ? 'selected' : ''}>Incomplete</option>
+            <option value="complete" ${isComplete ? 'selected' : ''}>✓ Complete</option>
+          </select>
+        </div>
+        <div class="entity-actions">
+          ${cards.length > 0 ? `<button class="btn-small btn-validate" onclick="openCardsModal('${entity.id}')">Manage</button>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getCardsForEntity(entity) {
+  const entityNameSanitized = sanitize(entity.name);
+  return uploadedCards.filter(card => {
+    const cardEntityName = card.fileName.split('_')[0];
+    return cardEntityName === entityNameSanitized;
+  });
+}
+
+function getPlayersFromFileName(fileName) {
+  const parts = fileName.replace('.pdf', '').split('_');
+  if (parts.length >= 3) {
+    return parts.slice(1).join(' & ');
+  }
+  return fileName;
+}
+
+function sanitize(str) {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_]/g, '').toUpperCase();
+}
+
+// ============================================
+// FILTERS
+// ============================================
+function setFilter(filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector(`[onclick="setFilter('${filter}')"]`).classList.add('active');
+  renderEntitiesList();
+}
+
+function filterEntities() {
+  renderEntitiesList();
+}
+
+// ============================================
+// CARDS MODAL
+// ============================================
+function openCardsModal(entityId) {
+  const entity = entities.find(e => e.id === entityId);
+  if (!entity) return;
+  
+  const cards = getCardsForEntity(entity);
+  
+  document.getElementById('modal-entity-name').textContent = entity.name;
+  document.getElementById('modal-cards-list').innerHTML = cards.map(card => {
+    const status = validationStatus[card.fileName] || 'pending';
+    const players = getPlayersFromFileName(card.fileName);
+    
+    return `
+      <div class="card-row">
+        <div class="card-row-info">
+          <span>📄</span>
+          <div>
+            <div class="card-row-name">${players}</div>
+            <div class="card-row-date">Uploaded: ${formatDate(card.lastModified)}</div>
+          </div>
+        </div>
+        <div class="card-row-actions">
+          <a href="${card.url}" target="_blank" class="btn-icon btn-view">View</a>
+          ${status === 'validated' 
+            ? `<button class="btn-icon btn-pending" onclick="setValidation('${card.fileName}', 'pending')">Mark Pending</button>`
+            : `<button class="btn-icon btn-validated" onclick="setValidation('${card.fileName}', 'validated')">✓ Validate</button>`
+          }
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  document.getElementById('cards-modal').classList.add('active');
+}
+
+function closeCardsModal() {
+  document.getElementById('cards-modal').classList.remove('active');
+}
+
+function formatDate(dateString) {
+  if (!dateString) return 'Unknown';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', {
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+
+// ============================================
+// API ACTIONS
+// ============================================
+async function setValidation(fileName, status) {
+  const token = sessionStorage.getItem('adminToken');
+  
+  try {
+    await fetch(`${CONFIG.apiEndpoint}/admin-validate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        tournament: CONFIG.tournamentCode,
+        event: CONFIG.eventFilter,
+        fileName,
+        status
+      })
+    });
+    
+    validationStatus[fileName] = status;
+    updateStats();
+    renderEntitiesList();
+    
+    // Re-open modal to refresh
+    const entityName = fileName.split('_')[0];
+    const entity = entities.find(e => sanitize(e.name) === entityName);
+    if (entity) openCardsModal(entity.id);
+    
+  } catch (error) {
+    console.error('Failed to update validation:', error);
+  }
+}
+
+async function setCompletion(entityId, status) {
+  const token = sessionStorage.getItem('adminToken');
+  
+  try {
+    await fetch(`${CONFIG.apiEndpoint}/admin-completion`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        tournament: CONFIG.tournamentCode,
+        event: CONFIG.eventFilter,
+        entityId,
+        status
+      })
+    });
+    
+    completionStatus[entityId] = status;
+    updateStats();
+    
+  } catch (error) {
+    console.error('Failed to update completion:', error);
+  }
+}
+</script>
+</body>
+</html>
