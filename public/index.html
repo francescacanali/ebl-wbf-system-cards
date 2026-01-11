@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>System Cards Portal - EBL</title>
+  <title>System Cards Portal</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
     :root {
-      --primary: #0066cc;
-      --primary-dark: #004999;
-      --primary-light: #e6f0ff;
+      --primary: #00854A;
+      --primary-dark: #006838;
+      --primary-light: #e6f5ed;
       --bg-light: #f8fafc;
       --bg-white: #ffffff;
       --text-primary: #1e293b;
@@ -21,6 +21,7 @@
       --success: #16a34a;
       --success-light: #dcfce7;
       --warning: #ca8a04;
+      --warning-light: #fef9c3;
       --error: #dc2626;
       --error-light: #fee2e2;
     }
@@ -37,18 +38,11 @@
     
     .header { text-align: center; margin-bottom: 32px; }
     
-    .tournament-badge {
-      display: inline-block; padding: 6px 16px;
-      background: var(--primary-light); border: 1px solid var(--primary);
-      border-radius: 100px; font-size: 12px; color: var(--primary); 
-      font-weight: 600; margin-bottom: 12px; text-transform: uppercase;
-    }
-    
     .event-title {
-      font-size: clamp(22px, 4vw, 32px); font-weight: 800; margin: 0 0 8px 0;
+      font-size: clamp(20px, 4vw, 28px); font-weight: 800; margin: 0 0 8px 0;
       color: var(--primary); line-height: 1.2;
       padding: 16px 20px;
-      background: linear-gradient(135deg, var(--primary-light) 0%, #f0f7ff 100%);
+      background: linear-gradient(135deg, var(--primary-light) 0%, #f0f7f4 100%);
       border-radius: 12px;
       border: 2px solid var(--primary);
     }
@@ -60,7 +54,7 @@
     
     .subtitle { color: var(--text-secondary); font-size: 15px; }
     
-    /* Tab Buttons - More Prominent */
+    /* Tab Buttons */
     .tab-buttons {
       display: flex; gap: 12px; margin-bottom: 24px; justify-content: center;
     }
@@ -134,13 +128,13 @@
     
     /* File Preview */
     .file-preview {
-      background: var(--success-light); border: 1px solid var(--success);
+      background: var(--primary-light); border: 1px solid var(--primary);
       border-radius: 10px; padding: 12px 16px; margin-top: 16px;
       display: flex; align-items: center; gap: 10px;
     }
     
     .file-preview-icon { font-size: 24px; }
-    .file-preview-name { font-weight: 600; color: var(--success); font-size: 14px; }
+    .file-preview-name { font-weight: 600; color: var(--primary); font-size: 14px; }
     .file-preview-label { font-size: 12px; color: var(--text-secondary); }
     
     /* Upload Area */
@@ -157,6 +151,38 @@
     .upload-icon { font-size: 40px; margin-bottom: 12px; }
     .upload-text { font-size: 15px; font-weight: 500; margin-bottom: 4px; color: var(--text-primary); }
     .upload-hint { font-size: 13px; color: var(--text-muted); }
+    
+    /* Confirmation Modal */
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;
+    }
+    
+    .modal-overlay.active { display: flex; }
+    
+    .modal {
+      background: white; border-radius: 16px; padding: 24px; max-width: 450px;
+      width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    
+    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+    .modal-text { color: var(--text-secondary); font-size: 14px; margin-bottom: 8px; }
+    .modal-players { 
+      background: var(--primary-light); padding: 12px 16px; border-radius: 8px; 
+      margin: 16px 0; font-weight: 600; color: var(--primary); font-size: 15px;
+    }
+    .modal-buttons { display: flex; gap: 12px; margin-top: 20px; }
+    
+    .btn {
+      flex: 1; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s ease; border: none;
+    }
+    
+    .btn-cancel { background: var(--bg-light); color: var(--text-secondary); }
+    .btn-cancel:hover { background: var(--border-color); }
+    
+    .btn-confirm { background: var(--primary); color: white; }
+    .btn-confirm:hover { background: var(--primary-dark); }
     
     /* Alerts */
     .alert {
@@ -218,10 +244,16 @@
       margin-bottom: 8px;
     }
     
-    .card-info { display: flex; align-items: center; gap: 10px; }
+    .card-info { display: flex; align-items: center; gap: 10px; flex: 1; }
     .card-icon { font-size: 20px; }
-    .card-name { font-weight: 500; font-size: 14px; }
+    .card-players { font-weight: 500; font-size: 14px; }
     .card-date { font-size: 12px; color: var(--text-muted); }
+    
+    .card-status {
+      font-size: 11px; padding: 3px 8px; border-radius: 4px; margin-left: 8px;
+    }
+    .card-status.validated { background: var(--success-light); color: var(--success); }
+    .card-status.pending { background: var(--warning-light); color: var(--warning); }
     
     .card-actions { display: flex; gap: 8px; }
     
@@ -280,6 +312,7 @@
       .card-item { flex-direction: column; align-items: flex-start; gap: 10px; }
       .card-actions { width: 100%; }
       .btn-small { flex: 1; text-align: center; }
+      .modal-buttons { flex-direction: column; }
     }
   </style>
 </head>
@@ -287,13 +320,12 @@
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <div class="tournament-badge">🏆 European Bridge League</div>
       <div class="event-title" id="event-title">Loading...</div>
       <h1 class="page-title">System Cards Portal</h1>
       <p class="subtitle">Upload and manage convention cards</p>
     </div>
     
-    <!-- Tab Buttons - More Prominent -->
+    <!-- Tab Buttons -->
     <div class="tab-buttons">
       <button class="tab-btn active" onclick="showTab('upload')">
         <span class="icon">📤</span> Upload Card
@@ -326,7 +358,7 @@
           <div class="file-preview">
             <span class="file-preview-icon">📄</span>
             <div>
-              <div class="file-preview-label">Your file will be saved as:</div>
+              <div class="file-preview-label">System Card for:</div>
               <div class="file-preview-name" id="file-name-preview"></div>
             </div>
           </div>
@@ -336,7 +368,7 @@
           <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
             <div class="upload-icon">📄</div>
             <p class="upload-text">Drop your PDF here or click to browse</p>
-            <p class="upload-hint">Max 2MB • PDF only • Will be renamed automatically</p>
+            <p class="upload-hint">Max 10MB • PDF only</p>
             <input type="file" id="file-input" accept=".pdf,application/pdf" style="display: none;">
           </div>
         </div>
@@ -352,7 +384,7 @@
         <p class="form-subtitle">View and download all system cards for this event</p>
         
         <div class="filters">
-          <input type="text" id="search-input" class="form-input search-input" placeholder="🔍 Search..." oninput="filterEntities()">
+          <input type="text" id="search-input" class="form-input search-input" placeholder="🔍 Search by name..." oninput="filterEntities()">
         </div>
         
         <div id="entities-list">
@@ -386,37 +418,54 @@
       <strong>Any problems?</strong> Contact us at <a href="mailto:info@eurobridge.org">info@eurobridge.org</a>
     </div>
   </div>
+  
+  <!-- Confirmation Modal -->
+  <div class="modal-overlay" id="confirm-modal">
+    <div class="modal">
+      <div class="modal-title">⚠️ Confirm Upload</div>
+      <p class="modal-text">You are about to upload a system card for:</p>
+      <div class="modal-players" id="modal-players"></div>
+      <p class="modal-text">This will replace any existing system card for these players. Are you sure?</p>
+      <div class="modal-buttons">
+        <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-confirm" onclick="confirmUpload()">Yes, Upload</button>
+      </div>
+    </div>
+  </div>
 
 <script>
 // ============================================
-// CONFIGURATION - Reads from URL parameters
+// CONFIGURATION
 // ============================================
 const urlParams = new URLSearchParams(window.location.search);
 const tournamentCode = urlParams.get('tournament') || '26prague';
 const eventFilter = urlParams.get('event') || '';
 
-// Event configuration: maps event names to their type (teams or pairs)
+// Event configuration
 const EVENT_CONFIG = {
-  'EUROPEAN WINTER OPEN TEAMS CHAMPIONSHIP': { type: 'teams', short: 'Open Teams' },
-  'EUROPEAN WINTER SWISS CUP': { type: 'teams', short: 'Swiss Cup' },
-  'EUROPEAN WINTER MIXED TEAMS CHAMPIONSHIP': { type: 'teams', short: 'Mixed Teams' },
-  'EUROPEAN WINTER OPEN BAM': { type: 'teams', short: 'Open BAM' },
-  'EUROPEAN WINTER OPEN PAIRS': { type: 'pairs', short: 'Open Pairs' },
-  'EUROPEAN WINTER MIXED PAIRS': { type: 'pairs', short: 'Mixed Pairs' },
+  'Winter Open Teams': { type: 'teams', title: 'EUROPEAN WINTER OPEN TEAMS CHAMPIONSHIP' },
+  'Winter Swiss Cup': { type: 'teams', title: 'EUROPEAN WINTER SWISS CUP' },
+  'Winter Mixed Teams': { type: 'teams', title: 'EUROPEAN WINTER MIXED TEAMS CHAMPIONSHIP' },
+  'Winter Open BAM': { type: 'teams', title: 'EUROPEAN WINTER OPEN BAM' },
+  'Winter Open Pairs': { type: 'pairs', title: 'EUROPEAN WINTER OPEN PAIRS' },
+  'Winter Mixed Pairs': { type: 'pairs', title: 'EUROPEAN WINTER MIXED PAIRS' },
+  'EUROPEAN WINTER OPEN PAIRS': { type: 'pairs', title: 'EUROPEAN WINTER OPEN PAIRS' },
+  'EUROPEAN WINTER MIXED PAIRS': { type: 'pairs', title: 'EUROPEAN WINTER MIXED PAIRS' },
 };
 
 const CONFIG = {
   tournamentCode: tournamentCode,
   eventFilter: eventFilter,
   eventType: EVENT_CONFIG[eventFilter]?.type || 'teams',
+  eventTitle: EVENT_CONFIG[eventFilter]?.title || eventFilter || 'All Events',
   apiEndpoint: window.location.origin + "/api",
   storageBaseUrl: "https://pub-c200d1e403b242f8b4a343cb4974cab0.r2.dev",
 };
 
-// Update header with event title
-document.getElementById('event-title').textContent = eventFilter || 'All Events';
+// Update header
+document.getElementById('event-title').textContent = CONFIG.eventTitle;
 
-// Update labels based on type
+// Update labels for pairs
 if (CONFIG.eventType === 'pairs') {
   document.getElementById('entity-label').textContent = 'Pair';
   document.getElementById('upload-subtitle').textContent = 'Select your pair, then upload your convention card (PDF format)';
@@ -425,10 +474,12 @@ if (CONFIG.eventType === 'pairs') {
 // ============================================
 // STATE
 // ============================================
-let entities = []; // teams or pairs
+let entities = [];
 let uploadedCards = [];
+let validationStatus = {};
 let selectedEntity = null;
 let selectedPlayers = [];
+let pendingFile = null;
 
 // ============================================
 // INIT
@@ -436,6 +487,7 @@ let selectedPlayers = [];
 document.addEventListener('DOMContentLoaded', async () => {
   await loadEntities();
   await loadUploadedCards();
+  await loadValidationStatus();
   setupDragDrop();
   setupFileInput();
 });
@@ -457,7 +509,7 @@ async function loadEntities() {
       entities = data.teams || [];
     }
     
-    // Filter by event if specified
+    // Filter by event
     if (CONFIG.eventFilter) {
       entities = entities.filter(e => e.event === CONFIG.eventFilter);
     }
@@ -479,6 +531,18 @@ async function loadUploadedCards() {
     renderEntitiesList();
   } catch (error) {
     console.error('Failed to load cards:', error);
+  }
+}
+
+async function loadValidationStatus() {
+  try {
+    const response = await fetch(`${CONFIG.apiEndpoint}/validation?tournament=${CONFIG.tournamentCode}&event=${encodeURIComponent(CONFIG.eventFilter)}`);
+    if (response.ok) {
+      const data = await response.json();
+      validationStatus = data.status || {};
+    }
+  } catch (error) {
+    console.log('Validation status not available');
   }
 }
 
@@ -532,7 +596,7 @@ function handleEntityChange() {
   
   // For teams, show player checkboxes
   playersContainer.innerHTML = selectedEntity.players.map(player => `
-    <label class="player-checkbox" data-wbf-id="${player.wbfId || ''}">
+    <label class="player-checkbox" data-id="${player.wbfId || player.surname}">
       <input type="checkbox" value="${player.wbfId || player.surname}" onchange="handlePlayerSelection()">
       <div>
         <div class="player-name">👤 ${player.fullName}</div>
@@ -590,10 +654,9 @@ function updateFilePreviewFromPlayers() {
   }
   
   const sortedPlayers = [...selectedPlayers].sort((a, b) => a.surname.localeCompare(b.surname));
-  const playerNames = sortedPlayers.map(p => p.surname).join('_');
-  const fileName = `${sanitize(selectedEntity.name)}_${sanitize(playerNames)}.pdf`;
+  const playerNamesDisplay = sortedPlayers.map(p => p.fullName).join(' & ');
   
-  document.getElementById('file-name-preview').textContent = fileName;
+  document.getElementById('file-name-preview').textContent = playerNamesDisplay;
   document.getElementById('file-preview').style.display = 'block';
   document.getElementById('upload-container').style.display = 'block';
 }
@@ -637,21 +700,25 @@ function renderEntitiesList() {
         </div>
         <div class="team-details">
           <div class="cards-list">
-            ${entityCards.length > 0 ? entityCards.map(card => `
-              <div class="card-item">
-                <div class="card-info">
-                  <span class="card-icon">📄</span>
-                  <div>
-                    <div class="card-name">${card.fileName}</div>
-                    <div class="card-date">Uploaded: ${formatDate(card.lastModified)}</div>
+            ${entityCards.length > 0 ? entityCards.map(card => {
+              const players = getPlayersFromFileName(card.fileName);
+              const isValidated = validationStatus[card.fileName] === 'validated';
+              return `
+                <div class="card-item">
+                  <div class="card-info">
+                    <span class="card-icon">📄</span>
+                    <div>
+                      <div class="card-players">${players}${isValidated ? '<span class="card-status validated">✓ Validated</span>' : '<span class="card-status pending">Pending</span>'}</div>
+                      <div class="card-date">Uploaded: ${formatDate(card.lastModified)}</div>
+                    </div>
+                  </div>
+                  <div class="card-actions">
+                    <a href="${card.url}" target="_blank" class="btn-small btn-view">View PDF</a>
+                    <button class="btn-small btn-copy" onclick="copyLink('${card.url}', this)">Copy Link</button>
                   </div>
                 </div>
-                <div class="card-actions">
-                  <a href="${card.url}" target="_blank" class="btn-small btn-view">View PDF</a>
-                  <button class="btn-small btn-copy" onclick="copyLink('${card.url}', this)">Copy Link</button>
-                </div>
-              </div>
-            `).join('') : '<p class="no-cards">No system cards uploaded yet</p>'}
+              `;
+            }).join('') : '<p class="no-cards">No system cards uploaded yet</p>'}
           </div>
           <div style="margin-top: 12px;">
             <strong>Players:</strong>
@@ -671,6 +738,16 @@ function getCardsForEntity(entity) {
     const cardEntityName = card.fileName.split('_')[0];
     return cardEntityName === entityNameSanitized;
   });
+}
+
+function getPlayersFromFileName(fileName) {
+  // fileName format: TEAMNAME_SURNAME1_SURNAME2.pdf
+  const parts = fileName.replace('.pdf', '').split('_');
+  if (parts.length >= 3) {
+    const surnames = parts.slice(1);
+    return surnames.join(' & ');
+  }
+  return fileName;
 }
 
 function toggleEntity(header) {
@@ -709,6 +786,30 @@ function copyLink(url, button) {
 }
 
 // ============================================
+// CONFIRMATION MODAL
+// ============================================
+function showConfirmModal(file) {
+  pendingFile = file;
+  const sortedPlayers = [...selectedPlayers].sort((a, b) => a.surname.localeCompare(b.surname));
+  const playerNamesDisplay = sortedPlayers.map(p => p.fullName).join(' & ');
+  
+  document.getElementById('modal-players').textContent = playerNamesDisplay;
+  document.getElementById('confirm-modal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('confirm-modal').classList.remove('active');
+  pendingFile = null;
+}
+
+function confirmUpload() {
+  closeModal();
+  if (pendingFile) {
+    processUpload(pendingFile);
+  }
+}
+
+// ============================================
 // FILE UPLOAD
 // ============================================
 function setupDragDrop() {
@@ -738,11 +839,8 @@ function setupFileInput() {
   });
 }
 
-async function handleFile(file) {
+function handleFile(file) {
   const uploadStatus = document.getElementById('upload-status');
-  const dropZone = document.getElementById('drop-zone');
-  
-  if (!file) return;
   uploadStatus.innerHTML = '';
   
   if (selectedPlayers.length < 2) {
@@ -755,12 +853,20 @@ async function handleFile(file) {
     return;
   }
   
-  if (file.size > 2 * 1024 * 1024) {
-    uploadStatus.innerHTML = '<div class="alert alert-error">❌ File too large (max 2MB)</div>';
+  if (file.size > 10 * 1024 * 1024) {
+    uploadStatus.innerHTML = '<div class="alert alert-error">❌ File too large (max 10MB)</div>';
     return;
   }
   
-  dropZone.innerHTML = '<div class="spinner"></div><p style="color: var(--primary);">Uploading and validating...</p>';
+  // Show confirmation modal
+  showConfirmModal(file);
+}
+
+async function processUpload(file) {
+  const uploadStatus = document.getElementById('upload-status');
+  const dropZone = document.getElementById('drop-zone');
+  
+  dropZone.innerHTML = '<div class="spinner"></div><p style="color: var(--primary);">Uploading...</p>';
   
   try {
     const buffer = await file.arrayBuffer();
@@ -768,7 +874,7 @@ async function handleFile(file) {
     const header = String.fromCharCode(...bytes.slice(0, 5));
     
     if (header !== '%PDF-') {
-      throw new Error('Invalid PDF file (corrupted or fake extension)');
+      throw new Error('Invalid PDF file');
     }
     
     const sortedPlayers = [...selectedPlayers].sort((a, b) => a.surname.localeCompare(b.surname));
@@ -789,16 +895,14 @@ async function handleFile(file) {
     
     if (!response.ok) throw new Error('Upload failed');
     
-    const playerNamesDisplay = sortedPlayers.map(p => p.fullName).join(', ');
+    const playerNamesDisplay = sortedPlayers.map(p => p.fullName).join(' & ');
     uploadStatus.innerHTML = `
       <div class="alert alert-success">
         ✅ Uploaded successfully!<br>
-        <strong>File:</strong> ${fileName}<br>
         <strong>Players:</strong> ${playerNamesDisplay}
       </div>
     `;
     
-    // Reload cards
     await loadUploadedCards();
     
   } catch (error) {
@@ -808,7 +912,7 @@ async function handleFile(file) {
   dropZone.innerHTML = `
     <div class="upload-icon">📄</div>
     <p class="upload-text">Drop your PDF here or click to browse</p>
-    <p class="upload-hint">Max 2MB • PDF only • Will be renamed automatically</p>
+    <p class="upload-hint">Max 10MB • PDF only</p>
   `;
 }
 </script>
