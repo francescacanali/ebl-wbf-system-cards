@@ -1,4 +1,3 @@
-<!-- v2 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -194,6 +193,19 @@
     .alert-success { background: var(--success-light); color: var(--success); border: 1px solid var(--success); }
     .alert-error { background: var(--error-light); color: var(--error); border: 1px solid var(--error); }
     
+    /* Legend */
+    .legend {
+      display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;
+      padding: 14px 18px; background: var(--bg-light); border-radius: 10px;
+      font-size: 13px;
+    }
+    
+    .legend-item { display: flex; align-items: center; gap: 8px; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .legend-dot.green { background: var(--success); }
+    .legend-dot.yellow { background: var(--warning); }
+    .legend-dot.red { background: var(--error); }
+    
     /* Teams/Pairs List */
     .filters {
       display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
@@ -223,12 +235,12 @@
     }
     
     .status-dot {
-      width: 10px; height: 10px; border-radius: 50%;
+      width: 12px; height: 12px; border-radius: 50%;
     }
     
-    .status-dot.complete { background: var(--success); }
-    .status-dot.partial { background: var(--warning); }
-    .status-dot.none { background: var(--border-color); }
+    .status-dot.green { background: var(--success); }
+    .status-dot.yellow { background: var(--warning); }
+    .status-dot.red { background: var(--error); }
     
     .team-details {
       padding: 0 16px 16px; border-top: 1px solid var(--border-color);
@@ -251,10 +263,17 @@
     .card-date { font-size: 12px; color: var(--text-muted); }
     
     .card-status {
-      font-size: 11px; padding: 3px 8px; border-radius: 4px; margin-left: 8px;
+      font-size: 11px; padding: 4px 10px; border-radius: 4px; margin-left: 8px;
+      display: inline-block;
     }
     .card-status.validated { background: var(--success-light); color: var(--success); }
     .card-status.pending { background: var(--warning-light); color: var(--warning); }
+    .card-status.refused { background: var(--error-light); color: var(--error); }
+    
+    .refused-reason {
+      font-size: 12px; color: var(--error); margin-top: 4px;
+      padding: 8px 12px; background: var(--error-light); border-radius: 6px;
+    }
     
     .card-actions { display: flex; gap: 8px; }
     
@@ -314,6 +333,7 @@
       .card-actions { width: 100%; }
       .btn-small { flex: 1; text-align: center; }
       .modal-buttons { flex-direction: column; }
+      .legend { flex-direction: column; gap: 10px; }
     }
   </style>
 </head>
@@ -383,6 +403,22 @@
       <div class="card">
         <h2 class="form-title">📋 All Uploaded Cards</h2>
         <p class="form-subtitle">View and download all system cards for this event</p>
+        
+        <!-- Legend -->
+        <div class="legend">
+          <div class="legend-item">
+            <span class="legend-dot green"></span>
+            <span>All cards submitted & validated</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot yellow"></span>
+            <span>Cards pending or incomplete</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot red"></span>
+            <span>No cards or refused</span>
+          </div>
+        </div>
         
         <div class="filters">
           <input type="text" id="search-input" class="form-input search-input" placeholder="🔍 Search by name..." oninput="filterEntities()">
@@ -596,8 +632,10 @@ function handleEntityChange() {
     return;
   }
   
-  // For teams, show player checkboxes
-  playersContainer.innerHTML = selectedEntity.players.map(player => `
+  // For teams, show player checkboxes (excluding Coach and Captain)
+  const playablePlayers = selectedEntity.players.filter(p => !isCoachOrCaptain(p));
+  
+  playersContainer.innerHTML = playablePlayers.map(player => `
     <label class="player-checkbox" data-id="${player.wbfId || player.surname}">
       <input type="checkbox" value="${player.wbfId || player.surname}" onchange="handlePlayerSelection()">
       <div>
@@ -613,6 +651,14 @@ function handleEntityChange() {
   updateHint();
 }
 
+function isCoachOrCaptain(player) {
+  const name = player.fullName.toLowerCase();
+  const role = (player.role || '').toLowerCase();
+  return role.includes('coach') || role.includes('captain') || 
+         name.includes('(coach)') || name.includes('(captain)') ||
+         name.includes('(npc)') || role.includes('npc');
+}
+
 function handlePlayerSelection() {
   const checkboxes = document.querySelectorAll('#players-checkboxes input[type="checkbox"]');
   selectedPlayers = [];
@@ -621,7 +667,8 @@ function handlePlayerSelection() {
     const label = cb.closest('.player-checkbox');
     if (cb.checked) {
       label.classList.add('selected');
-      const player = selectedEntity.players.find(p => (p.wbfId || p.surname) === cb.value);
+      const playablePlayers = selectedEntity.players.filter(p => !isCoachOrCaptain(p));
+      const player = playablePlayers.find(p => (p.wbfId || p.surname) === cb.value);
       if (player) selectedPlayers.push(player);
     } else {
       label.classList.remove('selected');
@@ -684,9 +731,7 @@ function renderEntitiesList() {
   
   container.innerHTML = entities.map(entity => {
     const entityCards = getCardsForEntity(entity);
-    const hasCards = entityCards.length > 0;
-    const statusClass = hasCards ? 'complete' : 'none';
-    const statusText = hasCards ? `${entityCards.length} card(s)` : 'No cards yet';
+    const statusInfo = getEntityStatus(entity, entityCards);
     
     return `
       <div class="team-card" data-name="${entity.name.toLowerCase()}">
@@ -696,22 +741,26 @@ function renderEntitiesList() {
             ${entity.country ? `<div class="team-country">${entity.country}</div>` : ''}
           </div>
           <div class="team-status">
-            <span class="status-dot ${statusClass}"></span>
-            ${statusText}
+            <span class="status-dot ${statusInfo.color}"></span>
+            ${statusInfo.text}
           </div>
         </div>
         <div class="team-details">
           <div class="cards-list">
             ${entityCards.length > 0 ? entityCards.map(card => {
-              const players = getPlayersFromFileName(card.fileName);
-              const isValidated = validationStatus[card.fileName] === 'validated';
+              const cardStatus = getCardStatus(card.fileName);
+              const players = getPlayersFromFileName(card.fileName, entity);
               return `
                 <div class="card-item">
                   <div class="card-info">
                     <span class="card-icon">📄</span>
                     <div>
-                      <div class="card-players">${players}${isValidated ? '<span class="card-status validated">✓ Validated</span>' : '<span class="card-status pending">Pending</span>'}</div>
+                      <div class="card-players">
+                        ${players}
+                        <span class="card-status ${cardStatus.class}">${cardStatus.label}</span>
+                      </div>
                       <div class="card-date">Uploaded: ${formatDate(card.lastModified)}</div>
+                      ${cardStatus.reason ? `<div class="refused-reason">Reason: ${cardStatus.reason}</div>` : ''}
                     </div>
                   </div>
                   <div class="card-actions">
@@ -725,7 +774,7 @@ function renderEntitiesList() {
           <div style="margin-top: 12px;">
             <strong>Players:</strong>
             <span style="color: var(--text-secondary); font-size: 14px;">
-              ${entity.players.map(p => p.fullName).join(', ')}
+              ${entity.players.map(p => p.fullName + (isCoachOrCaptain(p) ? ' (NPC)' : '')).join(', ')}
             </span>
           </div>
         </div>
@@ -742,12 +791,83 @@ function getCardsForEntity(entity) {
   });
 }
 
-function getPlayersFromFileName(fileName) {
+function getCardStatus(fileName) {
+  const status = validationStatus[fileName];
+  
+  if (!status || status === 'pending') {
+    return { class: 'pending', label: 'Pending review by TD', reason: null };
+  } else if (status === 'validated') {
+    return { class: 'validated', label: '✓ Validated', reason: null };
+  } else if (typeof status === 'object' && status.status === 'refused') {
+    return { class: 'refused', label: '✗ Refused', reason: status.reason || 'No reason provided' };
+  } else if (status === 'refused') {
+    return { class: 'refused', label: '✗ Refused', reason: 'No reason provided' };
+  }
+  
+  return { class: 'pending', label: 'Pending review by TD', reason: null };
+}
+
+function getEntityStatus(entity, cards) {
+  // Get players excluding Coach/Captain
+  const playablePlayers = entity.players.filter(p => !isCoachOrCaptain(p));
+  
+  // Check if any card is refused
+  const hasRefused = cards.some(card => {
+    const status = validationStatus[card.fileName];
+    return status === 'refused' || (typeof status === 'object' && status.status === 'refused');
+  });
+  
+  if (hasRefused) {
+    return { color: 'red', text: 'Card refused' };
+  }
+  
+  // No cards at all
+  if (cards.length === 0) {
+    return { color: 'red', text: 'No cards' };
+  }
+  
+  // Check if all players have at least one card
+  const playersWithCards = new Set();
+  cards.forEach(card => {
+    const surnames = card.fileName.replace('.pdf', '').split('_').slice(1);
+    surnames.forEach(surname => {
+      playablePlayers.forEach(player => {
+        if (sanitize(player.surname) === surname) {
+          playersWithCards.add(player.wbfId || player.surname);
+        }
+      });
+    });
+  });
+  
+  const allPlayersHaveCards = playablePlayers.every(p => 
+    playersWithCards.has(p.wbfId || p.surname)
+  );
+  
+  // Check if all cards are validated
+  const allValidated = cards.every(card => validationStatus[card.fileName] === 'validated');
+  
+  if (allPlayersHaveCards && allValidated) {
+    return { color: 'green', text: `${cards.length} card(s) - Complete` };
+  } else if (allPlayersHaveCards && !allValidated) {
+    return { color: 'yellow', text: `${cards.length} card(s) - Pending validation` };
+  } else {
+    return { color: 'yellow', text: `${cards.length} card(s) - Incomplete` };
+  }
+}
+
+function getPlayersFromFileName(fileName, entity) {
   // fileName format: TEAMNAME_SURNAME1_SURNAME2.pdf
   const parts = fileName.replace('.pdf', '').split('_');
   if (parts.length >= 3) {
     const surnames = parts.slice(1);
-    return surnames.join(' & ');
+    
+    // Try to match with full names from entity
+    const fullNames = surnames.map(surname => {
+      const player = entity.players.find(p => sanitize(p.surname) === surname);
+      return player ? player.fullName : surname;
+    });
+    
+    return fullNames.join(' & ');
   }
   return fileName;
 }
