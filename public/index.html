@@ -36,7 +36,6 @@
     }
     
     .container { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
-    
     .header { text-align: center; margin-bottom: 32px; }
     
     .event-title {
@@ -55,10 +54,7 @@
     
     .subtitle { color: var(--text-secondary); font-size: 15px; }
     
-    /* Tab Buttons */
-    .tab-buttons {
-      display: flex; gap: 12px; margin-bottom: 24px; justify-content: center;
-    }
+    .tab-buttons { display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; }
     
     .tab-btn {
       padding: 16px 32px; border: 2px solid var(--border-color); border-radius: 12px;
@@ -68,17 +64,12 @@
     }
     
     .tab-btn:hover { border-color: var(--primary); color: var(--primary); }
-    
-    .tab-btn.active {
-      background: var(--primary); border-color: var(--primary); color: white;
-    }
-    
+    .tab-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
     .tab-btn .icon { font-size: 20px; }
     
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     
-    /* Cards */
     .card {
       background: var(--bg-white); border: 1px solid var(--border-color);
       border-radius: 16px; padding: 24px; margin-bottom: 16px;
@@ -91,7 +82,6 @@
     }
     
     .form-subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; }
-    
     .form-group { margin-bottom: 16px; }
     .form-label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500; color: var(--text-primary); }
     
@@ -105,11 +95,9 @@
     .form-select:focus, .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
     
     .form-select.highlight {
-      background: var(--primary-light); border: 2px solid var(--primary);
-      font-weight: 500;
+      background: var(--primary-light); border: 2px solid var(--primary); font-weight: 500;
     }
     
-    /* Players Checkboxes */
     .players-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 10px; margin-top: 8px;
@@ -123,7 +111,6 @@
     
     .player-checkbox:hover { background: var(--primary-light); }
     .player-checkbox.selected { background: var(--primary-light); border-color: var(--primary); }
-    
     .player-checkbox input { width: 18px; height: 18px; accent-color: var(--primary); }
     .player-name { font-weight: 500; font-size: 14px; }
     .player-id { font-size: 12px; color: var(--text-muted); }
@@ -132,7 +119,6 @@
     .hint-text.success { color: var(--success); }
     .hint-text.error { color: var(--error); }
     
-    /* File Preview */
     .file-preview {
       background: var(--primary-light); border: 1px solid var(--primary);
       border-radius: 10px; padding: 12px 16px; margin-top: 16px;
@@ -143,22 +129,17 @@
     .file-preview-name { font-weight: 600; color: var(--primary); font-size: 14px; }
     .file-preview-label { font-size: 12px; color: var(--text-secondary); }
     
-    /* Upload Area */
     .upload-area {
       border: 2px dashed var(--border-color); border-radius: 12px; padding: 40px;
       text-align: center; background: var(--bg-light);
       transition: all 0.2s ease; cursor: pointer; margin-top: 16px;
     }
     
-    .upload-area:hover, .upload-area.dragover { 
-      border-color: var(--primary); background: var(--primary-light); 
-    }
-    
+    .upload-area:hover, .upload-area.dragover { border-color: var(--primary); background: var(--primary-light); }
     .upload-icon { font-size: 40px; margin-bottom: 12px; }
     .upload-text { font-size: 15px; font-weight: 500; margin-bottom: 4px; color: var(--text-primary); }
     .upload-hint { font-size: 13px; color: var(--text-muted); }
     
-    /* Confirmation Modal */
     .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;
@@ -186,24 +167,16 @@
     
     .btn-cancel { background: var(--bg-light); color: var(--text-secondary); }
     .btn-cancel:hover { background: var(--border-color); }
-    
     .btn-confirm { background: var(--primary); color: white; }
     .btn-confirm:hover { background: var(--primary-dark); }
     
-    /* Alerts */
-    .alert {
-      padding: 14px 18px; border-radius: 10px; margin-top: 16px;
-      font-size: 14px; font-weight: 500;
-    }
-    
+    .alert { padding: 14px 18px; border-radius: 10px; margin-top: 16px; font-size: 14px; font-weight: 500; }
     .alert-success { background: var(--success-light); color: var(--success); border: 1px solid var(--success); }
     .alert-error { background: var(--error-light); color: var(--error); border: 1px solid var(--error); }
     
-    /* Legend */
     .legend {
       display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;
-      padding: 14px 18px; background: var(--bg-light); border-radius: 10px;
-      font-size: 13px;
+      padding: 14px 18px; background: var(--bg-light); border-radius: 10px; font-size: 13px;
     }
     
     .legend-item { display: flex; align-items: center; gap: 8px; }
@@ -212,11 +185,7 @@
     .legend-dot.yellow { background: var(--warning); }
     .legend-dot.red { background: var(--error); }
     
-    /* Teams/Pairs List */
-    .filters {
-      display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
-    }
-    
+    .filters { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
     .search-input { flex: 1; min-width: 200px; }
     
     .team-card {
@@ -231,36 +200,22 @@
     }
     
     .team-header:hover { background: var(--bg-light); }
-    
     .team-name { font-weight: 600; font-size: 16px; }
     .team-country { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
     
-    .team-status {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 13px; color: var(--text-secondary);
-    }
-    
-    .status-dot {
-      width: 12px; height: 12px; border-radius: 50%;
-    }
-    
+    .team-status { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); }
+    .status-dot { width: 12px; height: 12px; border-radius: 50%; }
     .status-dot.green { background: var(--success); }
     .status-dot.yellow { background: var(--warning); }
     .status-dot.red { background: var(--error); }
     
-    .team-details {
-      padding: 0 16px 16px; border-top: 1px solid var(--border-color);
-      display: none;
-    }
-    
+    .team-details { padding: 0 16px 16px; border-top: 1px solid var(--border-color); display: none; }
     .team-details.open { display: block; }
-    
     .cards-list { margin-top: 12px; }
     
     .card-item {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 14px; background: var(--bg-light); border-radius: 8px;
-      margin-bottom: 8px;
+      padding: 12px 14px; background: var(--bg-light); border-radius: 8px; margin-bottom: 8px;
     }
     
     .card-info { display: flex; align-items: center; gap: 10px; flex: 1; }
@@ -268,10 +223,7 @@
     .card-players { font-weight: 500; font-size: 14px; }
     .card-date { font-size: 12px; color: var(--text-muted); }
     
-    .card-status {
-      font-size: 11px; padding: 4px 10px; border-radius: 4px; margin-left: 8px;
-      display: inline-block;
-    }
+    .card-status { font-size: 11px; padding: 4px 10px; border-radius: 4px; margin-left: 8px; display: inline-block; }
     .card-status.validated { background: var(--success-light); color: var(--success); }
     .card-status.pending { background: var(--warning-light); color: var(--warning); }
     .card-status.refused { background: var(--error-light); color: var(--error); }
@@ -285,20 +237,17 @@
     
     .btn-small {
       padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 500;
-      cursor: pointer; transition: all 0.2s ease; border: none;
-      text-decoration: none;
+      cursor: pointer; transition: all 0.2s ease; border: none; text-decoration: none;
     }
     
     .btn-view { background: var(--primary-light); color: var(--primary); }
     .btn-view:hover { background: var(--primary); color: white; }
-    
     .btn-copy { background: var(--bg-white); color: var(--text-secondary); border: 1px solid var(--border-color); }
     .btn-copy:hover { background: var(--bg-light); }
     .btn-copy.copied { background: var(--success-light); color: var(--success); border-color: var(--success); }
     
     .no-cards { color: var(--text-muted); font-size: 14px; font-style: italic; }
     
-    /* Instructions */
     .instructions {
       background: var(--bg-white); border: 1px solid var(--border-color);
       border-radius: 12px; padding: 20px; margin-top: 24px;
@@ -309,7 +258,6 @@
     .instructions li { margin-bottom: 6px; }
     .instructions a { color: var(--primary); }
     
-    /* Contact Banner */
     .contact-banner {
       background: var(--primary-light); border: 1px solid var(--primary);
       border-radius: 10px; padding: 14px 20px; margin-top: 20px;
@@ -319,7 +267,6 @@
     .contact-banner strong { color: var(--primary); }
     .contact-banner a { color: var(--primary); font-weight: 600; }
     
-    /* Loading */
     .loading-container { text-align: center; padding: 40px; }
     
     .spinner {
@@ -330,7 +277,6 @@
     
     @keyframes spin { to { transform: rotate(360deg); } }
     
-    /* Responsive */
     @media (max-width: 600px) {
       .tab-buttons { flex-direction: column; }
       .tab-btn { justify-content: center; }
@@ -345,14 +291,12 @@
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
     <div class="header">
       <div class="event-title" id="event-title">Loading...</div>
       <h1 class="page-title">System Cards Portal</h1>
       <p class="subtitle">Upload and manage convention cards</p>
     </div>
     
-    <!-- Tab Buttons - View All Cards is default now -->
     <div class="tab-buttons">
       <button class="tab-btn" onclick="showTab('upload')">
         <span class="icon">📤</span> Upload System Card
@@ -362,7 +306,6 @@
       </button>
     </div>
     
-    <!-- Upload Tab -->
     <div id="upload-tab" class="tab-content">
       <div class="card">
         <h2 class="form-title">📤 Upload Your System Card</h2>
@@ -404,13 +347,11 @@
       </div>
     </div>
     
-    <!-- View Tab - Default active -->
     <div id="view-tab" class="tab-content active">
       <div class="card">
         <h2 class="form-title">📋 All Uploaded System Cards</h2>
         <p class="form-subtitle">View and download all system cards for this event</p>
         
-        <!-- Legend -->
         <div class="legend">
           <div class="legend-item">
             <span class="legend-dot green"></span>
@@ -433,13 +374,12 @@
         <div id="entities-list">
           <div class="loading-container">
             <div class="spinner"></div>
-            <p style="color: var(--text-muted);">Loading...</p>
+            <p style="color: var(--text-muted);">Loading System Cards...</p>
           </div>
         </div>
       </div>
     </div>
     
-    <!-- Instructions -->
     <div class="instructions">
       <h3>📌 Instructions</h3>
       <ul>
@@ -456,13 +396,11 @@
       </p>
     </div>
     
-    <!-- Contact Banner -->
     <div class="contact-banner">
-      <strong>Any problems?</strong> Contact us at <a href="/cdn-cgi/l/email-protection#4f262129200f2a3a3d202d3d262b282a61203d28"><span class="__cf_email__" data-cfemail="8fe6e1e9e0cfeafafde0edfde6ebe8eaa1e0fde8">[email&#160;protected]</span></a>
+      <strong>Any problems?</strong> Contact us at <a href="mailto:info@eurobridge.org">info@eurobridge.org</a>
     </div>
   </div>
   
-  <!-- Confirmation Modal -->
   <div class="modal-overlay" id="confirm-modal">
     <div class="modal">
       <div class="modal-title">⚠️ Confirm Upload</div>
@@ -476,15 +414,11 @@
     </div>
   </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// ============================================
-// CONFIGURATION
-// ============================================
+<script>
 const urlParams = new URLSearchParams(window.location.search);
 const tournamentCode = urlParams.get('tournament') || '26prague';
 const eventFilter = urlParams.get('event') || '';
 
-// Event configuration
 const EVENT_CONFIG = {
   'Winter Open Teams': { type: 'teams', title: 'EUROPEAN WINTER OPEN TEAMS CHAMPIONSHIP' },
   'Winter Swiss Cup': { type: 'teams', title: 'EUROPEAN WINTER SWISS CUP' },
@@ -492,8 +426,6 @@ const EVENT_CONFIG = {
   'Winter Open BAM': { type: 'teams', title: 'EUROPEAN WINTER OPEN BAM' },
   'Winter Open Pairs': { type: 'pairs', title: 'EUROPEAN WINTER OPEN PAIRS' },
   'Winter Mixed Pairs': { type: 'pairs', title: 'EUROPEAN WINTER MIXED PAIRS' },
-  'EUROPEAN WINTER OPEN PAIRS': { type: 'pairs', title: 'EUROPEAN WINTER OPEN PAIRS' },
-  'EUROPEAN WINTER MIXED PAIRS': { type: 'pairs', title: 'EUROPEAN WINTER MIXED PAIRS' },
 };
 
 const CONFIG = {
@@ -502,21 +434,15 @@ const CONFIG = {
   eventType: EVENT_CONFIG[eventFilter]?.type || 'teams',
   eventTitle: EVENT_CONFIG[eventFilter]?.title || eventFilter || 'All Events',
   apiEndpoint: window.location.origin + "/api",
-  storageBaseUrl: "https://pub-c200d1e403b242f8b4a343cb4974cab0.r2.dev",
 };
 
-// Update header
 document.getElementById('event-title').textContent = CONFIG.eventTitle;
 
-// Update labels for pairs
 if (CONFIG.eventType === 'pairs') {
   document.getElementById('entity-label').textContent = 'Pair';
   document.getElementById('upload-subtitle').textContent = 'Select your pair, then upload your convention card (PDF format)';
 }
 
-// ============================================
-// STATE
-// ============================================
 let entities = [];
 let uploadedCards = [];
 let validationStatus = {};
@@ -524,9 +450,6 @@ let selectedEntity = null;
 let selectedPlayers = [];
 let pendingFile = null;
 
-// ============================================
-// INIT
-// ============================================
 document.addEventListener('DOMContentLoaded', async () => {
   await loadEntities();
   await loadUploadedCards();
@@ -535,29 +458,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupFileInput();
 });
 
-// ============================================
-// API CALLS
-// ============================================
 async function loadEntities() {
   try {
     let data;
-    
     if (CONFIG.eventType === 'pairs') {
-      const response = await fetch(`${CONFIG.apiEndpoint}/pairs?tournament=${CONFIG.tournamentCode}`);
+      const response = await fetch(CONFIG.apiEndpoint + '/pairs?tournament=' + CONFIG.tournamentCode);
       data = await response.json();
       entities = data.pairs || [];
     } else {
-      const response = await fetch(`${CONFIG.apiEndpoint}/teams?tournament=${CONFIG.tournamentCode}`);
+      const response = await fetch(CONFIG.apiEndpoint + '/teams?tournament=' + CONFIG.tournamentCode);
       data = await response.json();
       entities = data.teams || [];
     }
-    
-    // Filter by event
     if (CONFIG.eventFilter) {
-      entities = entities.filter(e => e.event === CONFIG.eventFilter);
+      entities = entities.filter(function(e) { return e.event === CONFIG.eventFilter; });
     }
-    
-    console.log(`Loaded ${entities.length} ${CONFIG.eventType}`);
+    console.log('Loaded ' + entities.length + ' ' + CONFIG.eventType);
     populateEntitySelect();
     renderEntitiesList();
   } catch (error) {
@@ -567,10 +483,10 @@ async function loadEntities() {
 
 async function loadUploadedCards() {
   try {
-    const response = await fetch(`${CONFIG.apiEndpoint}/cards?tournament=${CONFIG.tournamentCode}`);
+    const response = await fetch(CONFIG.apiEndpoint + '/cards?tournament=' + CONFIG.tournamentCode);
     const data = await response.json();
     uploadedCards = data.cards || [];
-    console.log(`Loaded ${uploadedCards.length} cards`);
+    console.log('Loaded ' + uploadedCards.length + ' cards');
     renderEntitiesList();
   } catch (error) {
     console.error('Failed to load cards:', error);
@@ -579,7 +495,7 @@ async function loadUploadedCards() {
 
 async function loadValidationStatus() {
   try {
-    const response = await fetch(`${CONFIG.apiEndpoint}/validation?tournament=${CONFIG.tournamentCode}&event=${encodeURIComponent(CONFIG.eventFilter)}`);
+    const response = await fetch(CONFIG.apiEndpoint + '/validation?tournament=' + CONFIG.tournamentCode + '&event=' + encodeURIComponent(CONFIG.eventFilter));
     if (response.ok) {
       const data = await response.json();
       validationStatus = data.status || {};
@@ -590,26 +506,21 @@ async function loadValidationStatus() {
   renderEntitiesList();
 }
 
-// ============================================
-// UI FUNCTIONS
-// ============================================
 function showTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-  
-  document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active');
-  document.getElementById(`${tab}-tab`).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
+  document.querySelectorAll('.tab-content').forEach(function(content) { content.classList.remove('active'); });
+  document.querySelector('[onclick="showTab(\'' + tab + '\')"]').classList.add('active');
+  document.getElementById(tab + '-tab').classList.add('active');
 }
 
 function populateEntitySelect() {
   const select = document.getElementById('entity-select');
   const label = CONFIG.eventType === 'pairs' ? 'Select your pair...' : 'Select your team...';
-  select.innerHTML = `<option value="">${label}</option>`;
-  
-  entities.forEach(entity => {
+  select.innerHTML = '<option value="">' + label + '</option>';
+  entities.forEach(function(entity) {
     const option = document.createElement('option');
     option.value = entity.id;
-    option.textContent = entity.name + (entity.country ? ` (${entity.country})` : '');
+    option.textContent = entity.name + (entity.country ? ' (' + entity.country + ')' : '');
     select.appendChild(option);
   });
 }
@@ -620,7 +531,7 @@ function handleEntityChange() {
   const playersContainer = document.getElementById('players-checkboxes');
   const entityId = select.value;
   
-  selectedEntity = entities.find(e => e.id === entityId);
+  selectedEntity = entities.find(function(e) { return e.id === entityId; });
   selectedPlayers = [];
   
   if (!selectedEntity) {
@@ -630,26 +541,23 @@ function handleEntityChange() {
     return;
   }
   
-  // For pairs, auto-select both players
   if (CONFIG.eventType === 'pairs' && selectedEntity.players.length === 2) {
-    selectedPlayers = [...selectedEntity.players];
+    selectedPlayers = selectedEntity.players.slice();
     playersGroup.style.display = 'none';
     updateFilePreviewFromPlayers();
     return;
   }
   
-  // For teams, show player checkboxes (excluding Coach and Captain)
-  const playablePlayers = selectedEntity.players.filter(p => !isCoachOrCaptain(p));
+  const playablePlayers = selectedEntity.players.filter(function(p) { return !isCoachOrCaptain(p); });
   
-  playersContainer.innerHTML = playablePlayers.map(player => `
-    <label class="player-checkbox" data-id="${player.wbfId || player.surname}">
-      <input type="checkbox" value="${player.wbfId || player.surname}" onchange="handlePlayerSelection()">
-      <div>
-        <div class="player-name">👤 ${player.fullName}</div>
-        ${player.wbfId ? `<div class="player-id">WBF ID: ${player.wbfId}</div>` : ''}
-      </div>
-    </label>
-  `).join('');
+  playersContainer.innerHTML = playablePlayers.map(function(player) {
+    return '<label class="player-checkbox" data-id="' + (player.wbfId || player.surname) + '">' +
+      '<input type="checkbox" value="' + (player.wbfId || player.surname) + '" onchange="handlePlayerSelection()">' +
+      '<div>' +
+      '<div class="player-name">👤 ' + player.fullName + '</div>' +
+      (player.wbfId ? '<div class="player-id">WBF ID: ' + player.wbfId + '</div>' : '') +
+      '</div></label>';
+  }).join('');
   
   playersGroup.style.display = 'block';
   document.getElementById('file-preview').style.display = 'none';
@@ -669,12 +577,12 @@ function handlePlayerSelection() {
   const checkboxes = document.querySelectorAll('#players-checkboxes input[type="checkbox"]');
   selectedPlayers = [];
   
-  checkboxes.forEach(cb => {
+  checkboxes.forEach(function(cb) {
     const label = cb.closest('.player-checkbox');
     if (cb.checked) {
       label.classList.add('selected');
-      const playablePlayers = selectedEntity.players.filter(p => !isCoachOrCaptain(p));
-      const player = playablePlayers.find(p => (p.wbfId || p.surname) === cb.value);
+      const playablePlayers = selectedEntity.players.filter(function(p) { return !isCoachOrCaptain(p); });
+      const player = playablePlayers.find(function(p) { return (p.wbfId || p.surname) === cb.value; });
       if (player) selectedPlayers.push(player);
     } else {
       label.classList.remove('selected');
@@ -696,7 +604,7 @@ function updateHint() {
     hint.textContent = '⚠️ Select at least 1 more player';
     hint.className = 'hint-text error';
   } else {
-    hint.textContent = `✓ ${count} players selected`;
+    hint.textContent = '✓ ' + count + ' players selected';
     hint.className = 'hint-text success';
   }
 }
@@ -708,8 +616,8 @@ function updateFilePreviewFromPlayers() {
     return;
   }
   
-  const sortedPlayers = [...selectedPlayers].sort((a, b) => a.surname.localeCompare(b.surname));
-  const playerNamesDisplay = sortedPlayers.map(p => p.fullName).join(' & ');
+  const sortedPlayers = selectedPlayers.slice().sort(function(a, b) { return a.surname.localeCompare(b.surname); });
+  const playerNamesDisplay = sortedPlayers.map(function(p) { return p.fullName; }).join(' & ');
   
   document.getElementById('file-name-preview').textContent = playerNamesDisplay;
   document.getElementById('file-preview').style.display = 'block';
@@ -717,16 +625,9 @@ function updateFilePreviewFromPlayers() {
 }
 
 function sanitize(str) {
-  return str
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-zA-Z0-9_]/g, '')
-    .toUpperCase();
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_]/g, '').toUpperCase();
 }
 
-// ============================================
-// VIEW ALL CARDS
-// ============================================
 function renderEntitiesList() {
   const container = document.getElementById('entities-list');
   
@@ -735,63 +636,51 @@ function renderEntitiesList() {
     return;
   }
   
-  container.innerHTML = entities.map(entity => {
+  container.innerHTML = entities.map(function(entity) {
     const entityCards = getCardsForEntity(entity);
     const statusInfo = getEntityStatus(entity, entityCards);
     
-    return `
-      <div class="team-card" data-name="${entity.name.toLowerCase()}">
-        <div class="team-header" onclick="toggleEntity(this)">
-          <div>
-            <div class="team-name">${entity.name}</div>
-            ${entity.country ? `<div class="team-country">${entity.country}</div>` : ''}
-          </div>
-          <div class="team-status">
-            <span class="status-dot ${statusInfo.color}"></span>
-            ${statusInfo.text}
-          </div>
-        </div>
-        <div class="team-details">
-          <div class="cards-list">
-            ${entityCards.length > 0 ? entityCards.map(card => {
-              const cardStatus = getCardStatus(card.fileName);
-              const players = getPlayersFromFileName(card.fileName, entity);
-              return `
-                <div class="card-item">
-                  <div class="card-info">
-                    <span class="card-icon">📄</span>
-                    <div>
-                      <div class="card-players">
-                        ${players}
-                        <span class="card-status ${cardStatus.class}">${cardStatus.label}</span>
-                      </div>
-                      <div class="card-date">Uploaded: ${formatDate(card.lastModified)}</div>
-                      ${cardStatus.reason ? `<div class="refused-reason">Reason: ${cardStatus.reason}</div>` : ''}
-                    </div>
-                  </div>
-                  <div class="card-actions">
-                    <a href="${card.url}" target="_blank" class="btn-small btn-view">View PDF</a>
-                    <button class="btn-small btn-copy" onclick="copyLink('${card.url}', this)">Copy Link</button>
-                  </div>
-                </div>
-              `;
-            }).join('') : '<p class="no-cards">No System Cards uploaded yet</p>'}
-          </div>
-          <div style="margin-top: 12px;">
-            <strong>Players:</strong>
-            <span style="color: var(--text-secondary); font-size: 14px;">
-              ${entity.players.map(p => p.fullName + (isCoachOrCaptain(p) ? ' (NPC)' : '')).join(', ')}
-            </span>
-          </div>
-        </div>
-      </div>
-    `;
+    let cardsHtml = '';
+    if (entityCards.length > 0) {
+      cardsHtml = entityCards.map(function(card) {
+        const cardStatus = getCardStatus(card.fileName);
+        const players = getPlayersFromFileName(card.fileName, entity);
+        return '<div class="card-item">' +
+          '<div class="card-info">' +
+          '<span class="card-icon">📄</span>' +
+          '<div>' +
+          '<div class="card-players">' + players + '<span class="card-status ' + cardStatus.cssClass + '">' + cardStatus.label + '</span></div>' +
+          '<div class="card-date">Uploaded: ' + formatDate(card.lastModified) + '</div>' +
+          (cardStatus.reason ? '<div class="refused-reason">Reason: ' + cardStatus.reason + '</div>' : '') +
+          '</div></div>' +
+          '<div class="card-actions">' +
+          '<a href="' + card.url + '" target="_blank" class="btn-small btn-view">View PDF</a>' +
+          '<button class="btn-small btn-copy" onclick="copyLink(\'' + card.url + '\', this)">Copy Link</button>' +
+          '</div></div>';
+      }).join('');
+    } else {
+      cardsHtml = '<p class="no-cards">No System Cards uploaded yet</p>';
+    }
+    
+    return '<div class="team-card" data-name="' + entity.name.toLowerCase() + '">' +
+      '<div class="team-header" onclick="toggleEntity(this)">' +
+      '<div><div class="team-name">' + entity.name + '</div>' +
+      (entity.country ? '<div class="team-country">' + entity.country + '</div>' : '') +
+      '</div>' +
+      '<div class="team-status"><span class="status-dot ' + statusInfo.color + '"></span>' + statusInfo.text + '</div>' +
+      '</div>' +
+      '<div class="team-details">' +
+      '<div class="cards-list">' + cardsHtml + '</div>' +
+      '<div style="margin-top: 12px;"><strong>Players:</strong> ' +
+      '<span style="color: var(--text-secondary); font-size: 14px;">' +
+      entity.players.map(function(p) { return p.fullName + (isCoachOrCaptain(p) ? ' (NPC)' : ''); }).join(', ') +
+      '</span></div></div></div>';
   }).join('');
 }
 
 function getCardsForEntity(entity) {
   const entityNameSanitized = sanitize(entity.name);
-  return uploadedCards.filter(card => {
+  return uploadedCards.filter(function(card) {
     const cardEntityName = card.fileName.split('_')[0];
     return cardEntityName === entityNameSanitized;
   });
@@ -801,24 +690,22 @@ function getCardStatus(fileName) {
   const status = validationStatus[fileName];
   
   if (!status || status === 'pending') {
-    return { class: 'pending', label: 'Pending review by TD', reason: null };
+    return { cssClass: 'pending', label: 'Pending review by TD', reason: null };
   } else if (status === 'validated') {
-    return { class: 'validated', label: '✓ Validated', reason: null };
+    return { cssClass: 'validated', label: '✓ Validated', reason: null };
   } else if (typeof status === 'object' && status.status === 'refused') {
-    return { class: 'refused', label: '✗ Refused', reason: status.reason || 'No reason provided' };
+    return { cssClass: 'refused', label: '✗ Refused', reason: status.reason || 'No reason provided' };
   } else if (status === 'refused') {
-    return { class: 'refused', label: '✗ Refused', reason: 'No reason provided' };
+    return { cssClass: 'refused', label: '✗ Refused', reason: 'No reason provided' };
   }
   
-  return { class: 'pending', label: 'Pending review by TD', reason: null };
+  return { cssClass: 'pending', label: 'Pending review by TD', reason: null };
 }
 
 function getEntityStatus(entity, cards) {
-  // Get players excluding Coach/Captain
-  const playablePlayers = entity.players.filter(p => !isCoachOrCaptain(p));
+  const playablePlayers = entity.players.filter(function(p) { return !isCoachOrCaptain(p); });
   
-  // Check if any card is refused
-  const hasRefused = cards.some(card => {
+  const hasRefused = cards.some(function(card) {
     const status = validationStatus[card.fileName];
     return status === 'refused' || (typeof status === 'object' && status.status === 'refused');
   });
@@ -827,52 +714,47 @@ function getEntityStatus(entity, cards) {
     return { color: 'red', text: 'System Card refused' };
   }
   
-  // No cards at all
   if (cards.length === 0) {
     return { color: 'red', text: 'No System Cards' };
   }
   
-  // Check if all players have at least one card
-  const playersWithCards = new Set();
-  cards.forEach(card => {
+  const playersWithCards = {};
+  cards.forEach(function(card) {
     const surnames = card.fileName.replace('.pdf', '').split('_').slice(1);
-    surnames.forEach(surname => {
-      playablePlayers.forEach(player => {
+    surnames.forEach(function(surname) {
+      playablePlayers.forEach(function(player) {
         if (sanitize(player.surname) === surname) {
-          playersWithCards.add(player.wbfId || player.surname);
+          playersWithCards[player.wbfId || player.surname] = true;
         }
       });
     });
   });
   
-  const allPlayersHaveCards = playablePlayers.every(p => 
-    playersWithCards.has(p.wbfId || p.surname)
-  );
+  const allPlayersHaveCards = playablePlayers.every(function(p) {
+    return playersWithCards[p.wbfId || p.surname];
+  });
   
-  // Check if all cards are validated
-  const allValidated = cards.every(card => validationStatus[card.fileName] === 'validated');
+  const allValidated = cards.every(function(card) {
+    return validationStatus[card.fileName] === 'validated';
+  });
   
   if (allPlayersHaveCards && allValidated) {
-    return { color: 'green', text: `${cards.length} System Card(s) - Complete` };
+    return { color: 'green', text: cards.length + ' System Card(s) - Complete' };
   } else if (allPlayersHaveCards && !allValidated) {
-    return { color: 'yellow', text: `${cards.length} System Card(s) - Pending validation` };
+    return { color: 'yellow', text: cards.length + ' System Card(s) - Pending validation' };
   } else {
-    return { color: 'yellow', text: `${cards.length} System Card(s) - Missing` };
+    return { color: 'yellow', text: cards.length + ' System Card(s) - Missing' };
   }
 }
 
 function getPlayersFromFileName(fileName, entity) {
-  // fileName format: TEAMNAME_SURNAME1_SURNAME2.pdf
   const parts = fileName.replace('.pdf', '').split('_');
   if (parts.length >= 3) {
     const surnames = parts.slice(1);
-    
-    // Try to match with full names from entity
-    const fullNames = surnames.map(surname => {
-      const player = entity.players.find(p => sanitize(p.surname) === surname);
+    const fullNames = surnames.map(function(surname) {
+      const player = entity.players.find(function(p) { return sanitize(p.surname) === surname; });
       return player ? player.fullName : surname;
     });
-    
     return fullNames.join(' & ');
   }
   return fileName;
@@ -885,11 +767,9 @@ function toggleEntity(header) {
 
 function filterEntities() {
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
-  
-  document.querySelectorAll('.team-card').forEach(card => {
+  document.querySelectorAll('.team-card').forEach(function(card) {
     const name = card.dataset.name;
-    const matches = name.includes(searchTerm);
-    card.style.display = matches ? 'block' : 'none';
+    card.style.display = name.includes(searchTerm) ? 'block' : 'none';
   });
 }
 
@@ -903,24 +783,20 @@ function formatDate(dateString) {
 }
 
 function copyLink(url, button) {
-  navigator.clipboard.writeText(url).then(() => {
+  navigator.clipboard.writeText(url).then(function() {
     button.textContent = 'Copied!';
     button.classList.add('copied');
-    setTimeout(() => {
+    setTimeout(function() {
       button.textContent = 'Copy Link';
       button.classList.remove('copied');
     }, 2000);
   });
 }
 
-// ============================================
-// CONFIRMATION MODAL
-// ============================================
 function showConfirmModal(file) {
   pendingFile = file;
-  const sortedPlayers = [...selectedPlayers].sort((a, b) => a.surname.localeCompare(b.surname));
-  const playerNamesDisplay = sortedPlayers.map(p => p.fullName).join(' & ');
-  
+  const sortedPlayers = selectedPlayers.slice().sort(function(a, b) { return a.surname.localeCompare(b.surname); });
+  const playerNamesDisplay = sortedPlayers.map(function(p) { return p.fullName; }).join(' & ');
   document.getElementById('modal-players').textContent = playerNamesDisplay;
   document.getElementById('confirm-modal').classList.add('active');
 }
@@ -938,26 +814,23 @@ function confirmUpload() {
   }
 }
 
-// ============================================
-// FILE UPLOAD
-// ============================================
 function setupDragDrop() {
   const dropZone = document.getElementById('drop-zone');
   
-  dropZone.addEventListener('click', () => {
+  dropZone.addEventListener('click', function() {
     document.getElementById('file-input').click();
   });
   
-  dropZone.addEventListener('dragover', e => {
+  dropZone.addEventListener('dragover', function(e) {
     e.preventDefault();
     dropZone.classList.add('dragover');
   });
   
-  dropZone.addEventListener('dragleave', () => {
+  dropZone.addEventListener('dragleave', function() {
     dropZone.classList.remove('dragover');
   });
   
-  dropZone.addEventListener('drop', e => {
+  dropZone.addEventListener('drop', function(e) {
     e.preventDefault();
     dropZone.classList.remove('dragover');
     const file = e.dataTransfer.files[0];
@@ -967,11 +840,7 @@ function setupDragDrop() {
 
 function setupFileInput() {
   const fileInput = document.getElementById('file-input');
-  // Remove existing listeners by cloning
-  const newFileInput = fileInput.cloneNode(true);
-  fileInput.parentNode.replaceChild(newFileInput, fileInput);
-  
-  newFileInput.addEventListener('change', e => {
+  fileInput.addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) handleFile(file);
   });
@@ -996,7 +865,6 @@ function handleFile(file) {
     return;
   }
   
-  // Show confirmation modal
   showConfirmModal(file);
 }
 
@@ -1009,49 +877,43 @@ async function processUpload(file) {
   try {
     const buffer = await file.arrayBuffer();
     const bytes = new Uint8Array(buffer);
-    const header = String.fromCharCode(...bytes.slice(0, 5));
+    const header = String.fromCharCode.apply(null, bytes.slice(0, 5));
     
     if (header !== '%PDF-') {
       throw new Error('Invalid PDF file');
     }
     
-    const sortedPlayers = [...selectedPlayers].sort((a, b) => a.surname.localeCompare(b.surname));
-    const playerNames = sortedPlayers.map(p => p.surname).join('_');
-    const fileName = `${sanitize(selectedEntity.name)}_${sanitize(playerNames)}.pdf`;
+    const sortedPlayers = selectedPlayers.slice().sort(function(a, b) { return a.surname.localeCompare(b.surname); });
+    const playerNames = sortedPlayers.map(function(p) { return p.surname; }).join('_');
+    const fileName = sanitize(selectedEntity.name) + '_' + sanitize(playerNames) + '.pdf';
     
     const formData = new FormData();
     formData.append('file', file);
     formData.append('tournamentCode', CONFIG.tournamentCode);
     formData.append('teamName', selectedEntity.name);
-    formData.append('playerIds', selectedPlayers.map(p => p.wbfId || p.surname).join(','));
+    formData.append('playerIds', selectedPlayers.map(function(p) { return p.wbfId || p.surname; }).join(','));
     formData.append('fileName', fileName);
     
-    const response = await fetch(`${CONFIG.apiEndpoint}/upload`, {
+    const response = await fetch(CONFIG.apiEndpoint + '/upload', {
       method: 'POST',
       body: formData
     });
     
     if (!response.ok) throw new Error('Upload failed');
     
-    const playerNamesDisplay = sortedPlayers.map(p => p.fullName).join(' & ');
-    uploadStatus.innerHTML = `
-      <div class="alert alert-success">
-        ✅ Uploaded successfully!<br>
-        <strong>Players:</strong> ${playerNamesDisplay}<br>
-        <small>Reloading page...</small>
-      </div>
-    `;
+    const playerNamesDisplay = sortedPlayers.map(function(p) { return p.fullName; }).join(' & ');
+    uploadStatus.innerHTML = '<div class="alert alert-success">✅ Uploaded successfully!<br><strong>Players:</strong> ' + playerNamesDisplay + '<br><small>Reloading page...</small></div>';
     
-    // Reload page after 1.5 seconds
-    setTimeout(() => {
+    setTimeout(function() {
       window.location.reload();
     }, 1500);
-    return;
     
   } catch (error) {
-    uploadStatus.innerHTML = `<div class="alert alert-error">❌ ${error.message || 'Upload failed'}</div>`;
+    uploadStatus.innerHTML = '<div class="alert alert-error">❌ ' + (error.message || 'Upload failed') + '</div>';
+    dropZone.innerHTML = '<div class="upload-icon">📄</div><p class="upload-text">Drop your PDF here or click to browse</p><p class="upload-hint">Max 10MB • PDF only</p>';
+    document.getElementById('file-input').value = '';
   }
-  
-  // Reset dropzone (only on error)
-  dropZone.innerHTML = `
-    <div class="upload-icon">
+}
+</script>
+</body>
+</html>
