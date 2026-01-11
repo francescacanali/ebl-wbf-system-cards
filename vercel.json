@@ -9,8 +9,12 @@
     { "src": "/api/pairs", "dest": "/api/pairs.js" },
     { "src": "/api/upload", "dest": "/api/upload.js" },
     { "src": "/api/cards", "dest": "/api/cards.js" },
+    { "src": "/api/validation", "dest": "/api/validation.js" },
+    { "src": "/api/admin-login", "dest": "/api/admin-login.js" },
+    { "src": "/api/admin-data", "dest": "/api/admin-data.js" },
+    { "src": "/api/admin-validate", "dest": "/api/admin-validate.js" },
+    { "src": "/api/admin-completion", "dest": "/api/admin-completion.js" },
+    { "src": "/admin", "dest": "/public/admin.html" },
     { "src": "/(.*)", "dest": "/public/$1" }
   ]
 }
-
-
