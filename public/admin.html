@@ -245,6 +245,13 @@
     
     .refuse-form-buttons { display: flex; gap: 8px; margin-top: 10px; }
     
+    .btn-confirm-refuse {
+      background: var(--error-light); color: var(--error); 
+      border: 2px solid var(--error); padding: 8px 14px; border-radius: 6px;
+      cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s;
+    }
+    .btn-confirm-refuse:hover { background: var(--error); color: white; }
+    
     .current-status {
       padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-top: 8px;
     }
@@ -692,7 +699,7 @@ function openCardsModal(entityId) {
           <label>Reason for refusal:</label>
           <textarea id="refuse-reason-${index}" placeholder="Enter the reason why this card is refused..."></textarea>
           <div class="refuse-form-buttons">
-            <button class="btn-action btn-refuse" onclick="submitRefusal('${card.fileName}', ${index})">Confirm Refusal</button>
+            <button class="btn-confirm-refuse" onclick="submitRefusal('${card.fileName}', ${index})">⚠️ Confirm Refusal</button>
             <button class="btn-action" style="background: var(--bg-light);" onclick="hideRefuseForm(${index})">Cancel</button>
           </div>
         </div>
