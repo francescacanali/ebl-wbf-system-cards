@@ -40,20 +40,13 @@
     
     .event-title {
       font-size: clamp(20px, 4vw, 28px); font-weight: 800; margin: 0 0 8px 0;
-      color: var(--primary); line-height: 1.2;
-      padding: 16px 20px;
+      color: var(--primary); line-height: 1.2; padding: 16px 20px;
       background: linear-gradient(135deg, var(--primary-light) 0%, #f0f7f4 100%);
-      border-radius: 12px;
-      border: 2px solid var(--primary);
+      border-radius: 12px; border: 2px solid var(--primary);
     }
     
-    .page-title {
-      font-size: clamp(24px, 4vw, 36px); font-weight: 800; margin: 16px 0 8px 0;
-      color: var(--text-primary);
-    }
-    
+    .page-title { font-size: clamp(24px, 4vw, 36px); font-weight: 800; margin: 16px 0 8px 0; color: var(--text-primary); }
     .subtitle { color: var(--text-secondary); font-size: 15px; }
-    
     .tab-buttons { display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; }
     
     .tab-btn {
@@ -66,7 +59,6 @@
     .tab-btn:hover { border-color: var(--primary); color: var(--primary); }
     .tab-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
     .tab-btn .icon { font-size: 20px; }
-    
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     
@@ -76,11 +68,7 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     
-    .form-title {
-      font-size: 20px; font-weight: 700; margin-bottom: 4px;
-      color: var(--text-primary); display: flex; align-items: center; gap: 10px;
-    }
-    
+    .form-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
     .form-subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; }
     .form-group { margin-bottom: 16px; }
     .form-label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500; color: var(--text-primary); }
@@ -93,15 +81,9 @@
     }
     
     .form-select:focus, .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    .form-select.highlight { background: var(--primary-light); border: 2px solid var(--primary); font-weight: 500; }
     
-    .form-select.highlight {
-      background: var(--primary-light); border: 2px solid var(--primary); font-weight: 500;
-    }
-    
-    .players-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 10px; margin-top: 8px;
-    }
+    .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 8px; }
     
     .player-checkbox {
       display: flex; align-items: center; gap: 10px; padding: 12px;
@@ -114,7 +96,6 @@
     .player-checkbox input { width: 18px; height: 18px; accent-color: var(--primary); }
     .player-name { font-weight: 500; font-size: 14px; }
     .player-id { font-size: 12px; color: var(--text-muted); }
-    
     .hint-text { font-size: 13px; color: var(--text-muted); margin-top: 8px; }
     .hint-text.success { color: var(--success); }
     .hint-text.error { color: var(--error); }
@@ -154,17 +135,10 @@
     
     .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
     .modal-text { color: var(--text-secondary); font-size: 14px; margin-bottom: 8px; }
-    .modal-players { 
-      background: var(--primary-light); padding: 12px 16px; border-radius: 8px; 
-      margin: 16px 0; font-weight: 600; color: var(--primary); font-size: 15px;
-    }
+    .modal-players { background: var(--primary-light); padding: 12px 16px; border-radius: 8px; margin: 16px 0; font-weight: 600; color: var(--primary); font-size: 15px; }
     .modal-buttons { display: flex; gap: 12px; margin-top: 20px; }
     
-    .btn {
-      flex: 1; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: all 0.2s ease; border: none;
-    }
-    
+    .btn { flex: 1; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; border: none; }
     .btn-cancel { background: var(--bg-light); color: var(--text-secondary); }
     .btn-cancel:hover { background: var(--border-color); }
     .btn-confirm { background: var(--primary); color: white; }
@@ -174,11 +148,7 @@
     .alert-success { background: var(--success-light); color: var(--success); border: 1px solid var(--success); }
     .alert-error { background: var(--error-light); color: var(--error); border: 1px solid var(--error); }
     
-    .legend {
-      display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;
-      padding: 14px 18px; background: var(--bg-light); border-radius: 10px; font-size: 13px;
-    }
-    
+    .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; padding: 14px 18px; background: var(--bg-light); border-radius: 10px; font-size: 13px; }
     .legend-item { display: flex; align-items: center; gap: 8px; }
     .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
     .legend-dot.green { background: var(--success); }
@@ -194,15 +164,10 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
     
-    .team-header {
-      padding: 16px; display: flex; justify-content: space-between;
-      align-items: center; cursor: pointer; transition: background 0.2s ease;
-    }
-    
+    .team-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s ease; }
     .team-header:hover { background: var(--bg-light); }
     .team-name { font-weight: 600; font-size: 16px; }
     .team-country { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    
     .team-status { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); }
     .status-dot { width: 12px; height: 12px; border-radius: 50%; }
     .status-dot.green { background: var(--success); }
@@ -213,68 +178,38 @@
     .team-details.open { display: block; }
     .cards-list { margin-top: 12px; }
     
-    .card-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 14px; background: var(--bg-light); border-radius: 8px; margin-bottom: 8px;
-    }
-    
-    .card-info { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .card-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 14px; background: var(--bg-light); border-radius: 8px; margin-bottom: 8px; }
+    .card-info { display: flex; align-items: flex-start; gap: 10px; flex: 1; }
     .card-icon { font-size: 20px; }
-    .card-players { font-weight: 500; font-size: 14px; }
-    .card-date { font-size: 12px; color: var(--text-muted); }
-    
-    .card-status { font-size: 11px; padding: 4px 10px; border-radius: 4px; margin-left: 8px; display: inline-block; }
+    .card-players { font-weight: 500; font-size: 14px; line-height: 1.6; }
+    .card-date { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .card-status { font-size: 11px; padding: 4px 10px; border-radius: 4px; margin-top: 6px; display: inline-block; }
     .card-status.validated { background: var(--success-light); color: var(--success); }
     .card-status.pending { background: var(--warning-light); color: var(--warning); }
     .card-status.refused { background: var(--error-light); color: var(--error); }
+    .refused-reason { font-size: 12px; color: var(--error); margin-top: 4px; padding: 8px 12px; background: var(--error-light); border-radius: 6px; }
     
-    .refused-reason {
-      font-size: 12px; color: var(--error); margin-top: 4px;
-      padding: 8px 12px; background: var(--error-light); border-radius: 6px;
-    }
-    
-    .card-actions { display: flex; gap: 8px; }
-    
-    .btn-small {
-      padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 500;
-      cursor: pointer; transition: all 0.2s ease; border: none; text-decoration: none;
-    }
-    
+    .card-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .btn-small { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; border: none; text-decoration: none; }
     .btn-view { background: var(--primary-light); color: var(--primary); }
     .btn-view:hover { background: var(--primary); color: white; }
     .btn-copy { background: var(--bg-white); color: var(--text-secondary); border: 1px solid var(--border-color); }
     .btn-copy:hover { background: var(--bg-light); }
     .btn-copy.copied { background: var(--success-light); color: var(--success); border-color: var(--success); }
-    
     .no-cards { color: var(--text-muted); font-size: 14px; font-style: italic; }
     
-    .instructions {
-      background: var(--bg-white); border: 1px solid var(--border-color);
-      border-radius: 12px; padding: 20px; margin-top: 24px;
-    }
-    
+    .instructions { background: var(--bg-white); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-top: 24px; }
     .instructions h3 { font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
     .instructions ul { margin-left: 24px; color: var(--text-secondary); font-size: 14px; }
     .instructions li { margin-bottom: 6px; }
     .instructions a { color: var(--primary); }
     
-    .contact-banner {
-      background: var(--primary-light); border: 1px solid var(--primary);
-      border-radius: 10px; padding: 14px 20px; margin-top: 20px;
-      text-align: center; font-size: 14px;
-    }
-    
+    .contact-banner { background: var(--primary-light); border: 1px solid var(--primary); border-radius: 10px; padding: 14px 20px; margin-top: 20px; text-align: center; font-size: 14px; }
     .contact-banner strong { color: var(--primary); }
     .contact-banner a { color: var(--primary); font-weight: 600; }
     
     .loading-container { text-align: center; padding: 40px; }
-    
-    .spinner {
-      width: 36px; height: 36px; border: 3px solid var(--border-color);
-      border-top-color: var(--primary); border-radius: 50%;
-      animation: spin 0.8s linear infinite; margin: 0 auto 12px;
-    }
-    
+    .spinner { width: 36px; height: 36px; border: 3px solid var(--border-color); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
     @keyframes spin { to { transform: rotate(360deg); } }
     
     @media (max-width: 600px) {
@@ -298,12 +233,8 @@
     </div>
     
     <div class="tab-buttons">
-      <button class="tab-btn" onclick="showTab('upload')">
-        <span class="icon">📤</span> Upload System Card
-      </button>
-      <button class="tab-btn active" onclick="showTab('view')">
-        <span class="icon">📋</span> View All System Cards
-      </button>
+      <button class="tab-btn" onclick="showTab('upload')"><span class="icon">📤</span> Upload System Card</button>
+      <button class="tab-btn active" onclick="showTab('view')"><span class="icon">📋</span> View All System Cards</button>
     </div>
     
     <div id="upload-tab" class="tab-content">
@@ -338,7 +269,7 @@
           <div class="upload-area" id="drop-zone">
             <div class="upload-icon">📄</div>
             <p class="upload-text">Drop your PDF here or click to browse</p>
-            <p class="upload-hint">Max 10MB • PDF only</p>
+            <p class="upload-hint">Max 10MB - PDF only</p>
           </div>
           <input type="file" id="file-input" accept=".pdf,application/pdf" style="display: none;">
         </div>
@@ -353,22 +284,13 @@
         <p class="form-subtitle">View and download all system cards for this event</p>
         
         <div class="legend">
-          <div class="legend-item">
-            <span class="legend-dot green"></span>
-            <span>All System Cards submitted & validated</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-dot yellow"></span>
-            <span>System Cards pending or missing</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-dot red"></span>
-            <span>No System Cards or refused</span>
-          </div>
+          <div class="legend-item"><span class="legend-dot green"></span><span>All System Cards submitted and validated</span></div>
+          <div class="legend-item"><span class="legend-dot yellow"></span><span>System Cards pending or missing</span></div>
+          <div class="legend-item"><span class="legend-dot red"></span><span>No System Cards or refused</span></div>
         </div>
         
         <div class="filters">
-          <input type="text" id="search-input" class="form-input search-input" placeholder="🔍 Search by name..." oninput="filterEntities()">
+          <input type="text" id="search-input" class="form-input search-input" placeholder="Search by name..." oninput="filterEntities()">
         </div>
         
         <div id="entities-list">
@@ -388,12 +310,7 @@
         <li>Player names must <strong>exactly match</strong> registration</li>
         <li>Handwritten cards are <strong>not allowed</strong></li>
       </ul>
-      <p style="margin-top: 12px;">
-        Need a blank template? 
-        <a href="http://www.eurobridge.org/wp-content/uploads/2025/12/BlankEBLSystemcardWord.doc" target="_blank">
-          📄 Download Blank System Card (Word)
-        </a>
-      </p>
+      <p style="margin-top: 12px;">Need a blank template? <a href="http://www.eurobridge.org/wp-content/uploads/2025/12/BlankEBLSystemcardWord.doc" target="_blank">📄 Download Blank System Card (Word)</a></p>
     </div>
     
     <div class="contact-banner">
@@ -415,25 +332,25 @@
   </div>
 
 <script>
-const urlParams = new URLSearchParams(window.location.search);
-const tournamentCode = urlParams.get('tournament') || '26prague';
-const eventFilter = urlParams.get('event') || '';
+var urlParams = new URLSearchParams(window.location.search);
+var tournamentCode = urlParams.get('tournament') || '26prague';
+var eventFilter = urlParams.get('event') || '';
 
-const EVENT_CONFIG = {
+var EVENT_CONFIG = {
   'Winter Open Teams': { type: 'teams', title: 'EUROPEAN WINTER OPEN TEAMS CHAMPIONSHIP' },
   'Winter Swiss Cup': { type: 'teams', title: 'EUROPEAN WINTER SWISS CUP' },
   'Winter Mixed Teams': { type: 'teams', title: 'EUROPEAN WINTER MIXED TEAMS CHAMPIONSHIP' },
   'Winter Open BAM': { type: 'teams', title: 'EUROPEAN WINTER OPEN BAM' },
   'Winter Open Pairs': { type: 'pairs', title: 'EUROPEAN WINTER OPEN PAIRS' },
-  'Winter Mixed Pairs': { type: 'pairs', title: 'EUROPEAN WINTER MIXED PAIRS' },
+  'Winter Mixed Pairs': { type: 'pairs', title: 'EUROPEAN WINTER MIXED PAIRS' }
 };
 
-const CONFIG = {
+var CONFIG = {
   tournamentCode: tournamentCode,
   eventFilter: eventFilter,
-  eventType: EVENT_CONFIG[eventFilter]?.type || 'teams',
-  eventTitle: EVENT_CONFIG[eventFilter]?.title || eventFilter || 'All Events',
-  apiEndpoint: window.location.origin + "/api",
+  eventType: EVENT_CONFIG[eventFilter] ? EVENT_CONFIG[eventFilter].type : 'teams',
+  eventTitle: EVENT_CONFIG[eventFilter] ? EVENT_CONFIG[eventFilter].title : (eventFilter || 'All Events'),
+  apiEndpoint: window.location.origin + '/api'
 };
 
 document.getElementById('event-title').textContent = CONFIG.eventTitle;
@@ -443,95 +360,108 @@ if (CONFIG.eventType === 'pairs') {
   document.getElementById('upload-subtitle').textContent = 'Select your pair, then upload your convention card (PDF format)';
 }
 
-let entities = [];
-let uploadedCards = [];
-let validationStatus = {};
-let selectedEntity = null;
-let selectedPlayers = [];
-let pendingFile = null;
+var entities = [];
+var uploadedCards = [];
+var validationStatus = {};
+var selectedEntity = null;
+var selectedPlayers = [];
+var pendingFile = null;
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await loadEntities();
-  await loadUploadedCards();
-  await loadValidationStatus();
-  setupDragDrop();
-  setupFileInput();
+document.addEventListener('DOMContentLoaded', function() {
+  loadEntities().then(function() {
+    return loadUploadedCards();
+  }).then(function() {
+    return loadValidationStatus();
+  }).then(function() {
+    setupDragDrop();
+    setupFileInput();
+  });
 });
 
-async function loadEntities() {
-  try {
-    let data;
-    if (CONFIG.eventType === 'pairs') {
-      const response = await fetch(CONFIG.apiEndpoint + '/pairs?tournament=' + CONFIG.tournamentCode);
-      data = await response.json();
-      entities = data.pairs || [];
-    } else {
-      const response = await fetch(CONFIG.apiEndpoint + '/teams?tournament=' + CONFIG.tournamentCode);
-      data = await response.json();
-      entities = data.teams || [];
-    }
-    if (CONFIG.eventFilter) {
-      entities = entities.filter(function(e) { return e.event === CONFIG.eventFilter; });
-    }
-    console.log('Loaded ' + entities.length + ' ' + CONFIG.eventType);
-    populateEntitySelect();
-    renderEntitiesList();
-  } catch (error) {
-    console.error('Failed to load entities:', error);
-  }
+function loadEntities() {
+  return new Promise(function(resolve) {
+    var url = CONFIG.apiEndpoint + '/' + (CONFIG.eventType === 'pairs' ? 'pairs' : 'teams') + '?tournament=' + CONFIG.tournamentCode;
+    fetch(url).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      entities = data.pairs || data.teams || [];
+      if (CONFIG.eventFilter) {
+        entities = entities.filter(function(e) { return e.event === CONFIG.eventFilter; });
+      }
+      console.log('Loaded ' + entities.length + ' ' + CONFIG.eventType);
+      populateEntitySelect();
+      renderEntitiesList();
+      resolve();
+    }).catch(function(error) {
+      console.error('Failed to load entities:', error);
+      resolve();
+    });
+  });
 }
 
-async function loadUploadedCards() {
-  try {
-    const response = await fetch(CONFIG.apiEndpoint + '/cards?tournament=' + CONFIG.tournamentCode);
-    const data = await response.json();
-    uploadedCards = data.cards || [];
-    console.log('Loaded ' + uploadedCards.length + ' cards');
-    renderEntitiesList();
-  } catch (error) {
-    console.error('Failed to load cards:', error);
-  }
+function loadUploadedCards() {
+  return new Promise(function(resolve) {
+    fetch(CONFIG.apiEndpoint + '/cards?tournament=' + CONFIG.tournamentCode).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      uploadedCards = data.cards || [];
+      console.log('Loaded ' + uploadedCards.length + ' cards');
+      renderEntitiesList();
+      resolve();
+    }).catch(function(error) {
+      console.error('Failed to load cards:', error);
+      resolve();
+    });
+  });
 }
 
-async function loadValidationStatus() {
-  try {
-    const response = await fetch(CONFIG.apiEndpoint + '/validation?tournament=' + CONFIG.tournamentCode + '&event=' + encodeURIComponent(CONFIG.eventFilter));
-    if (response.ok) {
-      const data = await response.json();
+function loadValidationStatus() {
+  return new Promise(function(resolve) {
+    fetch(CONFIG.apiEndpoint + '/validation?tournament=' + CONFIG.tournamentCode + '&event=' + encodeURIComponent(CONFIG.eventFilter)).then(function(response) {
+      if (response.ok) return response.json();
+      return { status: {} };
+    }).then(function(data) {
       validationStatus = data.status || {};
-    }
-  } catch (error) {
-    console.log('Validation status not available');
-  }
-  renderEntitiesList();
+      renderEntitiesList();
+      resolve();
+    }).catch(function() {
+      resolve();
+    });
+  });
 }
 
 function showTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
-  document.querySelectorAll('.tab-content').forEach(function(content) { content.classList.remove('active'); });
+  var btns = document.querySelectorAll('.tab-btn');
+  var contents = document.querySelectorAll('.tab-content');
+  for (var i = 0; i < btns.length; i++) { btns[i].classList.remove('active'); }
+  for (var j = 0; j < contents.length; j++) { contents[j].classList.remove('active'); }
   document.querySelector('[onclick="showTab(\'' + tab + '\')"]').classList.add('active');
   document.getElementById(tab + '-tab').classList.add('active');
 }
 
 function populateEntitySelect() {
-  const select = document.getElementById('entity-select');
-  const label = CONFIG.eventType === 'pairs' ? 'Select your pair...' : 'Select your team...';
+  var select = document.getElementById('entity-select');
+  var label = CONFIG.eventType === 'pairs' ? 'Select your pair...' : 'Select your team...';
   select.innerHTML = '<option value="">' + label + '</option>';
-  entities.forEach(function(entity) {
-    const option = document.createElement('option');
+  for (var i = 0; i < entities.length; i++) {
+    var entity = entities[i];
+    var option = document.createElement('option');
     option.value = entity.id;
     option.textContent = entity.name + (entity.country ? ' (' + entity.country + ')' : '');
     select.appendChild(option);
-  });
+  }
 }
 
 function handleEntityChange() {
-  const select = document.getElementById('entity-select');
-  const playersGroup = document.getElementById('players-group');
-  const playersContainer = document.getElementById('players-checkboxes');
-  const entityId = select.value;
+  var select = document.getElementById('entity-select');
+  var playersGroup = document.getElementById('players-group');
+  var playersContainer = document.getElementById('players-checkboxes');
+  var entityId = select.value;
   
-  selectedEntity = entities.find(function(e) { return e.id === entityId; });
+  selectedEntity = null;
+  for (var i = 0; i < entities.length; i++) {
+    if (entities[i].id === entityId) { selectedEntity = entities[i]; break; }
+  }
   selectedPlayers = [];
   
   if (!selectedEntity) {
@@ -548,16 +478,23 @@ function handleEntityChange() {
     return;
   }
   
-  const playablePlayers = selectedEntity.players.filter(function(p) { return !isCoachOrCaptain(p); });
+  var playablePlayers = [];
+  for (var j = 0; j < selectedEntity.players.length; j++) {
+    if (!isCoachOrCaptain(selectedEntity.players[j])) {
+      playablePlayers.push(selectedEntity.players[j]);
+    }
+  }
   
-  playersContainer.innerHTML = playablePlayers.map(function(player) {
-    return '<label class="player-checkbox" data-id="' + (player.wbfId || player.surname) + '">' +
-      '<input type="checkbox" value="' + (player.wbfId || player.surname) + '" onchange="handlePlayerSelection()">' +
-      '<div>' +
-      '<div class="player-name">👤 ' + player.fullName + '</div>' +
-      (player.wbfId ? '<div class="player-id">WBF ID: ' + player.wbfId + '</div>' : '') +
-      '</div></label>';
-  }).join('');
+  var html = '';
+  for (var k = 0; k < playablePlayers.length; k++) {
+    var player = playablePlayers[k];
+    html += '<label class="player-checkbox" data-id="' + (player.wbfId || player.surname) + '">';
+    html += '<input type="checkbox" value="' + (player.wbfId || player.surname) + '" onchange="handlePlayerSelection()">';
+    html += '<div><div class="player-name">👤 ' + player.fullName + '</div>';
+    if (player.wbfId) { html += '<div class="player-id">WBF ID: ' + player.wbfId + '</div>'; }
+    html += '</div></label>';
+  }
+  playersContainer.innerHTML = html;
   
   playersGroup.style.display = 'block';
   document.getElementById('file-preview').style.display = 'none';
@@ -566,37 +503,47 @@ function handleEntityChange() {
 }
 
 function isCoachOrCaptain(player) {
-  const name = player.fullName.toLowerCase();
-  const role = (player.role || '').toLowerCase();
-  return role.includes('coach') || role.includes('captain') || 
-         name.includes('(coach)') || name.includes('(captain)') ||
-         name.includes('(npc)') || role.includes('npc');
+  var name = player.fullName.toLowerCase();
+  var role = (player.role || '').toLowerCase();
+  return role.indexOf('coach') >= 0 || role.indexOf('captain') >= 0 || 
+         name.indexOf('(coach)') >= 0 || name.indexOf('(captain)') >= 0 ||
+         name.indexOf('(npc)') >= 0 || role.indexOf('npc') >= 0;
 }
 
 function handlePlayerSelection() {
-  const checkboxes = document.querySelectorAll('#players-checkboxes input[type="checkbox"]');
+  var checkboxes = document.querySelectorAll('#players-checkboxes input[type="checkbox"]');
   selectedPlayers = [];
   
-  checkboxes.forEach(function(cb) {
-    const label = cb.closest('.player-checkbox');
+  var playablePlayers = [];
+  for (var i = 0; i < selectedEntity.players.length; i++) {
+    if (!isCoachOrCaptain(selectedEntity.players[i])) {
+      playablePlayers.push(selectedEntity.players[i]);
+    }
+  }
+  
+  for (var j = 0; j < checkboxes.length; j++) {
+    var cb = checkboxes[j];
+    var label = cb.closest('.player-checkbox');
     if (cb.checked) {
       label.classList.add('selected');
-      const playablePlayers = selectedEntity.players.filter(function(p) { return !isCoachOrCaptain(p); });
-      const player = playablePlayers.find(function(p) { return (p.wbfId || p.surname) === cb.value; });
-      if (player) selectedPlayers.push(player);
+      for (var k = 0; k < playablePlayers.length; k++) {
+        if ((playablePlayers[k].wbfId || playablePlayers[k].surname) === cb.value) {
+          selectedPlayers.push(playablePlayers[k]);
+          break;
+        }
+      }
     } else {
       label.classList.remove('selected');
     }
-  });
+  }
   
   updateHint();
   updateFilePreviewFromPlayers();
 }
 
 function updateHint() {
-  const hint = document.getElementById('players-hint');
-  const count = selectedPlayers.length;
-  
+  var hint = document.getElementById('players-hint');
+  var count = selectedPlayers.length;
   if (count === 0) {
     hint.textContent = 'Select at least 2 players who share this convention card';
     hint.className = 'hint-text';
@@ -615,11 +562,10 @@ function updateFilePreviewFromPlayers() {
     document.getElementById('upload-container').style.display = 'none';
     return;
   }
-  
-  const sortedPlayers = selectedPlayers.slice().sort(function(a, b) { return a.surname.localeCompare(b.surname); });
-  const playerNamesDisplay = sortedPlayers.map(function(p) { return p.fullName; }).join(' & ');
-  
-  document.getElementById('file-name-preview').textContent = playerNamesDisplay;
+  var sortedPlayers = selectedPlayers.slice().sort(function(a, b) { return a.surname.localeCompare(b.surname); });
+  var names = [];
+  for (var i = 0; i < sortedPlayers.length; i++) { names.push(sortedPlayers[i].fullName); }
+  document.getElementById('file-name-preview').textContent = names.join(' & ');
   document.getElementById('file-preview').style.display = 'block';
   document.getElementById('upload-container').style.display = 'block';
 }
@@ -629,290 +575,277 @@ function sanitize(str) {
 }
 
 function renderEntitiesList() {
-  const container = document.getElementById('entities-list');
-  
+  var container = document.getElementById('entities-list');
   if (entities.length === 0) {
     container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No entries found</p>';
     return;
   }
   
-  container.innerHTML = entities.map(function(entity) {
-    const entityCards = getCardsForEntity(entity);
-    const statusInfo = getEntityStatus(entity, entityCards);
+  var html = '';
+  for (var i = 0; i < entities.length; i++) {
+    var entity = entities[i];
+    var entityCards = getCardsForEntity(entity);
+    var statusInfo = getEntityStatus(entity, entityCards);
     
-    let cardsHtml = '';
+    html += '<div class="team-card" data-name="' + entity.name.toLowerCase() + '">';
+    html += '<div class="team-header" onclick="toggleEntity(this)">';
+    html += '<div><div class="team-name">' + entity.name + '</div>';
+    if (entity.country) { html += '<div class="team-country">' + entity.country + '</div>'; }
+    html += '</div>';
+    html += '<div class="team-status"><span class="status-dot ' + statusInfo.color + '"></span>' + statusInfo.text + '</div>';
+    html += '</div>';
+    html += '<div class="team-details"><div class="cards-list">';
+    
     if (entityCards.length > 0) {
-      cardsHtml = entityCards.map(function(card) {
-        const cardStatus = getCardStatus(card.fileName);
-        const players = getPlayersFromFileName(card.fileName, entity);
-        return '<div class="card-item">' +
-          '<div class="card-info">' +
-          '<span class="card-icon">📄</span>' +
-          '<div>' +
-          '<div class="card-players">' + players + '<span class="card-status ' + cardStatus.cssClass + '">' + cardStatus.label + '</span></div>' +
-          '<div class="card-date">Uploaded: ' + formatDate(card.lastModified) + '</div>' +
-          (cardStatus.reason ? '<div class="refused-reason">Reason: ' + cardStatus.reason + '</div>' : '') +
-          '</div></div>' +
-          '<div class="card-actions">' +
-          '<a href="' + card.url + '" target="_blank" class="btn-small btn-view">View PDF</a>' +
-          '<button class="btn-small btn-copy" onclick="copyLink(\'' + card.url + '\', this)">Copy Link</button>' +
-          '</div></div>';
-      }).join('');
+      for (var j = 0; j < entityCards.length; j++) {
+        var card = entityCards[j];
+        var cardStatus = getCardStatus(card.fileName);
+        var players = getPlayersFromFileName(card.fileName, entity);
+        
+        html += '<div class="card-item"><div class="card-info"><span class="card-icon">📄</span><div>';
+        html += '<div class="card-players">' + players + '</div>';
+        html += '<div class="card-date">Uploaded: ' + formatDate(card.lastModified) + '</div>';
+        html += '<span class="card-status ' + cardStatus.cssClass + '">' + cardStatus.label + '</span>';
+        if (cardStatus.reason) { html += '<div class="refused-reason">Reason: ' + cardStatus.reason + '</div>'; }
+        html += '</div></div>';
+        html += '<div class="card-actions">';
+        html += '<a href="' + card.url + '" target="_blank" class="btn-small btn-view">View PDF</a>';
+        html += '<button class="btn-small btn-copy" onclick="copyLink(\'' + card.url + '\', this)">Copy Link</button>';
+        html += '</div></div>';
+      }
     } else {
-      cardsHtml = '<p class="no-cards">No System Cards uploaded yet</p>';
+      html += '<p class="no-cards">No System Cards uploaded yet</p>';
     }
     
-    return '<div class="team-card" data-name="' + entity.name.toLowerCase() + '">' +
-      '<div class="team-header" onclick="toggleEntity(this)">' +
-      '<div><div class="team-name">' + entity.name + '</div>' +
-      (entity.country ? '<div class="team-country">' + entity.country + '</div>' : '') +
-      '</div>' +
-      '<div class="team-status"><span class="status-dot ' + statusInfo.color + '"></span>' + statusInfo.text + '</div>' +
-      '</div>' +
-      '<div class="team-details">' +
-      '<div class="cards-list">' + cardsHtml + '</div>' +
-      '<div style="margin-top: 12px;"><strong>Players:</strong> ' +
-      '<span style="color: var(--text-secondary); font-size: 14px;">' +
-      entity.players.map(function(p) { return p.fullName + (isCoachOrCaptain(p) ? ' (NPC)' : ''); }).join(', ') +
-      '</span></div></div></div>';
-  }).join('');
+    html += '</div>';
+    html += '<div style="margin-top: 12px;"><strong>Players:</strong> <span style="color: var(--text-secondary); font-size: 14px;">';
+    var playerNames = [];
+    for (var p = 0; p < entity.players.length; p++) {
+      playerNames.push(entity.players[p].fullName + (isCoachOrCaptain(entity.players[p]) ? ' (NPC)' : ''));
+    }
+    html += playerNames.join(', ') + '</span></div></div></div>';
+  }
+  container.innerHTML = html;
 }
 
 function getCardsForEntity(entity) {
-  const entityNameSanitized = sanitize(entity.name);
-  return uploadedCards.filter(function(card) {
-    const cardEntityName = card.fileName.split('_')[0];
-    return cardEntityName === entityNameSanitized;
-  });
+  var entityNameSanitized = sanitize(entity.name);
+  var result = [];
+  for (var i = 0; i < uploadedCards.length; i++) {
+    var cardEntityName = uploadedCards[i].fileName.split('_')[0];
+    if (cardEntityName === entityNameSanitized) { result.push(uploadedCards[i]); }
+  }
+  return result;
 }
 
 function getCardStatus(fileName) {
-  const status = validationStatus[fileName];
-  
+  var status = validationStatus[fileName];
   if (!status || status === 'pending') {
     return { cssClass: 'pending', label: 'Pending review by TD', reason: null };
   } else if (status === 'validated') {
     return { cssClass: 'validated', label: '✓ Validated', reason: null };
   } else if (typeof status === 'object' && status.status === 'refused') {
     return { cssClass: 'refused', label: '✗ Refused', reason: status.reason || 'No reason provided' };
-  } else if (status === 'refused') {
-    return { cssClass: 'refused', label: '✗ Refused', reason: 'No reason provided' };
   }
-  
   return { cssClass: 'pending', label: 'Pending review by TD', reason: null };
 }
 
 function getEntityStatus(entity, cards) {
-  const playablePlayers = entity.players.filter(function(p) { return !isCoachOrCaptain(p); });
-  
-  const hasRefused = cards.some(function(card) {
-    const status = validationStatus[card.fileName];
-    return status === 'refused' || (typeof status === 'object' && status.status === 'refused');
-  });
-  
-  if (hasRefused) {
-    return { color: 'red', text: 'System Card refused' };
+  var playablePlayers = [];
+  for (var i = 0; i < entity.players.length; i++) {
+    if (!isCoachOrCaptain(entity.players[i])) { playablePlayers.push(entity.players[i]); }
   }
   
-  if (cards.length === 0) {
-    return { color: 'red', text: 'No System Cards' };
+  var hasRefused = false;
+  for (var j = 0; j < cards.length; j++) {
+    var status = validationStatus[cards[j].fileName];
+    if (status === 'refused' || (typeof status === 'object' && status.status === 'refused')) {
+      hasRefused = true; break;
+    }
   }
   
-  const playersWithCards = {};
-  cards.forEach(function(card) {
-    const surnames = card.fileName.replace('.pdf', '').split('_').slice(1);
-    surnames.forEach(function(surname) {
-      playablePlayers.forEach(function(player) {
-        if (sanitize(player.surname) === surname) {
-          playersWithCards[player.wbfId || player.surname] = true;
+  if (hasRefused) { return { color: 'red', text: 'System Card refused' }; }
+  if (cards.length === 0) { return { color: 'red', text: 'No System Cards' }; }
+  
+  var playersWithCards = {};
+  for (var k = 0; k < cards.length; k++) {
+    var surnames = cards[k].fileName.replace('.pdf', '').split('_').slice(1);
+    for (var s = 0; s < surnames.length; s++) {
+      for (var p = 0; p < playablePlayers.length; p++) {
+        if (sanitize(playablePlayers[p].surname) === surnames[s]) {
+          playersWithCards[playablePlayers[p].wbfId || playablePlayers[p].surname] = true;
         }
-      });
-    });
-  });
-  
-  const allPlayersHaveCards = playablePlayers.every(function(p) {
-    return playersWithCards[p.wbfId || p.surname];
-  });
-  
-  const allValidated = cards.every(function(card) {
-    return validationStatus[card.fileName] === 'validated';
-  });
-  
-  if (allPlayersHaveCards && allValidated) {
-    return { color: 'green', text: cards.length + ' System Card(s) - Complete' };
-  } else if (allPlayersHaveCards && !allValidated) {
-    return { color: 'yellow', text: cards.length + ' System Card(s) - Pending validation' };
-  } else {
-    return { color: 'yellow', text: cards.length + ' System Card(s) - Missing' };
+      }
+    }
   }
+  
+  var allPlayersHaveCards = true;
+  for (var m = 0; m < playablePlayers.length; m++) {
+    if (!playersWithCards[playablePlayers[m].wbfId || playablePlayers[m].surname]) {
+      allPlayersHaveCards = false; break;
+    }
+  }
+  
+  var allValidated = true;
+  for (var n = 0; n < cards.length; n++) {
+    if (validationStatus[cards[n].fileName] !== 'validated') { allValidated = false; break; }
+  }
+  
+  if (allPlayersHaveCards && allValidated) { return { color: 'green', text: cards.length + ' System Card(s) - Complete' }; }
+  if (allPlayersHaveCards && !allValidated) { return { color: 'yellow', text: cards.length + ' System Card(s) - Pending validation' }; }
+  return { color: 'yellow', text: cards.length + ' System Card(s) - Missing' };
 }
 
 function getPlayersFromFileName(fileName, entity) {
-  const parts = fileName.replace('.pdf', '').split('_');
+  var parts = fileName.replace('.pdf', '').split('_');
   if (parts.length >= 3) {
-    const surnames = parts.slice(1);
-    const fullNames = surnames.map(function(surname) {
-      const player = entity.players.find(function(p) { return sanitize(p.surname) === surname; });
-      return player ? player.fullName : surname;
-    });
-    return fullNames.join(' & ');
+    var surnames = parts.slice(1);
+    var lines = [];
+    for (var i = 0; i < surnames.length; i++) {
+      var found = null;
+      for (var j = 0; j < entity.players.length; j++) {
+        if (sanitize(entity.players[j].surname) === surnames[i]) { found = entity.players[j].fullName; break; }
+      }
+      lines.push('👤 ' + (found || surnames[i]));
+    }
+    return lines.join('<br>');
   }
   return fileName;
 }
 
-function toggleEntity(header) {
-  const details = header.nextElementSibling;
-  details.classList.toggle('open');
-}
+function toggleEntity(header) { header.nextElementSibling.classList.toggle('open'); }
 
 function filterEntities() {
-  const searchTerm = document.getElementById('search-input').value.toLowerCase();
-  document.querySelectorAll('.team-card').forEach(function(card) {
-    const name = card.dataset.name;
-    card.style.display = name.includes(searchTerm) ? 'block' : 'none';
-  });
+  var searchTerm = document.getElementById('search-input').value.toLowerCase();
+  var cards = document.querySelectorAll('.team-card');
+  for (var i = 0; i < cards.length; i++) {
+    cards[i].style.display = cards[i].dataset.name.indexOf(searchTerm) >= 0 ? 'block' : 'none';
+  }
 }
 
 function formatDate(dateString) {
   if (!dateString) return 'Unknown';
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-GB', {
-    day: '2-digit', month: 'short', year: 'numeric',
-    hour: '2-digit', minute: '2-digit'
-  });
+  var date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
 
 function copyLink(url, button) {
-  navigator.clipboard.writeText(url).then(function() {
-    button.textContent = 'Copied!';
-    button.classList.add('copied');
-    setTimeout(function() {
-      button.textContent = 'Copy Link';
-      button.classList.remove('copied');
-    }, 2000);
-  });
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(function() { showCopied(button); }).catch(function() { fallbackCopy(url, button); });
+  } else {
+    fallbackCopy(url, button);
+  }
+}
+
+function fallbackCopy(url, button) {
+  var textArea = document.createElement('textarea');
+  textArea.value = url;
+  textArea.style.position = 'fixed';
+  textArea.style.left = '-9999px';
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  try { document.execCommand('copy'); showCopied(button); } catch (err) { alert('Link: ' + url); }
+  document.body.removeChild(textArea);
+}
+
+function showCopied(button) {
+  button.textContent = 'Copied!';
+  button.classList.add('copied');
+  setTimeout(function() { button.textContent = 'Copy Link'; button.classList.remove('copied'); }, 2000);
 }
 
 function showConfirmModal(file) {
   pendingFile = file;
-  const sortedPlayers = selectedPlayers.slice().sort(function(a, b) { return a.surname.localeCompare(b.surname); });
-  const playerNamesDisplay = sortedPlayers.map(function(p) { return p.fullName; }).join(' & ');
-  document.getElementById('modal-players').textContent = playerNamesDisplay;
+  var sortedPlayers = selectedPlayers.slice().sort(function(a, b) { return a.surname.localeCompare(b.surname); });
+  var names = [];
+  for (var i = 0; i < sortedPlayers.length; i++) { names.push(sortedPlayers[i].fullName); }
+  document.getElementById('modal-players').textContent = names.join(' & ');
   document.getElementById('confirm-modal').classList.add('active');
 }
 
-function closeModal() {
-  document.getElementById('confirm-modal').classList.remove('active');
-  pendingFile = null;
-}
+function closeModal() { document.getElementById('confirm-modal').classList.remove('active'); pendingFile = null; }
 
 function confirmUpload() {
-  const fileToUpload = pendingFile;
+  var fileToUpload = pendingFile;
   closeModal();
-  if (fileToUpload) {
-    processUpload(fileToUpload);
-  }
+  if (fileToUpload) { processUpload(fileToUpload); }
 }
 
 function setupDragDrop() {
-  const dropZone = document.getElementById('drop-zone');
-  
-  dropZone.addEventListener('click', function() {
-    document.getElementById('file-input').click();
-  });
-  
-  dropZone.addEventListener('dragover', function(e) {
-    e.preventDefault();
-    dropZone.classList.add('dragover');
-  });
-  
-  dropZone.addEventListener('dragleave', function() {
-    dropZone.classList.remove('dragover');
-  });
-  
+  var dropZone = document.getElementById('drop-zone');
+  dropZone.addEventListener('click', function() { document.getElementById('file-input').click(); });
+  dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('dragover'); });
   dropZone.addEventListener('drop', function(e) {
-    e.preventDefault();
-    dropZone.classList.remove('dragover');
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
+    e.preventDefault(); dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files[0]) { handleFile(e.dataTransfer.files[0]); }
   });
 }
 
 function setupFileInput() {
-  const fileInput = document.getElementById('file-input');
-  fileInput.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) handleFile(file);
+  document.getElementById('file-input').addEventListener('change', function(e) {
+    if (e.target.files[0]) { handleFile(e.target.files[0]); }
   });
 }
 
 function handleFile(file) {
-  const uploadStatus = document.getElementById('upload-status');
+  var uploadStatus = document.getElementById('upload-status');
   uploadStatus.innerHTML = '';
-  
-  if (selectedPlayers.length < 2) {
-    uploadStatus.innerHTML = '<div class="alert alert-error">❌ Please select at least 2 players first</div>';
-    return;
-  }
-  
-  if (file.type !== 'application/pdf') {
-    uploadStatus.innerHTML = '<div class="alert alert-error">❌ Only PDF files are allowed</div>';
-    return;
-  }
-  
-  if (file.size > 10 * 1024 * 1024) {
-    uploadStatus.innerHTML = '<div class="alert alert-error">❌ File too large (max 10MB)</div>';
-    return;
-  }
-  
+  if (selectedPlayers.length < 2) { uploadStatus.innerHTML = '<div class="alert alert-error">❌ Please select at least 2 players first</div>'; return; }
+  if (file.type !== 'application/pdf') { uploadStatus.innerHTML = '<div class="alert alert-error">❌ Only PDF files are allowed</div>'; return; }
+  if (file.size > 10 * 1024 * 1024) { uploadStatus.innerHTML = '<div class="alert alert-error">❌ File too large (max 10MB)</div>'; return; }
   showConfirmModal(file);
 }
 
-async function processUpload(file) {
-  const uploadStatus = document.getElementById('upload-status');
-  const dropZone = document.getElementById('drop-zone');
-  
+function processUpload(file) {
+  var uploadStatus = document.getElementById('upload-status');
+  var dropZone = document.getElementById('drop-zone');
   dropZone.innerHTML = '<div class="spinner"></div><p style="color: var(--primary);">Uploading...</p>';
   
-  try {
-    const buffer = await file.arrayBuffer();
-    const bytes = new Uint8Array(buffer);
-    const header = String.fromCharCode.apply(null, bytes.slice(0, 5));
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var bytes = new Uint8Array(e.target.result);
+    var header = '';
+    for (var i = 0; i < 5 && i < bytes.length; i++) { header += String.fromCharCode(bytes[i]); }
     
     if (header !== '%PDF-') {
-      throw new Error('Invalid PDF file');
+      uploadStatus.innerHTML = '<div class="alert alert-error">❌ Invalid PDF file</div>';
+      resetDropZone();
+      return;
     }
     
-    const sortedPlayers = selectedPlayers.slice().sort(function(a, b) { return a.surname.localeCompare(b.surname); });
-    const playerNames = sortedPlayers.map(function(p) { return p.surname; }).join('_');
-    const fileName = sanitize(selectedEntity.name) + '_' + sanitize(playerNames) + '.pdf';
+    var sortedPlayers = selectedPlayers.slice().sort(function(a, b) { return a.surname.localeCompare(b.surname); });
+    var playerSurnames = [];
+    for (var j = 0; j < sortedPlayers.length; j++) { playerSurnames.push(sortedPlayers[j].surname); }
+    var fileName = sanitize(selectedEntity.name) + '_' + sanitize(playerSurnames.join('_')) + '.pdf';
     
-    const formData = new FormData();
+    var formData = new FormData();
     formData.append('file', file);
     formData.append('tournamentCode', CONFIG.tournamentCode);
     formData.append('teamName', selectedEntity.name);
-    formData.append('playerIds', selectedPlayers.map(function(p) { return p.wbfId || p.surname; }).join(','));
+    var playerIds = [];
+    for (var k = 0; k < selectedPlayers.length; k++) { playerIds.push(selectedPlayers[k].wbfId || selectedPlayers[k].surname); }
+    formData.append('playerIds', playerIds.join(','));
     formData.append('fileName', fileName);
     
-    const response = await fetch(CONFIG.apiEndpoint + '/upload', {
-      method: 'POST',
-      body: formData
+    fetch(CONFIG.apiEndpoint + '/upload', { method: 'POST', body: formData }).then(function(response) {
+      if (!response.ok) throw new Error('Upload failed');
+      var names = [];
+      for (var m = 0; m < sortedPlayers.length; m++) { names.push(sortedPlayers[m].fullName); }
+      uploadStatus.innerHTML = '<div class="alert alert-success">✅ Uploaded successfully!<br><strong>Players:</strong> ' + names.join(' & ') + '<br><small>Reloading page...</small></div>';
+      setTimeout(function() { window.location.reload(); }, 1500);
+    }).catch(function(error) {
+      uploadStatus.innerHTML = '<div class="alert alert-error">❌ ' + (error.message || 'Upload failed') + '</div>';
+      resetDropZone();
     });
-    
-    if (!response.ok) throw new Error('Upload failed');
-    
-    const playerNamesDisplay = sortedPlayers.map(function(p) { return p.fullName; }).join(' & ');
-    uploadStatus.innerHTML = '<div class="alert alert-success">✅ Uploaded successfully!<br><strong>Players:</strong> ' + playerNamesDisplay + '<br><small>Reloading page...</small></div>';
-    
-    setTimeout(function() {
-      window.location.reload();
-    }, 1500);
-    
-  } catch (error) {
-    uploadStatus.innerHTML = '<div class="alert alert-error">❌ ' + (error.message || 'Upload failed') + '</div>';
-    dropZone.innerHTML = '<div class="upload-icon">📄</div><p class="upload-text">Drop your PDF here or click to browse</p><p class="upload-hint">Max 10MB • PDF only</p>';
-    document.getElementById('file-input').value = '';
-  }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function resetDropZone() {
+  document.getElementById('drop-zone').innerHTML = '<div class="upload-icon">📄</div><p class="upload-text">Drop your PDF here or click to browse</p><p class="upload-hint">Max 10MB - PDF only</p>';
+  document.getElementById('file-input').value = '';
 }
 </script>
 </body>
