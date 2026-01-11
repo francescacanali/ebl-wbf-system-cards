@@ -452,7 +452,7 @@
     
     <!-- Contact Banner -->
     <div class="contact-banner">
-      <strong>Any problems?</strong> Contact us at <a href="mailto:info@eurobridge.org">info@eurobridge.org</a>
+      <strong>Any problems?</strong> Contact us at <a href="/cdn-cgi/l/email-protection#4f262129200f2a3a3d202d3d262b282a61203d28"><span class="__cf_email__" data-cfemail="8fe6e1e9e0cfeafafde0edfde6ebe8eaa1e0fde8">[email&#160;protected]</span></a>
     </div>
   </div>
   
@@ -470,7 +470,7 @@
     </div>
   </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ============================================
 // CONFIGURATION
 // ============================================
@@ -1031,27 +1031,21 @@ async function processUpload(file) {
     uploadStatus.innerHTML = `
       <div class="alert alert-success">
         ✅ Uploaded successfully!<br>
-        <strong>Players:</strong> ${playerNamesDisplay}
+        <strong>Players:</strong> ${playerNamesDisplay}<br>
+        <small>Reloading page...</small>
       </div>
     `;
     
-    await loadUploadedCards();
-    await loadValidationStatus();
+    // Reload page after 1.5 seconds
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+    return;
     
   } catch (error) {
     uploadStatus.innerHTML = `<div class="alert alert-error">❌ ${error.message || 'Upload failed'}</div>`;
   }
   
-  // Reset dropzone
+  // Reset dropzone (only on error)
   dropZone.innerHTML = `
-    <div class="upload-icon">📄</div>
-    <p class="upload-text">Drop your PDF here or click to browse</p>
-    <p class="upload-hint">Max 10MB • PDF only</p>
-  `;
-  
-  // Reset file input
-  document.getElementById('file-input').value = '';
-}
-</script>
-</body>
-</html>
+    <div class="upload-icon">
