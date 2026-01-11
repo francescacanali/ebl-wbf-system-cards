@@ -103,6 +103,11 @@
     
     .form-select:focus, .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
     
+    .form-select.highlight {
+      background: var(--primary-light); border: 2px solid var(--primary);
+      font-weight: 500;
+    }
+    
     /* Players Checkboxes */
     .players-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -349,10 +354,10 @@
     <!-- Tab Buttons - View All Cards is default now -->
     <div class="tab-buttons">
       <button class="tab-btn" onclick="showTab('upload')">
-        <span class="icon">📤</span> Upload Card
+        <span class="icon">📤</span> Upload System Card
       </button>
       <button class="tab-btn active" onclick="showTab('view')">
-        <span class="icon">📋</span> View All Cards
+        <span class="icon">📋</span> View All System Cards
       </button>
     </div>
     
@@ -364,7 +369,7 @@
         
         <div class="form-group">
           <label class="form-label" id="entity-label">Team</label>
-          <select id="entity-select" class="form-select" onchange="handleEntityChange()">
+          <select id="entity-select" class="form-select highlight" onchange="handleEntityChange()">
             <option value="">Loading...</option>
           </select>
         </div>
@@ -401,22 +406,22 @@
     <!-- View Tab - Default active -->
     <div id="view-tab" class="tab-content active">
       <div class="card">
-        <h2 class="form-title">📋 All Uploaded Cards</h2>
+        <h2 class="form-title">📋 All Uploaded System Cards</h2>
         <p class="form-subtitle">View and download all system cards for this event</p>
         
         <!-- Legend -->
         <div class="legend">
           <div class="legend-item">
             <span class="legend-dot green"></span>
-            <span>All cards submitted & validated</span>
+            <span>All System Cards submitted & validated</span>
           </div>
           <div class="legend-item">
             <span class="legend-dot yellow"></span>
-            <span>Cards pending or incomplete</span>
+            <span>System Cards pending or missing</span>
           </div>
           <div class="legend-item">
             <span class="legend-dot red"></span>
-            <span>No cards or refused</span>
+            <span>No System Cards or refused</span>
           </div>
         </div>
         
@@ -769,7 +774,7 @@ function renderEntitiesList() {
                   </div>
                 </div>
               `;
-            }).join('') : '<p class="no-cards">No system cards uploaded yet</p>'}
+            }).join('') : '<p class="no-cards">No System Cards uploaded yet</p>'}
           </div>
           <div style="margin-top: 12px;">
             <strong>Players:</strong>
@@ -818,12 +823,12 @@ function getEntityStatus(entity, cards) {
   });
   
   if (hasRefused) {
-    return { color: 'red', text: 'Card refused' };
+    return { color: 'red', text: 'System Card refused' };
   }
   
   // No cards at all
   if (cards.length === 0) {
-    return { color: 'red', text: 'No cards' };
+    return { color: 'red', text: 'No System Cards' };
   }
   
   // Check if all players have at least one card
@@ -847,11 +852,11 @@ function getEntityStatus(entity, cards) {
   const allValidated = cards.every(card => validationStatus[card.fileName] === 'validated');
   
   if (allPlayersHaveCards && allValidated) {
-    return { color: 'green', text: `${cards.length} card(s) - Complete` };
+    return { color: 'green', text: `${cards.length} System Card(s) - Complete` };
   } else if (allPlayersHaveCards && !allValidated) {
-    return { color: 'yellow', text: `${cards.length} card(s) - Pending validation` };
+    return { color: 'yellow', text: `${cards.length} System Card(s) - Pending validation` };
   } else {
-    return { color: 'yellow', text: `${cards.length} card(s) - Incomplete` };
+    return { color: 'yellow', text: `${cards.length} System Card(s) - Missing` };
   }
 }
 
