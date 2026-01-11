@@ -804,9 +804,10 @@ function closeModal() {
 }
 
 function confirmUpload() {
+  const fileToUpload = pendingFile;
   closeModal();
-  if (pendingFile) {
-    processUpload(pendingFile);
+  if (fileToUpload) {
+    processUpload(fileToUpload);
   }
 }
 
