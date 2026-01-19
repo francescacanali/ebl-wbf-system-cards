@@ -2,11 +2,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>System Cards Portal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Cards Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--primary:#00854A;--primary-dark:#006838;--primary-light:#e6f5ed;--bg-light:#f8fafc;--bg-white:#fff;--text-primary:#1e293b;--text-secondary:#64748b;--text-muted:#94a3b8;--border-color:#e2e8f0;--success:#16a34a;--success-light:#dcfce7;--warning:#ca8a04;--warning-light:#fef9c3;--error:#dc2626;--error-light:#fee2e2;--info:#0284c7;--info-light:#e0f2fe}
 body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg-light);color:var(--text-primary);min-height:100vh;line-height:1.6}
@@ -22,8 +22,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .tab-btn:hover{border-color:var(--primary);color:var(--primary)}
 .tab-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
 .tab-btn .icon{font-size:20px}
-.tab-content{display:none}
-.tab-content.active{display:block}
+.tab-content{display:none}.tab-content.active{display:block}
 .card{background:var(--bg-white);border:1px solid var(--border-color);border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .form-title{font-size:20px;font-weight:700;margin-bottom:4px;color:var(--text-primary);display:flex;align-items:center;gap:10px}
 .form-subtitle{color:var(--text-secondary);font-size:14px;margin-bottom:20px}
@@ -40,8 +39,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .player-name{font-weight:500;font-size:14px}
 .player-id{font-size:12px;color:var(--text-muted)}
 .hint-text{font-size:13px;color:var(--text-muted);margin-top:8px}
-.hint-text.success{color:var(--success)}
-.hint-text.error{color:var(--error)}
+.hint-text.success{color:var(--success)}.hint-text.error{color:var(--error)}
 .file-preview{background:var(--primary-light);border:1px solid var(--primary);border-radius:10px;padding:12px 16px;margin-top:16px;display:flex;align-items:center;gap:10px}
 .file-preview-icon{font-size:24px}
 .file-preview-name{font-weight:600;color:var(--primary);font-size:14px}
@@ -69,9 +67,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;padding:14px 18px;background:var(--bg-light);border-radius:10px;font-size:13px}
 .legend-item{display:flex;align-items:center;gap:8px}
 .legend-dot{width:12px;height:12px;border-radius:50%}
-.legend-dot.green{background:var(--success)}
-.legend-dot.yellow{background:var(--warning)}
-.legend-dot.red{background:var(--error)}
+.legend-dot.green{background:var(--success)}.legend-dot.yellow{background:var(--warning)}.legend-dot.red{background:var(--error)}
 .filters{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
 .search-input{flex:1;min-width:200px}
 .team-card{background:var(--bg-white);border:1px solid var(--border-color);border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
@@ -81,9 +77,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .team-country{font-size:12px;color:var(--text-muted);margin-top:2px}
 .team-status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-secondary)}
 .status-dot{width:12px;height:12px;border-radius:50%}
-.status-dot.green{background:var(--success)}
-.status-dot.yellow{background:var(--warning)}
-.status-dot.red{background:var(--error)}
+.status-dot.green{background:var(--success)}.status-dot.yellow{background:var(--warning)}.status-dot.red{background:var(--error)}
 .team-details{padding:0 16px 16px;border-top:1px solid var(--border-color);display:none}
 .team-details.open{display:block}
 .cards-list{margin-top:12px}
@@ -123,14 +117,14 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 @keyframes spin{to{transform:rotate(360deg)}}
 .freeze-banner{background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:14px 20px;margin-bottom:20px;text-align:center;font-size:14px;color:#92400e}
 @media(max-width:600px){.tab-buttons{flex-direction:column}.tab-btn{justify-content:center}.filters{flex-direction:column}.card-item{flex-direction:column;align-items:flex-start;gap:10px}.card-actions{width:100%}.btn-small{flex:1;text-align:center}.confirm-box-buttons{flex-direction:column}.legend{flex-direction:column;gap:10px}.tooltip{width:220px;left:0;transform:none}}
-  </style>
+</style>
 </head>
 <body>
 <div class="container">
 <div class="header">
 <div class="event-title" id="event-title">Loading...</div>
 <h1 class="page-title">System Cards Portal</h1>
-<p class="subtitle">Upload and manage convention cards</p>
+<p class="subtitle">Upload and manage system cards</p>
 </div>
 <div class="disclaimer-banner">
 <strong>ℹ️ Important:</strong> Staff only verifies that uploaded files are valid and readable PDFs. The accuracy and compliance of System Card contents with current regulations remains the sole responsibility of the players.
@@ -142,7 +136,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div id="upload-tab" class="tab-content">
 <div class="card">
 <h2 class="form-title">📤 Upload Your System Card</h2>
-<p class="form-subtitle" id="upload-subtitle">Select your team and players, then upload your convention card (PDF format)</p>
+<p class="form-subtitle" id="upload-subtitle">Select your team and players, then upload your system card (PDF format)</p>
 <div class="form-group">
 <label class="form-label" id="entity-label">Team</label>
 <select id="entity-select" class="form-select highlight" onchange="handleEntityChange()"><option value="">Loading...</option></select>
@@ -150,7 +144,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div class="form-group" id="players-group" style="display:none">
 <label class="form-label">Select players for this System Card (minimum 2)</label>
 <div class="players-grid" id="players-checkboxes"></div>
-<p class="hint-text" id="players-hint">Select at least 2 players who share this convention card</p>
+<p class="hint-text" id="players-hint">Select at least 2 players who share this system card</p>
 </div>
 <div id="file-preview" style="display:none">
 <div class="file-preview"><span class="file-preview-icon">📄</span><div><div class="file-preview-label">System Card for:</div><div class="file-preview-name" id="file-name-preview"></div></div></div>
@@ -198,7 +192,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <li>Player names must <strong>exactly match</strong> registration</li>
 <li>Handwritten cards are <strong>not allowed</strong></li>
 </ul>
-<p style="margin-top:12px">Need a blank template? <a href="http://www.eurobridge.org/wp-content/uploads/2025/12/BlankEBLSystemcardWord.doc" target="_blank">📄 Download Blank System Card (Word)</a></p>
+<p style="margin-top:12px">Need a blank template? <a href="https://www.worldbridge.org/wbf-documents-resources/wbf-system-card-templates-and-other-systems-information/" target="_blank">📄 Download System Card Templates</a></p>
 <div class="disclaimer-box">
 <strong>ℹ️ Important:</strong> Staff only verifies that uploaded files are valid and readable PDFs. The accuracy and compliance of System Card contents with current regulations remains the sole responsibility of the players.
 </div>
@@ -215,42 +209,74 @@ var freezeMessage=decodeURIComponent(urlParams.get('freezeMsg')||'Upload closed'
 var EVENT_CONFIG={'Winter Open Teams':{type:'teams',title:'EUROPEAN WINTER OPEN TEAMS CHAMPIONSHIP'},'Winter Swiss Cup':{type:'teams',title:'EUROPEAN WINTER SWISS CUP'},'Winter Mixed Teams':{type:'teams',title:'EUROPEAN WINTER MIXED TEAMS CHAMPIONSHIP'},'Winter Open BAM':{type:'teams',title:'EUROPEAN WINTER OPEN BAM'},'Winter Open Pairs':{type:'pairs',title:'EUROPEAN WINTER OPEN PAIRS'},'Winter Mixed Pairs':{type:'pairs',title:'EUROPEAN WINTER MIXED PAIRS'}};
 var CONFIG={tournamentCode:tournamentCode,eventFilter:eventFilter,eventType:EVENT_CONFIG[eventFilter]?EVENT_CONFIG[eventFilter].type:'teams',eventTitle:EVENT_CONFIG[eventFilter]?EVENT_CONFIG[eventFilter].title:(eventFilter||'All Events'),apiEndpoint:window.location.origin+'/api'};
 document.getElementById('event-title').textContent=CONFIG.eventTitle;
-if(CONFIG.eventType==='pairs'){document.getElementById('entity-label').textContent='Pair';document.getElementById('upload-subtitle').textContent='Select your pair, then upload your convention card (PDF format)';}
+if(CONFIG.eventType==='pairs'){document.getElementById('entity-label').textContent='Pair';document.getElementById('upload-subtitle').textContent='Select your pair, then upload your system card (PDF format)';}
 var entities=[],uploadedCards=[],validationStatus={},selectedEntity=null,selectedPlayers=[],pendingFile=null;
+
 document.addEventListener('DOMContentLoaded',function(){
-if(isFrozen){var ub=document.getElementById('upload-btn');if(ub){ub.style.opacity='0.5';ub.style.pointerEvents='none';ub.innerHTML='<span class="icon">🔒</span> Upload Closed';}var bn=document.createElement('div');bn.className='freeze-banner';bn.innerHTML='<strong>⚠️ '+freezeMessage+'</strong>';var tb=document.querySelector('.tab-buttons');if(tb)tb.parentNode.insertBefore(bn,tb);}
-loadEntities().then(function(){return loadUploadedCards();}).then(function(){return loadValidationStatus();}).then(function(){setupDragDrop();setupFileInput();});
+  if(isFrozen){var ub=document.getElementById('upload-btn');if(ub){ub.style.opacity='0.5';ub.style.pointerEvents='none';ub.innerHTML='<span class="icon">🔒</span> Upload Closed';}var bn=document.createElement('div');bn.className='freeze-banner';bn.innerHTML='<strong>⚠️ '+freezeMessage+'</strong>';var tb=document.querySelector('.tab-buttons');if(tb)tb.parentNode.insertBefore(bn,tb);}
+  loadEntities().then(function(){return loadUploadedCards();}).then(function(){return loadValidationStatus();}).then(function(){setupDragDrop();setupFileInput();});
 });
+
 function loadEntities(){return new Promise(function(resolve){var url=CONFIG.apiEndpoint+'/'+(CONFIG.eventType==='pairs'?'pairs':'teams')+'?tournament='+CONFIG.tournamentCode;fetch(url).then(function(r){return r.json();}).then(function(d){entities=d.pairs||d.teams||[];if(CONFIG.eventFilter)entities=entities.filter(function(e){return e.event===CONFIG.eventFilter;});populateEntitySelect();renderEntitiesList();resolve();}).catch(function(){resolve();});});}
+
 function loadUploadedCards(){return new Promise(function(resolve){fetch(CONFIG.apiEndpoint+'/cards?tournament='+CONFIG.tournamentCode).then(function(r){return r.json();}).then(function(d){uploadedCards=d.cards||[];renderEntitiesList();resolve();}).catch(function(){resolve();});});}
+
 function loadValidationStatus(){return new Promise(function(resolve){fetch(CONFIG.apiEndpoint+'/validation?tournament='+CONFIG.tournamentCode+'&event='+encodeURIComponent(CONFIG.eventFilter)).then(function(r){if(r.ok)return r.json();return{status:{}};}).then(function(d){validationStatus=d.status||{};renderEntitiesList();resolve();}).catch(function(){resolve();});});}
-function showTab(t){if(isFrozen&&t==='upload')return;var bs=document.querySelectorAll('.tab-btn'),cs=document.querySelectorAll('.tab-content');for(var i=0;i<bs.length;i++)bs[i].classList.remove('active');for(var j=0;j<cs.length;j++)cs[j].classList.remove('active');document.querySelector('[onclick="showTab(\''+t+'\')"]').classList.add('active');document.getElementById(t+'-tab').classList.add('active');}
+
+function showTab(t){if(isFrozen&&t==='upload')return;document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active');});document.querySelector('[onclick="showTab(\''+t+'\')"]').classList.add('active');document.getElementById(t+'-tab').classList.add('active');}
+
 function populateEntitySelect(){var s=document.getElementById('entity-select'),l=CONFIG.eventType==='pairs'?'Select your pair...':'Select your team...';s.innerHTML='<option value="">'+l+'</option>';for(var i=0;i<entities.length;i++){var e=entities[i],o=document.createElement('option');o.value=e.id;o.textContent=e.name+(e.country?' ('+e.country+')':'');s.appendChild(o);}}
+
 function handleEntityChange(){var s=document.getElementById('entity-select'),pg=document.getElementById('players-group'),pc=document.getElementById('players-checkboxes');selectedEntity=null;for(var i=0;i<entities.length;i++)if(entities[i].id===s.value){selectedEntity=entities[i];break;}selectedPlayers=[];hideConfirmBox();if(!selectedEntity){pg.style.display='none';document.getElementById('file-preview').style.display='none';document.getElementById('upload-container').style.display='none';return;}if(CONFIG.eventType==='pairs'&&selectedEntity.players.length===2){selectedPlayers=selectedEntity.players.slice();pg.style.display='none';updateFilePreviewFromPlayers();return;}var pl=[];for(var j=0;j<selectedEntity.players.length;j++)if(!isCoachOrCaptain(selectedEntity.players[j]))pl.push(selectedEntity.players[j]);var h='';for(var k=0;k<pl.length;k++){var p=pl[k];h+='<label class="player-checkbox"><input type="checkbox" value="'+(p.wbfId||p.surname)+'" onchange="handlePlayerSelection()"><div><div class="player-name">👤 '+p.fullName+'</div>'+(p.wbfId?'<div class="player-id">WBF ID: '+p.wbfId+'</div>':'')+'</div></label>';}pc.innerHTML=h;pg.style.display='block';document.getElementById('file-preview').style.display='none';document.getElementById('upload-container').style.display='none';updateHint();}
+
 function isCoachOrCaptain(p){var n=p.fullName.toLowerCase(),r=(p.role||'').toLowerCase();return r.indexOf('coach')>=0||r.indexOf('captain')>=0||n.indexOf('(coach)')>=0||n.indexOf('(captain)')>=0||n.indexOf('(npc)')>=0||r.indexOf('npc')>=0;}
+
 function handlePlayerSelection(){var cb=document.querySelectorAll('#players-checkboxes input[type="checkbox"]');selectedPlayers=[];var pl=[];for(var i=0;i<selectedEntity.players.length;i++)if(!isCoachOrCaptain(selectedEntity.players[i]))pl.push(selectedEntity.players[i]);for(var j=0;j<cb.length;j++){var c=cb[j],lb=c.closest('.player-checkbox');if(c.checked){lb.classList.add('selected');for(var k=0;k<pl.length;k++)if((pl[k].wbfId||pl[k].surname)===c.value){selectedPlayers.push(pl[k]);break;}}else lb.classList.remove('selected');}updateHint();updateFilePreviewFromPlayers();hideConfirmBox();}
-function updateHint(){var h=document.getElementById('players-hint'),c=selectedPlayers.length;if(c===0){h.textContent='Select at least 2 players who share this convention card';h.className='hint-text';}else if(c===1){h.textContent='⚠️ Select at least 1 more player';h.className='hint-text error';}else{h.textContent='✓ '+c+' players selected';h.className='hint-text success';}}
+
+function updateHint(){var h=document.getElementById('players-hint'),c=selectedPlayers.length;if(c===0){h.textContent='Select at least 2 players who share this system card';h.className='hint-text';}else if(c===1){h.textContent='⚠️ Select at least 1 more player';h.className='hint-text error';}else{h.textContent='✓ '+c+' players selected';h.className='hint-text success';}}
+
 function updateFilePreviewFromPlayers(){if(selectedPlayers.length<2){document.getElementById('file-preview').style.display='none';document.getElementById('upload-container').style.display='none';return;}var so=selectedPlayers.slice().sort(function(a,b){return a.surname.localeCompare(b.surname);}),na=[];for(var i=0;i<so.length;i++)na.push(so[i].fullName);document.getElementById('file-name-preview').textContent=na.join(' & ');document.getElementById('file-preview').style.display='block';document.getElementById('upload-container').style.display='block';}
+
 function sanitize(s){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_]/g,'').toUpperCase();}
+
 function renderEntitiesList(){var ct=document.getElementById('entities-list');if(entities.length===0){ct.innerHTML='<p style="text-align:center;color:var(--text-muted)">No entries found</p>';return;}var h='';for(var i=0;i<entities.length;i++){var e=entities[i],ca=getCardsForEntity(e),st=getEntityStatus(e,ca);h+='<div class="team-card" data-name="'+e.name.toLowerCase()+'"><div class="team-header" onclick="toggleEntity(this)"><div><div class="team-name">'+e.name+'</div>'+(e.country?'<div class="team-country">'+e.country+'</div>':'')+'</div><div class="team-status"><span class="status-dot '+st.color+'"></span>'+st.text+'</div></div><div class="team-details"><div class="cards-list">';if(ca.length>0){for(var j=0;j<ca.length;j++){var c=ca[j],cs=getCardStatus(c.fileName),pn=getPlayersFromFileName(c.fileName,e);h+='<div class="card-item"><div class="card-info"><span class="card-icon">📄</span><div><div class="card-players">'+pn+'</div><div class="card-date">Uploaded: '+formatDate(c.lastModified)+'</div><span class="card-status '+cs.cssClass+'">'+cs.label+'</span>'+cs.helpHtml+(cs.reason?'<div class="refused-reason">Reason: '+cs.reason+'</div>':'')+'</div></div><div class="card-actions"><a href="'+c.url+'" target="_blank" class="btn-small btn-view">View PDF</a><button class="btn-small btn-copy" onclick="copyLink(\''+c.url+'\',this)">Copy Link</button></div></div>';}}else h+='<p class="no-cards">No System Cards uploaded yet</p>';h+='</div><div style="margin-top:12px"><strong>Players:</strong> <span style="color:var(--text-secondary);font-size:14px">';var pna=[];for(var p=0;p<e.players.length;p++)pna.push(e.players[p].fullName+(isCoachOrCaptain(e.players[p])?' (NPC)':''));h+=pna.join(', ')+'</span></div></div></div>';}ct.innerHTML=h;}
+
 function getCardsForEntity(e){var n=sanitize(e.name),r=[];for(var i=0;i<uploadedCards.length;i++)if(uploadedCards[i].fileName.split('_')[0]===n)r.push(uploadedCards[i]);return r;}
+
 function getCardStatus(fn){var s=validationStatus[fn];var helpHtml='<span class="status-help">What does this mean?<span class="tooltip">'+DISCLAIMER_TEXT+'</span></span>';if(!s||s==='pending')return{cssClass:'pending',label:'Pending file check',reason:null,helpHtml:''};if(s==='validated')return{cssClass:'validated',label:'✓ File accepted',reason:null,helpHtml:helpHtml};if(typeof s==='object'&&s.status==='refused')return{cssClass:'refused',label:'✗ File issue',reason:s.reason||'No reason provided',helpHtml:''};return{cssClass:'pending',label:'Pending file check',reason:null,helpHtml:''};}
+
 function getEntityStatus(e,ca){var pl=[];for(var i=0;i<e.players.length;i++)if(!isCoachOrCaptain(e.players[i]))pl.push(e.players[i]);var hr=false;for(var j=0;j<ca.length;j++){var s=validationStatus[ca[j].fileName];if(s==='refused'||(typeof s==='object'&&s.status==='refused')){hr=true;break;}}if(hr)return{color:'red',text:'File issue'};if(ca.length===0)return{color:'red',text:'No System Cards'};var pw={};for(var k=0;k<ca.length;k++){var sn=ca[k].fileName.replace('.pdf','').split('_').slice(1);for(var x=0;x<sn.length;x++)for(var p=0;p<pl.length;p++)if(sanitize(pl[p].surname)===sn[x])pw[pl[p].wbfId||pl[p].surname]=true;}var al=true;for(var m=0;m<pl.length;m++)if(!pw[pl[m].wbfId||pl[m].surname]){al=false;break;}var av=true;for(var n=0;n<ca.length;n++)if(validationStatus[ca[n].fileName]!=='validated'){av=false;break;}if(al&&av)return{color:'green',text:ca.length+' System Card(s) - Complete'};if(al&&!av)return{color:'yellow',text:ca.length+' System Card(s) - Pending file check'};return{color:'yellow',text:ca.length+' System Card(s) - Missing'};}
+
 function getPlayersFromFileName(fn,e){var pa=fn.replace('.pdf','').split('_');if(pa.length>=3){var sn=pa.slice(1),li=[];for(var i=0;i<sn.length;i++){var fo=null;for(var j=0;j<e.players.length;j++)if(sanitize(e.players[j].surname)===sn[i]){fo=e.players[j].fullName;break;}li.push('👤 '+(fo||sn[i]));}return li.join('<br>');}return fn;}
+
 function toggleEntity(h){h.nextElementSibling.classList.toggle('open');}
+
 function filterEntities(){var t=document.getElementById('search-input').value.toLowerCase(),ca=document.querySelectorAll('.team-card');for(var i=0;i<ca.length;i++)ca[i].style.display=ca[i].dataset.name.indexOf(t)>=0?'block':'none';}
+
 function formatDate(d){if(!d)return'Unknown';return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+
 function copyLink(u,b){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(function(){showCopied(b);}).catch(function(){fallbackCopy(u,b);});else fallbackCopy(u,b);}
+
 function fallbackCopy(u,b){var t=document.createElement('textarea');t.value=u;t.style.cssText='position:fixed;left:-9999px';document.body.appendChild(t);t.select();try{document.execCommand('copy');showCopied(b);}catch(e){alert('Link: '+u);}document.body.removeChild(t);}
+
 function showCopied(b){b.textContent='Copied!';b.classList.add('copied');setTimeout(function(){b.textContent='Copy Link';b.classList.remove('copied');},2000);}
+
 function showConfirmBox(f){pendingFile=f;var so=selectedPlayers.slice().sort(function(a,b){return a.surname.localeCompare(b.surname);}),na=[];for(var i=0;i<so.length;i++)na.push(so[i].fullName);document.getElementById('confirm-players').textContent=na.join(' & ');document.getElementById('confirm-container').style.display='block';document.getElementById('upload-container').style.display='none';}
+
 function hideConfirmBox(){document.getElementById('confirm-container').style.display='none';if(selectedPlayers.length>=2)document.getElementById('upload-container').style.display='block';pendingFile=null;document.getElementById('file-input').value='';}
+
 function cancelUpload(){hideConfirmBox();}
+
 function confirmUpload(){var f=pendingFile;document.getElementById('confirm-container').style.display='none';if(f)processUpload(f);}
+
 function setupDragDrop(){var dz=document.getElementById('drop-zone');dz.addEventListener('click',function(){document.getElementById('file-input').click();});dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('dragover');});dz.addEventListener('dragleave',function(){dz.classList.remove('dragover');});dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('dragover');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});}
+
 function setupFileInput(){document.getElementById('file-input').addEventListener('change',function(e){if(e.target.files[0])handleFile(e.target.files[0]);});}
+
 function handleFile(f){var us=document.getElementById('upload-status');us.innerHTML='';if(selectedPlayers.length<2){us.innerHTML='<div class="alert alert-error">❌ Please select at least 2 players first</div>';return;}if(f.type!=='application/pdf'){us.innerHTML='<div class="alert alert-error">❌ Only PDF files are allowed</div>';return;}if(f.size>10*1024*1024){us.innerHTML='<div class="alert alert-error">❌ File too large (max 10MB)</div>';return;}showConfirmBox(f);}
+
 function processUpload(f){var us=document.getElementById('upload-status'),dz=document.getElementById('drop-zone');document.getElementById('upload-container').style.display='block';dz.innerHTML='<div class="spinner"></div><p style="color:var(--primary)">Uploading...</p>';var rd=new FileReader();rd.onload=function(e){var by=new Uint8Array(e.target.result),hd='';for(var i=0;i<5&&i<by.length;i++)hd+=String.fromCharCode(by[i]);if(hd!=='%PDF-'){us.innerHTML='<div class="alert alert-error">❌ Invalid PDF file</div>';resetDropZone();return;}var so=selectedPlayers.slice().sort(function(a,b){return a.surname.localeCompare(b.surname);}),sn=[];for(var j=0;j<so.length;j++)sn.push(so[j].surname);var fn=sanitize(selectedEntity.name)+'_'+sanitize(sn.join('_'))+'.pdf',fd=new FormData();fd.append('file',f);fd.append('tournamentCode',CONFIG.tournamentCode);fd.append('teamName',selectedEntity.name);var pi=[];for(var k=0;k<selectedPlayers.length;k++)pi.push(selectedPlayers[k].wbfId||selectedPlayers[k].surname);fd.append('playerIds',pi.join(','));fd.append('fileName',fn);fetch(CONFIG.apiEndpoint+'/upload',{method:'POST',body:fd}).then(function(r){if(!r.ok)throw new Error('Upload failed');var na=[];for(var m=0;m<so.length;m++)na.push(so[m].fullName);us.innerHTML='<div class="alert alert-success">✅ Uploaded successfully!<br><strong>Players:</strong> '+na.join(' & ')+'<br><small>Reloading page...</small><div class="disclaimer-note"><strong>ℹ️ Important:</strong> '+DISCLAIMER_TEXT+'</div></div>';setTimeout(function(){window.location.reload();},2000);}).catch(function(er){us.innerHTML='<div class="alert alert-error">❌ '+(er.message||'Upload failed')+'</div>';resetDropZone();});};rd.readAsArrayBuffer(f);}
+
 function resetDropZone(){document.getElementById('drop-zone').innerHTML='<div class="upload-icon">📄</div><p class="upload-text">Drop your PDF here or click to browse</p><p class="upload-hint">Max 10MB - PDF only</p>';document.getElementById('file-input').value='';}
 </script>
 </body>
