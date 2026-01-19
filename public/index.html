@@ -1,4 +1,4 @@
-<!-- v9 -->
+<!-- v11 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,846 +7,251 @@
   <title>System Cards Portal</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    :root {
-      --primary: #00854A;
-      --primary-dark: #006838;
-      --primary-light: #e6f5ed;
-      --bg-light: #f8fafc;
-      --bg-white: #ffffff;
-      --text-primary: #1e293b;
-      --text-secondary: #64748b;
-      --text-muted: #94a3b8;
-      --border-color: #e2e8f0;
-      --success: #16a34a;
-      --success-light: #dcfce7;
-      --warning: #ca8a04;
-      --warning-light: #fef9c3;
-      --error: #dc2626;
-      --error-light: #fee2e2;
-    }
-    
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-light);
-      color: var(--text-primary);
-      min-height: 100vh;
-      line-height: 1.6;
-    }
-    
-    .container { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
-    .header { text-align: center; margin-bottom: 32px; }
-    
-    .event-title {
-      font-size: clamp(20px, 4vw, 28px); font-weight: 800; margin: 0 0 8px 0;
-      color: var(--primary); line-height: 1.2; padding: 16px 20px;
-      background: linear-gradient(135deg, var(--primary-light) 0%, #f0f7f4 100%);
-      border-radius: 12px; border: 2px solid var(--primary);
-    }
-    
-    .page-title { font-size: clamp(24px, 4vw, 36px); font-weight: 800; margin: 16px 0 8px 0; color: var(--text-primary); }
-    .subtitle { color: var(--text-secondary); font-size: 15px; }
-    .tab-buttons { display: flex; gap: 12px; margin-bottom: 24px; justify-content: center; }
-    
-    .tab-btn {
-      padding: 16px 32px; border: 2px solid var(--border-color); border-radius: 12px;
-      background: var(--bg-white); color: var(--text-secondary);
-      font-size: 16px; font-weight: 600; cursor: pointer;
-      transition: all 0.2s ease; display: flex; align-items: center; gap: 10px;
-    }
-    
-    .tab-btn:hover { border-color: var(--primary); color: var(--primary); }
-    .tab-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
-    .tab-btn .icon { font-size: 20px; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    
-    .card {
-      background: var(--bg-white); border: 1px solid var(--border-color);
-      border-radius: 16px; padding: 24px; margin-bottom: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    
-    .form-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
-    .form-subtitle { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; }
-    .form-group { margin-bottom: 16px; }
-    .form-label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500; color: var(--text-primary); }
-    
-    .form-select, .form-input {
-      width: 100%; padding: 12px 14px; background: var(--bg-white);
-      border: 1px solid var(--border-color); border-radius: 8px;
-      color: var(--text-primary); font-size: 15px; font-family: inherit;
-      cursor: pointer; transition: border-color 0.2s ease;
-    }
-    
-    .form-select:focus, .form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
-    .form-select.highlight { background: var(--primary-light); border: 2px solid var(--primary); font-weight: 500; }
-    
-    .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 8px; }
-    
-    .player-checkbox {
-      display: flex; align-items: center; gap: 10px; padding: 12px;
-      background: var(--bg-light); border: 2px solid transparent;
-      border-radius: 10px; cursor: pointer; transition: all 0.2s ease;
-    }
-    
-    .player-checkbox:hover { background: var(--primary-light); }
-    .player-checkbox.selected { background: var(--primary-light); border-color: var(--primary); }
-    .player-checkbox input { width: 18px; height: 18px; accent-color: var(--primary); }
-    .player-name { font-weight: 500; font-size: 14px; }
-    .player-id { font-size: 12px; color: var(--text-muted); }
-    .hint-text { font-size: 13px; color: var(--text-muted); margin-top: 8px; }
-    .hint-text.success { color: var(--success); }
-    .hint-text.error { color: var(--error); }
-    
-    .file-preview {
-      background: var(--primary-light); border: 1px solid var(--primary);
-      border-radius: 10px; padding: 12px 16px; margin-top: 16px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    
-    .file-preview-icon { font-size: 24px; }
-    .file-preview-name { font-weight: 600; color: var(--primary); font-size: 14px; }
-    .file-preview-label { font-size: 12px; color: var(--text-secondary); }
-    
-    .upload-area {
-      border: 2px dashed var(--border-color); border-radius: 12px; padding: 40px;
-      text-align: center; background: var(--bg-light);
-      transition: all 0.2s ease; cursor: pointer; margin-top: 16px;
-    }
-    
-    .upload-area:hover, .upload-area.dragover { border-color: var(--primary); background: var(--primary-light); }
-    .upload-icon { font-size: 40px; margin-bottom: 12px; }
-    .upload-text { font-size: 15px; font-weight: 500; margin-bottom: 4px; color: var(--text-primary); }
-    .upload-hint { font-size: 13px; color: var(--text-muted); }
-    
-    .modal-overlay {
-      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;
-    }
-    
-    .modal-overlay.active { display: flex; }
-    
-    .modal {
-      background: white; border-radius: 16px; padding: 24px; max-width: 450px;
-      width: 90%; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-    }
-    
-    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
-    .modal-text { color: var(--text-secondary); font-size: 14px; margin-bottom: 8px; }
-    .modal-players { background: var(--primary-light); padding: 12px 16px; border-radius: 8px; margin: 16px 0; font-weight: 600; color: var(--primary); font-size: 15px; }
-    .modal-buttons { display: flex; gap: 12px; margin-top: 20px; }
-    
-    .btn { flex: 1; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; border: none; }
-    .btn-cancel { background: var(--bg-light); color: var(--text-secondary); }
-    .btn-cancel:hover { background: var(--border-color); }
-    .btn-confirm { background: var(--primary); color: white; }
-    .btn-confirm:hover { background: var(--primary-dark); }
-    
-    .alert { padding: 14px 18px; border-radius: 10px; margin-top: 16px; font-size: 14px; font-weight: 500; }
-    .alert-success { background: var(--success-light); color: var(--success); border: 1px solid var(--success); }
-    .alert-error { background: var(--error-light); color: var(--error); border: 1px solid var(--error); }
-    
-    .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; padding: 14px 18px; background: var(--bg-light); border-radius: 10px; font-size: 13px; }
-    .legend-item { display: flex; align-items: center; gap: 8px; }
-    .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
-    .legend-dot.green { background: var(--success); }
-    .legend-dot.yellow { background: var(--warning); }
-    .legend-dot.red { background: var(--error); }
-    
-    .filters { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-    .search-input { flex: 1; min-width: 200px; }
-    
-    .team-card {
-      background: var(--bg-white); border: 1px solid var(--border-color);
-      border-radius: 12px; margin-bottom: 12px; overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    
-    .team-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s ease; }
-    .team-header:hover { background: var(--bg-light); }
-    .team-name { font-weight: 600; font-size: 16px; }
-    .team-country { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .team-status { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); }
-    .status-dot { width: 12px; height: 12px; border-radius: 50%; }
-    .status-dot.green { background: var(--success); }
-    .status-dot.yellow { background: var(--warning); }
-    .status-dot.red { background: var(--error); }
-    
-    .team-details { padding: 0 16px 16px; border-top: 1px solid var(--border-color); display: none; }
-    .team-details.open { display: block; }
-    .cards-list { margin-top: 12px; }
-    
-    .card-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 14px; background: var(--bg-light); border-radius: 8px; margin-bottom: 8px; }
-    .card-info { display: flex; align-items: flex-start; gap: 10px; flex: 1; }
-    .card-icon { font-size: 20px; }
-    .card-players { font-weight: 500; font-size: 14px; line-height: 1.6; }
-    .card-date { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-    .card-status { font-size: 11px; padding: 4px 10px; border-radius: 4px; margin-top: 6px; display: inline-block; }
-    .card-status.validated { background: var(--success-light); color: var(--success); }
-    .card-status.pending { background: var(--warning-light); color: var(--warning); }
-    .card-status.refused { background: var(--error-light); color: var(--error); }
-    .refused-reason { font-size: 12px; color: var(--error); margin-top: 4px; padding: 8px 12px; background: var(--error-light); border-radius: 6px; }
-    
-    .card-actions { display: flex; gap: 8px; flex-shrink: 0; }
-    .btn-small { padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; border: none; text-decoration: none; }
-    .btn-view { background: var(--primary-light); color: var(--primary); }
-    .btn-view:hover { background: var(--primary); color: white; }
-    .btn-copy { background: var(--bg-white); color: var(--text-secondary); border: 1px solid var(--border-color); }
-    .btn-copy:hover { background: var(--bg-light); }
-    .btn-copy.copied { background: var(--success-light); color: var(--success); border-color: var(--success); }
-    .no-cards { color: var(--text-muted); font-size: 14px; font-style: italic; }
-    
-    .instructions { background: var(--bg-white); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-top: 24px; }
-    .instructions h3 { font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .instructions ul { margin-left: 24px; color: var(--text-secondary); font-size: 14px; }
-    .instructions li { margin-bottom: 6px; }
-    .instructions a { color: var(--primary); }
-    
-    .contact-banner { background: var(--primary-light); border: 1px solid var(--primary); border-radius: 10px; padding: 14px 20px; margin-top: 20px; text-align: center; font-size: 14px; }
-    .contact-banner strong { color: var(--primary); }
-    .contact-banner a { color: var(--primary); font-weight: 600; }
-    
-    .loading-container { text-align: center; padding: 40px; }
-    .spinner { width: 36px; height: 36px; border: 3px solid var(--border-color); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    
-    @media (max-width: 600px) {
-      .tab-buttons { flex-direction: column; }
-      .tab-btn { justify-content: center; }
-      .filters { flex-direction: column; }
-      .card-item { flex-direction: column; align-items: flex-start; gap: 10px; }
-      .card-actions { width: 100%; }
-      .btn-small { flex: 1; text-align: center; }
-      .modal-buttons { flex-direction: column; }
-      .legend { flex-direction: column; gap: 10px; }
-    }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#00854A;--primary-dark:#006838;--primary-light:#e6f5ed;--bg-light:#f8fafc;--bg-white:#fff;--text-primary:#1e293b;--text-secondary:#64748b;--text-muted:#94a3b8;--border-color:#e2e8f0;--success:#16a34a;--success-light:#dcfce7;--warning:#ca8a04;--warning-light:#fef9c3;--error:#dc2626;--error-light:#fee2e2;--info:#0284c7;--info-light:#e0f2fe}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg-light);color:var(--text-primary);min-height:100vh;line-height:1.6}
+.container{max-width:900px;margin:0 auto;padding:32px 20px}
+.header{text-align:center;margin-bottom:32px}
+.event-title{font-size:clamp(20px,4vw,28px);font-weight:800;margin:0 0 8px 0;color:var(--primary);line-height:1.2;padding:16px 20px;background:linear-gradient(135deg,var(--primary-light) 0%,#f0f7f4 100%);border-radius:12px;border:2px solid var(--primary)}
+.page-title{font-size:clamp(24px,4vw,36px);font-weight:800;margin:16px 0 8px 0;color:var(--text-primary)}
+.subtitle{color:var(--text-secondary);font-size:15px}
+.disclaimer-banner{background:var(--info-light);border:1px solid var(--info);border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#0369a1}
+.disclaimer-banner strong{color:#0369a1}
+.tab-buttons{display:flex;gap:12px;margin-bottom:24px;justify-content:center}
+.tab-btn{padding:16px 32px;border:2px solid var(--border-color);border-radius:12px;background:var(--bg-white);color:var(--text-secondary);font-size:16px;font-weight:600;cursor:pointer;transition:all .2s ease;display:flex;align-items:center;gap:10px}
+.tab-btn:hover{border-color:var(--primary);color:var(--primary)}
+.tab-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.tab-btn .icon{font-size:20px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.card{background:var(--bg-white);border:1px solid var(--border-color);border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.form-title{font-size:20px;font-weight:700;margin-bottom:4px;color:var(--text-primary);display:flex;align-items:center;gap:10px}
+.form-subtitle{color:var(--text-secondary);font-size:14px;margin-bottom:20px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;margin-bottom:6px;font-size:14px;font-weight:500;color:var(--text-primary)}
+.form-select,.form-input{width:100%;padding:12px 14px;background:var(--bg-white);border:1px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-size:15px;font-family:inherit;cursor:pointer;transition:border-color .2s ease}
+.form-select:focus,.form-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.form-select.highlight{background:var(--primary-light);border:2px solid var(--primary);font-weight:500}
+.players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:8px}
+.player-checkbox{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg-light);border:2px solid transparent;border-radius:10px;cursor:pointer;transition:all .2s ease}
+.player-checkbox:hover{background:var(--primary-light)}
+.player-checkbox.selected{background:var(--primary-light);border-color:var(--primary)}
+.player-checkbox input{width:18px;height:18px;accent-color:var(--primary)}
+.player-name{font-weight:500;font-size:14px}
+.player-id{font-size:12px;color:var(--text-muted)}
+.hint-text{font-size:13px;color:var(--text-muted);margin-top:8px}
+.hint-text.success{color:var(--success)}
+.hint-text.error{color:var(--error)}
+.file-preview{background:var(--primary-light);border:1px solid var(--primary);border-radius:10px;padding:12px 16px;margin-top:16px;display:flex;align-items:center;gap:10px}
+.file-preview-icon{font-size:24px}
+.file-preview-name{font-weight:600;color:var(--primary);font-size:14px}
+.file-preview-label{font-size:12px;color:var(--text-secondary)}
+.upload-area{border:2px dashed var(--border-color);border-radius:12px;padding:40px;text-align:center;background:var(--bg-light);transition:all .2s ease;cursor:pointer;margin-top:16px}
+.upload-area:hover,.upload-area.dragover{border-color:var(--primary);background:var(--primary-light)}
+.upload-icon{font-size:40px;margin-bottom:12px}
+.upload-text{font-size:15px;font-weight:500;margin-bottom:4px;color:var(--text-primary)}
+.upload-hint{font-size:13px;color:var(--text-muted)}
+.confirm-box{background:var(--warning-light);border:1px solid var(--warning);border-radius:10px;padding:16px;margin-top:16px}
+.confirm-box-title{font-weight:600;color:#92400e;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.confirm-box-text{font-size:14px;color:#78350f;margin-bottom:12px}
+.confirm-box-players{background:#fef3c7;padding:10px 14px;border-radius:6px;font-weight:600;color:#92400e;margin-bottom:12px}
+.confirm-box-buttons{display:flex;gap:10px}
+.confirm-box-disclaimer{font-size:12px;color:#92400e;margin-top:12px;padding-top:12px;border-top:1px solid #f59e0b}
+.btn{padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s ease;border:none}
+.btn-cancel{background:#fef3c7;color:#92400e;border:1px solid #f59e0b}
+.btn-cancel:hover{background:#fde68a}
+.btn-confirm{background:var(--primary);color:#fff}
+.btn-confirm:hover{background:var(--primary-dark)}
+.alert{padding:14px 18px;border-radius:10px;margin-top:16px;font-size:14px;font-weight:500}
+.alert-success{background:var(--success-light);color:var(--success);border:1px solid var(--success)}
+.alert-success .disclaimer-note{font-size:12px;font-weight:400;margin-top:10px;padding-top:10px;border-top:1px solid var(--success);color:#166534}
+.alert-error{background:var(--error-light);color:var(--error);border:1px solid var(--error)}
+.legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;padding:14px 18px;background:var(--bg-light);border-radius:10px;font-size:13px}
+.legend-item{display:flex;align-items:center;gap:8px}
+.legend-dot{width:12px;height:12px;border-radius:50%}
+.legend-dot.green{background:var(--success)}
+.legend-dot.yellow{background:var(--warning)}
+.legend-dot.red{background:var(--error)}
+.filters{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.search-input{flex:1;min-width:200px}
+.team-card{background:var(--bg-white);border:1px solid var(--border-color);border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.team-header{padding:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .2s ease}
+.team-header:hover{background:var(--bg-light)}
+.team-name{font-weight:600;font-size:16px}
+.team-country{font-size:12px;color:var(--text-muted);margin-top:2px}
+.team-status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-secondary)}
+.status-dot{width:12px;height:12px;border-radius:50%}
+.status-dot.green{background:var(--success)}
+.status-dot.yellow{background:var(--warning)}
+.status-dot.red{background:var(--error)}
+.team-details{padding:0 16px 16px;border-top:1px solid var(--border-color);display:none}
+.team-details.open{display:block}
+.cards-list{margin-top:12px}
+.card-item{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 14px;background:var(--bg-light);border-radius:8px;margin-bottom:8px}
+.card-info{display:flex;align-items:flex-start;gap:10px;flex:1}
+.card-icon{font-size:20px}
+.card-players{font-weight:500;font-size:14px;line-height:1.6}
+.card-date{font-size:12px;color:var(--text-muted);margin-top:4px}
+.card-status{font-size:11px;padding:4px 10px;border-radius:4px;margin-top:6px;display:inline-block}
+.card-status.validated{background:var(--success-light);color:var(--success)}
+.card-status.pending{background:var(--warning-light);color:var(--warning)}
+.card-status.refused{background:var(--error-light);color:var(--error)}
+.status-help{font-size:11px;color:var(--info);cursor:pointer;margin-left:6px;text-decoration:underline;position:relative}
+.status-help:hover .tooltip{display:block}
+.tooltip{display:none;position:absolute;bottom:100%;left:50%;transform:translateX(-50%);width:280px;background:#1e293b;color:#fff;padding:10px 12px;border-radius:8px;font-size:11px;line-height:1.5;z-index:100;margin-bottom:8px;text-decoration:none;font-weight:400}
+.tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#1e293b}
+.refused-reason{font-size:12px;color:var(--error);margin-top:4px;padding:8px 12px;background:var(--error-light);border-radius:6px}
+.card-actions{display:flex;gap:8px;flex-shrink:0}
+.btn-small{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s ease;border:none;text-decoration:none}
+.btn-view{background:var(--primary-light);color:var(--primary)}
+.btn-view:hover{background:var(--primary);color:#fff}
+.btn-copy{background:var(--bg-white);color:var(--text-secondary);border:1px solid var(--border-color)}
+.btn-copy:hover{background:var(--bg-light)}
+.btn-copy.copied{background:var(--success-light);color:var(--success);border-color:var(--success)}
+.no-cards{color:var(--text-muted);font-size:14px;font-style:italic}
+.instructions{background:var(--bg-white);border:1px solid var(--border-color);border-radius:12px;padding:20px;margin-top:24px}
+.instructions h3{font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.instructions ul{margin-left:24px;color:var(--text-secondary);font-size:14px}
+.instructions li{margin-bottom:6px}
+.instructions a{color:var(--primary)}
+.instructions .disclaimer-box{background:var(--info-light);border:1px solid var(--info);border-radius:8px;padding:12px 14px;margin-top:16px;font-size:13px;color:#0369a1}
+.contact-banner{background:var(--primary-light);border:1px solid var(--primary);border-radius:10px;padding:14px 20px;margin-top:20px;text-align:center;font-size:14px}
+.contact-banner strong{color:var(--primary)}
+.contact-banner a{color:var(--primary);font-weight:600}
+.loading-container{text-align:center;padding:40px}
+.spinner{width:36px;height:36px;border:3px solid var(--border-color);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.freeze-banner{background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:14px 20px;margin-bottom:20px;text-align:center;font-size:14px;color:#92400e}
+@media(max-width:600px){.tab-buttons{flex-direction:column}.tab-btn{justify-content:center}.filters{flex-direction:column}.card-item{flex-direction:column;align-items:flex-start;gap:10px}.card-actions{width:100%}.btn-small{flex:1;text-align:center}.confirm-box-buttons{flex-direction:column}.legend{flex-direction:column;gap:10px}.tooltip{width:220px;left:0;transform:none}}
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="event-title" id="event-title">Loading...</div>
-      <h1 class="page-title">System Cards Portal</h1>
-      <p class="subtitle">Upload and manage convention cards</p>
-    </div>
-    
-    <div class="tab-buttons">
-      <button class="tab-btn" onclick="showTab('upload')"><span class="icon">📤</span> Upload System Card</button>
-      <button class="tab-btn active" onclick="showTab('view')"><span class="icon">📋</span> View All System Cards</button>
-    </div>
-    
-    <div id="upload-tab" class="tab-content">
-      <div class="card">
-        <h2 class="form-title">📤 Upload Your System Card</h2>
-        <p class="form-subtitle" id="upload-subtitle">Select your team and players, then upload your convention card (PDF format)</p>
-        
-        <div class="form-group">
-          <label class="form-label" id="entity-label">Team</label>
-          <select id="entity-select" class="form-select highlight" onchange="handleEntityChange()">
-            <option value="">Loading...</option>
-          </select>
-        </div>
-        
-        <div class="form-group" id="players-group" style="display: none;">
-          <label class="form-label">Select players for this System Card (minimum 2)</label>
-          <div class="players-grid" id="players-checkboxes"></div>
-          <p class="hint-text" id="players-hint">Select at least 2 players who share this convention card</p>
-        </div>
-        
-        <div id="file-preview" style="display: none;">
-          <div class="file-preview">
-            <span class="file-preview-icon">📄</span>
-            <div>
-              <div class="file-preview-label">System Card for:</div>
-              <div class="file-preview-name" id="file-name-preview"></div>
-            </div>
-          </div>
-        </div>
-        
-        <div id="upload-container" style="display: none;">
-          <div class="upload-area" id="drop-zone">
-            <div class="upload-icon">📄</div>
-            <p class="upload-text">Drop your PDF here or click to browse</p>
-            <p class="upload-hint">Max 10MB - PDF only</p>
-          </div>
-          <input type="file" id="file-input" accept=".pdf,application/pdf" style="display: none;">
-        </div>
-        
-        <div id="upload-status"></div>
-      </div>
-    </div>
-    
-    <div id="view-tab" class="tab-content active">
-      <div class="card">
-        <h2 class="form-title">📋 All Uploaded System Cards</h2>
-        <p class="form-subtitle">View and download all system cards for this event</p>
-        
-        <div class="legend">
-          <div class="legend-item"><span class="legend-dot green"></span><span>All System Cards submitted and validated</span></div>
-          <div class="legend-item"><span class="legend-dot yellow"></span><span>System Cards pending or missing</span></div>
-          <div class="legend-item"><span class="legend-dot red"></span><span>No System Cards or refused</span></div>
-        </div>
-        
-        <div class="filters">
-          <input type="text" id="search-input" class="form-input search-input" placeholder="Search by name..." oninput="filterEntities()">
-        </div>
-        
-        <div id="entities-list">
-          <div class="loading-container">
-            <div class="spinner"></div>
-            <p style="color: var(--text-muted);">Loading System Cards...</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="instructions">
-      <h3>📌 Instructions</h3>
-      <ul>
-        <li>All files must be in <strong>PDF format</strong></li>
-        <li>System Cards must be in <strong>English</strong></li>
-        <li>Player names must <strong>exactly match</strong> registration</li>
-        <li>Handwritten cards are <strong>not allowed</strong></li>
-      </ul>
-      <p style="margin-top: 12px;">Need a blank template? <a href="http://www.eurobridge.org/wp-content/uploads/2025/12/BlankEBLSystemcardWord.doc" target="_blank">📄 Download Blank System Card (Word)</a></p>
-    </div>
-    
-    <div class="contact-banner">
-      <strong>Any problems?</strong> Contact us at <a href="mailto:info@eurobridge.org">info@eurobridge.org</a>
-    </div>
-  </div>
-  
-  <div class="modal-overlay" id="confirm-modal">
-    <div class="modal">
-      <div class="modal-title">⚠️ Confirm Upload</div>
-      <p class="modal-text">You are about to upload a system card for:</p>
-      <div class="modal-players" id="modal-players"></div>
-      <p class="modal-text">This will replace any existing system card for these players. Are you sure?</p>
-      <div class="modal-buttons">
-        <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-confirm" onclick="confirmUpload()">Yes, Upload</button>
-      </div>
-    </div>
-  </div>
-
+<div class="container">
+<div class="header">
+<div class="event-title" id="event-title">Loading...</div>
+<h1 class="page-title">System Cards Portal</h1>
+<p class="subtitle">Upload and manage convention cards</p>
+</div>
+<div class="disclaimer-banner">
+<strong>ℹ️ Important:</strong> Staff only verifies that uploaded files are valid and readable PDFs. The accuracy and compliance of System Card contents with current regulations remains the sole responsibility of the players.
+</div>
+<div class="tab-buttons">
+<button class="tab-btn" id="upload-btn" onclick="showTab('upload')"><span class="icon">📤</span> Upload System Card</button>
+<button class="tab-btn active" onclick="showTab('view')"><span class="icon">📋</span> View All System Cards</button>
+</div>
+<div id="upload-tab" class="tab-content">
+<div class="card">
+<h2 class="form-title">📤 Upload Your System Card</h2>
+<p class="form-subtitle" id="upload-subtitle">Select your team and players, then upload your convention card (PDF format)</p>
+<div class="form-group">
+<label class="form-label" id="entity-label">Team</label>
+<select id="entity-select" class="form-select highlight" onchange="handleEntityChange()"><option value="">Loading...</option></select>
+</div>
+<div class="form-group" id="players-group" style="display:none">
+<label class="form-label">Select players for this System Card (minimum 2)</label>
+<div class="players-grid" id="players-checkboxes"></div>
+<p class="hint-text" id="players-hint">Select at least 2 players who share this convention card</p>
+</div>
+<div id="file-preview" style="display:none">
+<div class="file-preview"><span class="file-preview-icon">📄</span><div><div class="file-preview-label">System Card for:</div><div class="file-preview-name" id="file-name-preview"></div></div></div>
+</div>
+<div id="upload-container" style="display:none">
+<div class="upload-area" id="drop-zone"><div class="upload-icon">📄</div><p class="upload-text">Drop your PDF here or click to browse</p><p class="upload-hint">Max 10MB - PDF only</p></div>
+<input type="file" id="file-input" accept=".pdf,application/pdf" style="display:none">
+</div>
+<div id="confirm-container" style="display:none">
+<div class="confirm-box">
+<div class="confirm-box-title">⚠️ Confirm Upload</div>
+<p class="confirm-box-text">You are about to upload a System Card for:</p>
+<div class="confirm-box-players" id="confirm-players"></div>
+<p class="confirm-box-text">This will replace any existing System Card for these players.</p>
+<div class="confirm-box-buttons">
+<button class="btn btn-cancel" onclick="cancelUpload()">Cancel</button>
+<button class="btn btn-confirm" onclick="confirmUpload()">Yes, Upload</button>
+</div>
+<div class="confirm-box-disclaimer">
+<strong>ℹ️ Important:</strong> Staff only verifies that uploaded files are valid and readable PDFs. The accuracy and compliance of System Card contents with current regulations remains the sole responsibility of the players.
+</div>
+</div>
+</div>
+<div id="upload-status"></div>
+</div>
+</div>
+<div id="view-tab" class="tab-content active">
+<div class="card">
+<h2 class="form-title">📋 All Uploaded System Cards</h2>
+<p class="form-subtitle">View and download all system cards for this event</p>
+<div class="legend">
+<div class="legend-item"><span class="legend-dot green"></span><span>All System Cards submitted and file accepted</span></div>
+<div class="legend-item"><span class="legend-dot yellow"></span><span>System Cards pending or missing</span></div>
+<div class="legend-item"><span class="legend-dot red"></span><span>No System Cards or file issue</span></div>
+</div>
+<div class="filters"><input type="text" id="search-input" class="form-input search-input" placeholder="Search by name..." oninput="filterEntities()"></div>
+<div id="entities-list"><div class="loading-container"><div class="spinner"></div><p style="color:var(--text-muted)">Loading System Cards...</p></div></div>
+</div>
+</div>
+<div class="instructions">
+<h3>📌 Instructions</h3>
+<ul>
+<li>All files must be in <strong>PDF format</strong></li>
+<li>System Cards must be in <strong>English</strong></li>
+<li>Player names must <strong>exactly match</strong> registration</li>
+<li>Handwritten cards are <strong>not allowed</strong></li>
+</ul>
+<p style="margin-top:12px">Need a blank template? <a href="http://www.eurobridge.org/wp-content/uploads/2025/12/BlankEBLSystemcardWord.doc" target="_blank">📄 Download Blank System Card (Word)</a></p>
+<div class="disclaimer-box">
+<strong>ℹ️ Important:</strong> Staff only verifies that uploaded files are valid and readable PDFs. The accuracy and compliance of System Card contents with current regulations remains the sole responsibility of the players.
+</div>
+</div>
+<div class="contact-banner"><strong>Any problems?</strong> Contact us at <a href="mailto:info@eurobridge.org">info@eurobridge.org</a></div>
+</div>
 <script>
-var urlParams = new URLSearchParams(window.location.search);
-var tournamentCode = urlParams.get('tournament') || '26prague';
-var eventFilter = urlParams.get('event') || '';
-
-var EVENT_CONFIG = {
-  'Winter Open Teams': { type: 'teams', title: 'EUROPEAN WINTER OPEN TEAMS CHAMPIONSHIP' },
-  'Winter Swiss Cup': { type: 'teams', title: 'EUROPEAN WINTER SWISS CUP' },
-  'Winter Mixed Teams': { type: 'teams', title: 'EUROPEAN WINTER MIXED TEAMS CHAMPIONSHIP' },
-  'Winter Open BAM': { type: 'teams', title: 'EUROPEAN WINTER OPEN BAM' },
-  'Winter Open Pairs': { type: 'pairs', title: 'EUROPEAN WINTER OPEN PAIRS' },
-  'Winter Mixed Pairs': { type: 'pairs', title: 'EUROPEAN WINTER MIXED PAIRS' }
-};
-
-var CONFIG = {
-  tournamentCode: tournamentCode,
-  eventFilter: eventFilter,
-  eventType: EVENT_CONFIG[eventFilter] ? EVENT_CONFIG[eventFilter].type : 'teams',
-  eventTitle: EVENT_CONFIG[eventFilter] ? EVENT_CONFIG[eventFilter].title : (eventFilter || 'All Events'),
-  apiEndpoint: window.location.origin + '/api'
-};
-
-document.getElementById('event-title').textContent = CONFIG.eventTitle;
-
-if (CONFIG.eventType === 'pairs') {
-  document.getElementById('entity-label').textContent = 'Pair';
-  document.getElementById('upload-subtitle').textContent = 'Select your pair, then upload your convention card (PDF format)';
-}
-
-var entities = [];
-var uploadedCards = [];
-var validationStatus = {};
-var selectedEntity = null;
-var selectedPlayers = [];
-var pendingFile = null;
-
-document.addEventListener('DOMContentLoaded', function() {
-  loadEntities().then(function() {
-    return loadUploadedCards();
-  }).then(function() {
-    return loadValidationStatus();
-  }).then(function() {
-    setupDragDrop();
-    setupFileInput();
-  });
+var DISCLAIMER_TEXT='Staff only verifies that uploaded files are valid and readable PDFs. The accuracy and compliance of System Card contents with current regulations remains the sole responsibility of the players.';
+var urlParams=new URLSearchParams(window.location.search);
+var tournamentCode=urlParams.get('tournament')||'26prague';
+var eventFilter=urlParams.get('event')||'';
+var isFrozen=urlParams.get('freeze')==='1';
+var freezeMessage=decodeURIComponent(urlParams.get('freezeMsg')||'Upload closed');
+var EVENT_CONFIG={'Winter Open Teams':{type:'teams',title:'EUROPEAN WINTER OPEN TEAMS CHAMPIONSHIP'},'Winter Swiss Cup':{type:'teams',title:'EUROPEAN WINTER SWISS CUP'},'Winter Mixed Teams':{type:'teams',title:'EUROPEAN WINTER MIXED TEAMS CHAMPIONSHIP'},'Winter Open BAM':{type:'teams',title:'EUROPEAN WINTER OPEN BAM'},'Winter Open Pairs':{type:'pairs',title:'EUROPEAN WINTER OPEN PAIRS'},'Winter Mixed Pairs':{type:'pairs',title:'EUROPEAN WINTER MIXED PAIRS'}};
+var CONFIG={tournamentCode:tournamentCode,eventFilter:eventFilter,eventType:EVENT_CONFIG[eventFilter]?EVENT_CONFIG[eventFilter].type:'teams',eventTitle:EVENT_CONFIG[eventFilter]?EVENT_CONFIG[eventFilter].title:(eventFilter||'All Events'),apiEndpoint:window.location.origin+'/api'};
+document.getElementById('event-title').textContent=CONFIG.eventTitle;
+if(CONFIG.eventType==='pairs'){document.getElementById('entity-label').textContent='Pair';document.getElementById('upload-subtitle').textContent='Select your pair, then upload your convention card (PDF format)';}
+var entities=[],uploadedCards=[],validationStatus={},selectedEntity=null,selectedPlayers=[],pendingFile=null;
+document.addEventListener('DOMContentLoaded',function(){
+if(isFrozen){var ub=document.getElementById('upload-btn');if(ub){ub.style.opacity='0.5';ub.style.pointerEvents='none';ub.innerHTML='<span class="icon">🔒</span> Upload Closed';}var bn=document.createElement('div');bn.className='freeze-banner';bn.innerHTML='<strong>⚠️ '+freezeMessage+'</strong>';var tb=document.querySelector('.tab-buttons');if(tb)tb.parentNode.insertBefore(bn,tb);}
+loadEntities().then(function(){return loadUploadedCards();}).then(function(){return loadValidationStatus();}).then(function(){setupDragDrop();setupFileInput();});
 });
-
-function loadEntities() {
-  return new Promise(function(resolve) {
-    var url = CONFIG.apiEndpoint + '/' + (CONFIG.eventType === 'pairs' ? 'pairs' : 'teams') + '?tournament=' + CONFIG.tournamentCode;
-    fetch(url).then(function(response) {
-      return response.json();
-    }).then(function(data) {
-      entities = data.pairs || data.teams || [];
-      if (CONFIG.eventFilter) {
-        entities = entities.filter(function(e) { return e.event === CONFIG.eventFilter; });
-      }
-      console.log('Loaded ' + entities.length + ' ' + CONFIG.eventType);
-      populateEntitySelect();
-      renderEntitiesList();
-      resolve();
-    }).catch(function(error) {
-      console.error('Failed to load entities:', error);
-      resolve();
-    });
-  });
-}
-
-function loadUploadedCards() {
-  return new Promise(function(resolve) {
-    fetch(CONFIG.apiEndpoint + '/cards?tournament=' + CONFIG.tournamentCode).then(function(response) {
-      return response.json();
-    }).then(function(data) {
-      uploadedCards = data.cards || [];
-      console.log('Loaded ' + uploadedCards.length + ' cards');
-      renderEntitiesList();
-      resolve();
-    }).catch(function(error) {
-      console.error('Failed to load cards:', error);
-      resolve();
-    });
-  });
-}
-
-function loadValidationStatus() {
-  return new Promise(function(resolve) {
-    fetch(CONFIG.apiEndpoint + '/validation?tournament=' + CONFIG.tournamentCode + '&event=' + encodeURIComponent(CONFIG.eventFilter)).then(function(response) {
-      if (response.ok) return response.json();
-      return { status: {} };
-    }).then(function(data) {
-      validationStatus = data.status || {};
-      renderEntitiesList();
-      resolve();
-    }).catch(function() {
-      resolve();
-    });
-  });
-}
-
-function showTab(tab) {
-  var btns = document.querySelectorAll('.tab-btn');
-  var contents = document.querySelectorAll('.tab-content');
-  for (var i = 0; i < btns.length; i++) { btns[i].classList.remove('active'); }
-  for (var j = 0; j < contents.length; j++) { contents[j].classList.remove('active'); }
-  document.querySelector('[onclick="showTab(\'' + tab + '\')"]').classList.add('active');
-  document.getElementById(tab + '-tab').classList.add('active');
-}
-
-function populateEntitySelect() {
-  var select = document.getElementById('entity-select');
-  var label = CONFIG.eventType === 'pairs' ? 'Select your pair...' : 'Select your team...';
-  select.innerHTML = '<option value="">' + label + '</option>';
-  for (var i = 0; i < entities.length; i++) {
-    var entity = entities[i];
-    var option = document.createElement('option');
-    option.value = entity.id;
-    option.textContent = entity.name + (entity.country ? ' (' + entity.country + ')' : '');
-    select.appendChild(option);
-  }
-}
-
-function handleEntityChange() {
-  var select = document.getElementById('entity-select');
-  var playersGroup = document.getElementById('players-group');
-  var playersContainer = document.getElementById('players-checkboxes');
-  var entityId = select.value;
-  
-  selectedEntity = null;
-  for (var i = 0; i < entities.length; i++) {
-    if (entities[i].id === entityId) { selectedEntity = entities[i]; break; }
-  }
-  selectedPlayers = [];
-  
-  if (!selectedEntity) {
-    playersGroup.style.display = 'none';
-    document.getElementById('file-preview').style.display = 'none';
-    document.getElementById('upload-container').style.display = 'none';
-    return;
-  }
-  
-  if (CONFIG.eventType === 'pairs' && selectedEntity.players.length === 2) {
-    selectedPlayers = selectedEntity.players.slice();
-    playersGroup.style.display = 'none';
-    updateFilePreviewFromPlayers();
-    return;
-  }
-  
-  var playablePlayers = [];
-  for (var j = 0; j < selectedEntity.players.length; j++) {
-    if (!isCoachOrCaptain(selectedEntity.players[j])) {
-      playablePlayers.push(selectedEntity.players[j]);
-    }
-  }
-  
-  var html = '';
-  for (var k = 0; k < playablePlayers.length; k++) {
-    var player = playablePlayers[k];
-    html += '<label class="player-checkbox" data-id="' + (player.wbfId || player.surname) + '">';
-    html += '<input type="checkbox" value="' + (player.wbfId || player.surname) + '" onchange="handlePlayerSelection()">';
-    html += '<div><div class="player-name">👤 ' + player.fullName + '</div>';
-    if (player.wbfId) { html += '<div class="player-id">WBF ID: ' + player.wbfId + '</div>'; }
-    html += '</div></label>';
-  }
-  playersContainer.innerHTML = html;
-  
-  playersGroup.style.display = 'block';
-  document.getElementById('file-preview').style.display = 'none';
-  document.getElementById('upload-container').style.display = 'none';
-  updateHint();
-}
-
-function isCoachOrCaptain(player) {
-  var name = player.fullName.toLowerCase();
-  var role = (player.role || '').toLowerCase();
-  return role.indexOf('coach') >= 0 || role.indexOf('captain') >= 0 || 
-         name.indexOf('(coach)') >= 0 || name.indexOf('(captain)') >= 0 ||
-         name.indexOf('(npc)') >= 0 || role.indexOf('npc') >= 0;
-}
-
-function handlePlayerSelection() {
-  var checkboxes = document.querySelectorAll('#players-checkboxes input[type="checkbox"]');
-  selectedPlayers = [];
-  
-  var playablePlayers = [];
-  for (var i = 0; i < selectedEntity.players.length; i++) {
-    if (!isCoachOrCaptain(selectedEntity.players[i])) {
-      playablePlayers.push(selectedEntity.players[i]);
-    }
-  }
-  
-  for (var j = 0; j < checkboxes.length; j++) {
-    var cb = checkboxes[j];
-    var label = cb.closest('.player-checkbox');
-    if (cb.checked) {
-      label.classList.add('selected');
-      for (var k = 0; k < playablePlayers.length; k++) {
-        if ((playablePlayers[k].wbfId || playablePlayers[k].surname) === cb.value) {
-          selectedPlayers.push(playablePlayers[k]);
-          break;
-        }
-      }
-    } else {
-      label.classList.remove('selected');
-    }
-  }
-  
-  updateHint();
-  updateFilePreviewFromPlayers();
-}
-
-function updateHint() {
-  var hint = document.getElementById('players-hint');
-  var count = selectedPlayers.length;
-  if (count === 0) {
-    hint.textContent = 'Select at least 2 players who share this convention card';
-    hint.className = 'hint-text';
-  } else if (count === 1) {
-    hint.textContent = '⚠️ Select at least 1 more player';
-    hint.className = 'hint-text error';
-  } else {
-    hint.textContent = '✓ ' + count + ' players selected';
-    hint.className = 'hint-text success';
-  }
-}
-
-function updateFilePreviewFromPlayers() {
-  if (selectedPlayers.length < 2) {
-    document.getElementById('file-preview').style.display = 'none';
-    document.getElementById('upload-container').style.display = 'none';
-    return;
-  }
-  var sortedPlayers = selectedPlayers.slice().sort(function(a, b) { return a.surname.localeCompare(b.surname); });
-  var names = [];
-  for (var i = 0; i < sortedPlayers.length; i++) { names.push(sortedPlayers[i].fullName); }
-  document.getElementById('file-name-preview').textContent = names.join(' & ');
-  document.getElementById('file-preview').style.display = 'block';
-  document.getElementById('upload-container').style.display = 'block';
-}
-
-function sanitize(str) {
-  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_]/g, '').toUpperCase();
-}
-
-function renderEntitiesList() {
-  var container = document.getElementById('entities-list');
-  if (entities.length === 0) {
-    container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No entries found</p>';
-    return;
-  }
-  
-  var html = '';
-  for (var i = 0; i < entities.length; i++) {
-    var entity = entities[i];
-    var entityCards = getCardsForEntity(entity);
-    var statusInfo = getEntityStatus(entity, entityCards);
-    
-    html += '<div class="team-card" data-name="' + entity.name.toLowerCase() + '">';
-    html += '<div class="team-header" onclick="toggleEntity(this)">';
-    html += '<div><div class="team-name">' + entity.name + '</div>';
-    if (entity.country) { html += '<div class="team-country">' + entity.country + '</div>'; }
-    html += '</div>';
-    html += '<div class="team-status"><span class="status-dot ' + statusInfo.color + '"></span>' + statusInfo.text + '</div>';
-    html += '</div>';
-    html += '<div class="team-details"><div class="cards-list">';
-    
-    if (entityCards.length > 0) {
-      for (var j = 0; j < entityCards.length; j++) {
-        var card = entityCards[j];
-        var cardStatus = getCardStatus(card.fileName);
-        var players = getPlayersFromFileName(card.fileName, entity);
-        
-        html += '<div class="card-item"><div class="card-info"><span class="card-icon">📄</span><div>';
-        html += '<div class="card-players">' + players + '</div>';
-        html += '<div class="card-date">Uploaded: ' + formatDate(card.lastModified) + '</div>';
-        html += '<span class="card-status ' + cardStatus.cssClass + '">' + cardStatus.label + '</span>';
-        if (cardStatus.reason) { html += '<div class="refused-reason">Reason: ' + cardStatus.reason + '</div>'; }
-        html += '</div></div>';
-        html += '<div class="card-actions">';
-        html += '<a href="' + card.url + '" target="_blank" class="btn-small btn-view">View PDF</a>';
-        html += '<button class="btn-small btn-copy" onclick="copyLink(\'' + card.url + '\', this)">Copy Link</button>';
-        html += '</div></div>';
-      }
-    } else {
-      html += '<p class="no-cards">No System Cards uploaded yet</p>';
-    }
-    
-    html += '</div>';
-    html += '<div style="margin-top: 12px;"><strong>Players:</strong> <span style="color: var(--text-secondary); font-size: 14px;">';
-    var playerNames = [];
-    for (var p = 0; p < entity.players.length; p++) {
-      playerNames.push(entity.players[p].fullName + (isCoachOrCaptain(entity.players[p]) ? ' (NPC)' : ''));
-    }
-    html += playerNames.join(', ') + '</span></div></div></div>';
-  }
-  container.innerHTML = html;
-}
-
-function getCardsForEntity(entity) {
-  var entityNameSanitized = sanitize(entity.name);
-  var result = [];
-  for (var i = 0; i < uploadedCards.length; i++) {
-    var cardEntityName = uploadedCards[i].fileName.split('_')[0];
-    if (cardEntityName === entityNameSanitized) { result.push(uploadedCards[i]); }
-  }
-  return result;
-}
-
-function getCardStatus(fileName) {
-  var status = validationStatus[fileName];
-  if (!status || status === 'pending') {
-    return { cssClass: 'pending', label: 'Pending review by TD', reason: null };
-  } else if (status === 'validated') {
-    return { cssClass: 'validated', label: '✓ Validated', reason: null };
-  } else if (typeof status === 'object' && status.status === 'refused') {
-    return { cssClass: 'refused', label: '✗ Refused', reason: status.reason || 'No reason provided' };
-  }
-  return { cssClass: 'pending', label: 'Pending review by TD', reason: null };
-}
-
-function getEntityStatus(entity, cards) {
-  var playablePlayers = [];
-  for (var i = 0; i < entity.players.length; i++) {
-    if (!isCoachOrCaptain(entity.players[i])) { playablePlayers.push(entity.players[i]); }
-  }
-  
-  var hasRefused = false;
-  for (var j = 0; j < cards.length; j++) {
-    var status = validationStatus[cards[j].fileName];
-    if (status === 'refused' || (typeof status === 'object' && status.status === 'refused')) {
-      hasRefused = true; break;
-    }
-  }
-  
-  if (hasRefused) { return { color: 'red', text: 'System Card refused' }; }
-  if (cards.length === 0) { return { color: 'red', text: 'No System Cards' }; }
-  
-  var playersWithCards = {};
-  for (var k = 0; k < cards.length; k++) {
-    var surnames = cards[k].fileName.replace('.pdf', '').split('_').slice(1);
-    for (var s = 0; s < surnames.length; s++) {
-      for (var p = 0; p < playablePlayers.length; p++) {
-        if (sanitize(playablePlayers[p].surname) === surnames[s]) {
-          playersWithCards[playablePlayers[p].wbfId || playablePlayers[p].surname] = true;
-        }
-      }
-    }
-  }
-  
-  var allPlayersHaveCards = true;
-  for (var m = 0; m < playablePlayers.length; m++) {
-    if (!playersWithCards[playablePlayers[m].wbfId || playablePlayers[m].surname]) {
-      allPlayersHaveCards = false; break;
-    }
-  }
-  
-  var allValidated = true;
-  for (var n = 0; n < cards.length; n++) {
-    if (validationStatus[cards[n].fileName] !== 'validated') { allValidated = false; break; }
-  }
-  
-  if (allPlayersHaveCards && allValidated) { return { color: 'green', text: cards.length + ' System Card(s) - Complete' }; }
-  if (allPlayersHaveCards && !allValidated) { return { color: 'yellow', text: cards.length + ' System Card(s) - Pending validation' }; }
-  return { color: 'yellow', text: cards.length + ' System Card(s) - Missing' };
-}
-
-function getPlayersFromFileName(fileName, entity) {
-  var parts = fileName.replace('.pdf', '').split('_');
-  if (parts.length >= 3) {
-    var surnames = parts.slice(1);
-    var lines = [];
-    for (var i = 0; i < surnames.length; i++) {
-      var found = null;
-      for (var j = 0; j < entity.players.length; j++) {
-        if (sanitize(entity.players[j].surname) === surnames[i]) { found = entity.players[j].fullName; break; }
-      }
-      lines.push('👤 ' + (found || surnames[i]));
-    }
-    return lines.join('<br>');
-  }
-  return fileName;
-}
-
-function toggleEntity(header) { header.nextElementSibling.classList.toggle('open'); }
-
-function filterEntities() {
-  var searchTerm = document.getElementById('search-input').value.toLowerCase();
-  var cards = document.querySelectorAll('.team-card');
-  for (var i = 0; i < cards.length; i++) {
-    cards[i].style.display = cards[i].dataset.name.indexOf(searchTerm) >= 0 ? 'block' : 'none';
-  }
-}
-
-function formatDate(dateString) {
-  if (!dateString) return 'Unknown';
-  var date = new Date(dateString);
-  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-}
-
-function copyLink(url, button) {
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(url).then(function() { showCopied(button); }).catch(function() { fallbackCopy(url, button); });
-  } else {
-    fallbackCopy(url, button);
-  }
-}
-
-function fallbackCopy(url, button) {
-  var textArea = document.createElement('textarea');
-  textArea.value = url;
-  textArea.style.position = 'fixed';
-  textArea.style.left = '-9999px';
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
-  try { document.execCommand('copy'); showCopied(button); } catch (err) { alert('Link: ' + url); }
-  document.body.removeChild(textArea);
-}
-
-function showCopied(button) {
-  button.textContent = 'Copied!';
-  button.classList.add('copied');
-  setTimeout(function() { button.textContent = 'Copy Link'; button.classList.remove('copied'); }, 2000);
-}
-
-function showConfirmModal(file) {
-  pendingFile = file;
-  var sortedPlayers = selectedPlayers.slice().sort(function(a, b) { return a.surname.localeCompare(b.surname); });
-  var names = [];
-  for (var i = 0; i < sortedPlayers.length; i++) { names.push(sortedPlayers[i].fullName); }
-  document.getElementById('modal-players').textContent = names.join(' & ');
-  document.getElementById('confirm-modal').classList.add('active');
-}
-
-function closeModal() { document.getElementById('confirm-modal').classList.remove('active'); pendingFile = null; }
-
-function confirmUpload() {
-  var fileToUpload = pendingFile;
-  closeModal();
-  if (fileToUpload) { processUpload(fileToUpload); }
-}
-
-function setupDragDrop() {
-  var dropZone = document.getElementById('drop-zone');
-  dropZone.addEventListener('click', function() { document.getElementById('file-input').click(); });
-  dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('dragover'); });
-  dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('dragover'); });
-  dropZone.addEventListener('drop', function(e) {
-    e.preventDefault(); dropZone.classList.remove('dragover');
-    if (e.dataTransfer.files[0]) { handleFile(e.dataTransfer.files[0]); }
-  });
-}
-
-function setupFileInput() {
-  document.getElementById('file-input').addEventListener('change', function(e) {
-    if (e.target.files[0]) { handleFile(e.target.files[0]); }
-  });
-}
-
-function handleFile(file) {
-  var uploadStatus = document.getElementById('upload-status');
-  uploadStatus.innerHTML = '';
-  if (selectedPlayers.length < 2) { uploadStatus.innerHTML = '<div class="alert alert-error">❌ Please select at least 2 players first</div>'; return; }
-  if (file.type !== 'application/pdf') { uploadStatus.innerHTML = '<div class="alert alert-error">❌ Only PDF files are allowed</div>'; return; }
-  if (file.size > 10 * 1024 * 1024) { uploadStatus.innerHTML = '<div class="alert alert-error">❌ File too large (max 10MB)</div>'; return; }
-  showConfirmModal(file);
-}
-
-function processUpload(file) {
-  var uploadStatus = document.getElementById('upload-status');
-  var dropZone = document.getElementById('drop-zone');
-  dropZone.innerHTML = '<div class="spinner"></div><p style="color: var(--primary);">Uploading...</p>';
-  
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var bytes = new Uint8Array(e.target.result);
-    var header = '';
-    for (var i = 0; i < 5 && i < bytes.length; i++) { header += String.fromCharCode(bytes[i]); }
-    
-    if (header !== '%PDF-') {
-      uploadStatus.innerHTML = '<div class="alert alert-error">❌ Invalid PDF file</div>';
-      resetDropZone();
-      return;
-    }
-    
-    var sortedPlayers = selectedPlayers.slice().sort(function(a, b) { return a.surname.localeCompare(b.surname); });
-    var playerSurnames = [];
-    for (var j = 0; j < sortedPlayers.length; j++) { playerSurnames.push(sortedPlayers[j].surname); }
-    var fileName = sanitize(selectedEntity.name) + '_' + sanitize(playerSurnames.join('_')) + '.pdf';
-    
-    var formData = new FormData();
-    formData.append('file', file);
-    formData.append('tournamentCode', CONFIG.tournamentCode);
-    formData.append('teamName', selectedEntity.name);
-    var playerIds = [];
-    for (var k = 0; k < selectedPlayers.length; k++) { playerIds.push(selectedPlayers[k].wbfId || selectedPlayers[k].surname); }
-    formData.append('playerIds', playerIds.join(','));
-    formData.append('fileName', fileName);
-    
-    fetch(CONFIG.apiEndpoint + '/upload', { method: 'POST', body: formData }).then(function(response) {
-      if (!response.ok) throw new Error('Upload failed');
-      var names = [];
-      for (var m = 0; m < sortedPlayers.length; m++) { names.push(sortedPlayers[m].fullName); }
-      uploadStatus.innerHTML = '<div class="alert alert-success">✅ Uploaded successfully!<br><strong>Players:</strong> ' + names.join(' & ') + '<br><small>Reloading page...</small></div>';
-      setTimeout(function() { window.location.reload(); }, 1500);
-    }).catch(function(error) {
-      uploadStatus.innerHTML = '<div class="alert alert-error">❌ ' + (error.message || 'Upload failed') + '</div>';
-      resetDropZone();
-    });
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-function resetDropZone() {
-  document.getElementById('drop-zone').innerHTML = '<div class="upload-icon">📄</div><p class="upload-text">Drop your PDF here or click to browse</p><p class="upload-hint">Max 10MB - PDF only</p>';
-  document.getElementById('file-input').value = '';
-}
+function loadEntities(){return new Promise(function(resolve){var url=CONFIG.apiEndpoint+'/'+(CONFIG.eventType==='pairs'?'pairs':'teams')+'?tournament='+CONFIG.tournamentCode;fetch(url).then(function(r){return r.json();}).then(function(d){entities=d.pairs||d.teams||[];if(CONFIG.eventFilter)entities=entities.filter(function(e){return e.event===CONFIG.eventFilter;});populateEntitySelect();renderEntitiesList();resolve();}).catch(function(){resolve();});});}
+function loadUploadedCards(){return new Promise(function(resolve){fetch(CONFIG.apiEndpoint+'/cards?tournament='+CONFIG.tournamentCode).then(function(r){return r.json();}).then(function(d){uploadedCards=d.cards||[];renderEntitiesList();resolve();}).catch(function(){resolve();});});}
+function loadValidationStatus(){return new Promise(function(resolve){fetch(CONFIG.apiEndpoint+'/validation?tournament='+CONFIG.tournamentCode+'&event='+encodeURIComponent(CONFIG.eventFilter)).then(function(r){if(r.ok)return r.json();return{status:{}};}).then(function(d){validationStatus=d.status||{};renderEntitiesList();resolve();}).catch(function(){resolve();});});}
+function showTab(t){if(isFrozen&&t==='upload')return;var bs=document.querySelectorAll('.tab-btn'),cs=document.querySelectorAll('.tab-content');for(var i=0;i<bs.length;i++)bs[i].classList.remove('active');for(var j=0;j<cs.length;j++)cs[j].classList.remove('active');document.querySelector('[onclick="showTab(\''+t+'\')"]').classList.add('active');document.getElementById(t+'-tab').classList.add('active');}
+function populateEntitySelect(){var s=document.getElementById('entity-select'),l=CONFIG.eventType==='pairs'?'Select your pair...':'Select your team...';s.innerHTML='<option value="">'+l+'</option>';for(var i=0;i<entities.length;i++){var e=entities[i],o=document.createElement('option');o.value=e.id;o.textContent=e.name+(e.country?' ('+e.country+')':'');s.appendChild(o);}}
+function handleEntityChange(){var s=document.getElementById('entity-select'),pg=document.getElementById('players-group'),pc=document.getElementById('players-checkboxes');selectedEntity=null;for(var i=0;i<entities.length;i++)if(entities[i].id===s.value){selectedEntity=entities[i];break;}selectedPlayers=[];hideConfirmBox();if(!selectedEntity){pg.style.display='none';document.getElementById('file-preview').style.display='none';document.getElementById('upload-container').style.display='none';return;}if(CONFIG.eventType==='pairs'&&selectedEntity.players.length===2){selectedPlayers=selectedEntity.players.slice();pg.style.display='none';updateFilePreviewFromPlayers();return;}var pl=[];for(var j=0;j<selectedEntity.players.length;j++)if(!isCoachOrCaptain(selectedEntity.players[j]))pl.push(selectedEntity.players[j]);var h='';for(var k=0;k<pl.length;k++){var p=pl[k];h+='<label class="player-checkbox"><input type="checkbox" value="'+(p.wbfId||p.surname)+'" onchange="handlePlayerSelection()"><div><div class="player-name">👤 '+p.fullName+'</div>'+(p.wbfId?'<div class="player-id">WBF ID: '+p.wbfId+'</div>':'')+'</div></label>';}pc.innerHTML=h;pg.style.display='block';document.getElementById('file-preview').style.display='none';document.getElementById('upload-container').style.display='none';updateHint();}
+function isCoachOrCaptain(p){var n=p.fullName.toLowerCase(),r=(p.role||'').toLowerCase();return r.indexOf('coach')>=0||r.indexOf('captain')>=0||n.indexOf('(coach)')>=0||n.indexOf('(captain)')>=0||n.indexOf('(npc)')>=0||r.indexOf('npc')>=0;}
+function handlePlayerSelection(){var cb=document.querySelectorAll('#players-checkboxes input[type="checkbox"]');selectedPlayers=[];var pl=[];for(var i=0;i<selectedEntity.players.length;i++)if(!isCoachOrCaptain(selectedEntity.players[i]))pl.push(selectedEntity.players[i]);for(var j=0;j<cb.length;j++){var c=cb[j],lb=c.closest('.player-checkbox');if(c.checked){lb.classList.add('selected');for(var k=0;k<pl.length;k++)if((pl[k].wbfId||pl[k].surname)===c.value){selectedPlayers.push(pl[k]);break;}}else lb.classList.remove('selected');}updateHint();updateFilePreviewFromPlayers();hideConfirmBox();}
+function updateHint(){var h=document.getElementById('players-hint'),c=selectedPlayers.length;if(c===0){h.textContent='Select at least 2 players who share this convention card';h.className='hint-text';}else if(c===1){h.textContent='⚠️ Select at least 1 more player';h.className='hint-text error';}else{h.textContent='✓ '+c+' players selected';h.className='hint-text success';}}
+function updateFilePreviewFromPlayers(){if(selectedPlayers.length<2){document.getElementById('file-preview').style.display='none';document.getElementById('upload-container').style.display='none';return;}var so=selectedPlayers.slice().sort(function(a,b){return a.surname.localeCompare(b.surname);}),na=[];for(var i=0;i<so.length;i++)na.push(so[i].fullName);document.getElementById('file-name-preview').textContent=na.join(' & ');document.getElementById('file-preview').style.display='block';document.getElementById('upload-container').style.display='block';}
+function sanitize(s){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_]/g,'').toUpperCase();}
+function renderEntitiesList(){var ct=document.getElementById('entities-list');if(entities.length===0){ct.innerHTML='<p style="text-align:center;color:var(--text-muted)">No entries found</p>';return;}var h='';for(var i=0;i<entities.length;i++){var e=entities[i],ca=getCardsForEntity(e),st=getEntityStatus(e,ca);h+='<div class="team-card" data-name="'+e.name.toLowerCase()+'"><div class="team-header" onclick="toggleEntity(this)"><div><div class="team-name">'+e.name+'</div>'+(e.country?'<div class="team-country">'+e.country+'</div>':'')+'</div><div class="team-status"><span class="status-dot '+st.color+'"></span>'+st.text+'</div></div><div class="team-details"><div class="cards-list">';if(ca.length>0){for(var j=0;j<ca.length;j++){var c=ca[j],cs=getCardStatus(c.fileName),pn=getPlayersFromFileName(c.fileName,e);h+='<div class="card-item"><div class="card-info"><span class="card-icon">📄</span><div><div class="card-players">'+pn+'</div><div class="card-date">Uploaded: '+formatDate(c.lastModified)+'</div><span class="card-status '+cs.cssClass+'">'+cs.label+'</span>'+cs.helpHtml+(cs.reason?'<div class="refused-reason">Reason: '+cs.reason+'</div>':'')+'</div></div><div class="card-actions"><a href="'+c.url+'" target="_blank" class="btn-small btn-view">View PDF</a><button class="btn-small btn-copy" onclick="copyLink(\''+c.url+'\',this)">Copy Link</button></div></div>';}}else h+='<p class="no-cards">No System Cards uploaded yet</p>';h+='</div><div style="margin-top:12px"><strong>Players:</strong> <span style="color:var(--text-secondary);font-size:14px">';var pna=[];for(var p=0;p<e.players.length;p++)pna.push(e.players[p].fullName+(isCoachOrCaptain(e.players[p])?' (NPC)':''));h+=pna.join(', ')+'</span></div></div></div>';}ct.innerHTML=h;}
+function getCardsForEntity(e){var n=sanitize(e.name),r=[];for(var i=0;i<uploadedCards.length;i++)if(uploadedCards[i].fileName.split('_')[0]===n)r.push(uploadedCards[i]);return r;}
+function getCardStatus(fn){var s=validationStatus[fn];var helpHtml='<span class="status-help">What does this mean?<span class="tooltip">'+DISCLAIMER_TEXT+'</span></span>';if(!s||s==='pending')return{cssClass:'pending',label:'Pending file check',reason:null,helpHtml:''};if(s==='validated')return{cssClass:'validated',label:'✓ File accepted',reason:null,helpHtml:helpHtml};if(typeof s==='object'&&s.status==='refused')return{cssClass:'refused',label:'✗ File issue',reason:s.reason||'No reason provided',helpHtml:''};return{cssClass:'pending',label:'Pending file check',reason:null,helpHtml:''};}
+function getEntityStatus(e,ca){var pl=[];for(var i=0;i<e.players.length;i++)if(!isCoachOrCaptain(e.players[i]))pl.push(e.players[i]);var hr=false;for(var j=0;j<ca.length;j++){var s=validationStatus[ca[j].fileName];if(s==='refused'||(typeof s==='object'&&s.status==='refused')){hr=true;break;}}if(hr)return{color:'red',text:'File issue'};if(ca.length===0)return{color:'red',text:'No System Cards'};var pw={};for(var k=0;k<ca.length;k++){var sn=ca[k].fileName.replace('.pdf','').split('_').slice(1);for(var x=0;x<sn.length;x++)for(var p=0;p<pl.length;p++)if(sanitize(pl[p].surname)===sn[x])pw[pl[p].wbfId||pl[p].surname]=true;}var al=true;for(var m=0;m<pl.length;m++)if(!pw[pl[m].wbfId||pl[m].surname]){al=false;break;}var av=true;for(var n=0;n<ca.length;n++)if(validationStatus[ca[n].fileName]!=='validated'){av=false;break;}if(al&&av)return{color:'green',text:ca.length+' System Card(s) - Complete'};if(al&&!av)return{color:'yellow',text:ca.length+' System Card(s) - Pending file check'};return{color:'yellow',text:ca.length+' System Card(s) - Missing'};}
+function getPlayersFromFileName(fn,e){var pa=fn.replace('.pdf','').split('_');if(pa.length>=3){var sn=pa.slice(1),li=[];for(var i=0;i<sn.length;i++){var fo=null;for(var j=0;j<e.players.length;j++)if(sanitize(e.players[j].surname)===sn[i]){fo=e.players[j].fullName;break;}li.push('👤 '+(fo||sn[i]));}return li.join('<br>');}return fn;}
+function toggleEntity(h){h.nextElementSibling.classList.toggle('open');}
+function filterEntities(){var t=document.getElementById('search-input').value.toLowerCase(),ca=document.querySelectorAll('.team-card');for(var i=0;i<ca.length;i++)ca[i].style.display=ca[i].dataset.name.indexOf(t)>=0?'block':'none';}
+function formatDate(d){if(!d)return'Unknown';return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
+function copyLink(u,b){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(u).then(function(){showCopied(b);}).catch(function(){fallbackCopy(u,b);});else fallbackCopy(u,b);}
+function fallbackCopy(u,b){var t=document.createElement('textarea');t.value=u;t.style.cssText='position:fixed;left:-9999px';document.body.appendChild(t);t.select();try{document.execCommand('copy');showCopied(b);}catch(e){alert('Link: '+u);}document.body.removeChild(t);}
+function showCopied(b){b.textContent='Copied!';b.classList.add('copied');setTimeout(function(){b.textContent='Copy Link';b.classList.remove('copied');},2000);}
+function showConfirmBox(f){pendingFile=f;var so=selectedPlayers.slice().sort(function(a,b){return a.surname.localeCompare(b.surname);}),na=[];for(var i=0;i<so.length;i++)na.push(so[i].fullName);document.getElementById('confirm-players').textContent=na.join(' & ');document.getElementById('confirm-container').style.display='block';document.getElementById('upload-container').style.display='none';}
+function hideConfirmBox(){document.getElementById('confirm-container').style.display='none';if(selectedPlayers.length>=2)document.getElementById('upload-container').style.display='block';pendingFile=null;document.getElementById('file-input').value='';}
+function cancelUpload(){hideConfirmBox();}
+function confirmUpload(){var f=pendingFile;document.getElementById('confirm-container').style.display='none';if(f)processUpload(f);}
+function setupDragDrop(){var dz=document.getElementById('drop-zone');dz.addEventListener('click',function(){document.getElementById('file-input').click();});dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('dragover');});dz.addEventListener('dragleave',function(){dz.classList.remove('dragover');});dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('dragover');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});}
+function setupFileInput(){document.getElementById('file-input').addEventListener('change',function(e){if(e.target.files[0])handleFile(e.target.files[0]);});}
+function handleFile(f){var us=document.getElementById('upload-status');us.innerHTML='';if(selectedPlayers.length<2){us.innerHTML='<div class="alert alert-error">❌ Please select at least 2 players first</div>';return;}if(f.type!=='application/pdf'){us.innerHTML='<div class="alert alert-error">❌ Only PDF files are allowed</div>';return;}if(f.size>10*1024*1024){us.innerHTML='<div class="alert alert-error">❌ File too large (max 10MB)</div>';return;}showConfirmBox(f);}
+function processUpload(f){var us=document.getElementById('upload-status'),dz=document.getElementById('drop-zone');document.getElementById('upload-container').style.display='block';dz.innerHTML='<div class="spinner"></div><p style="color:var(--primary)">Uploading...</p>';var rd=new FileReader();rd.onload=function(e){var by=new Uint8Array(e.target.result),hd='';for(var i=0;i<5&&i<by.length;i++)hd+=String.fromCharCode(by[i]);if(hd!=='%PDF-'){us.innerHTML='<div class="alert alert-error">❌ Invalid PDF file</div>';resetDropZone();return;}var so=selectedPlayers.slice().sort(function(a,b){return a.surname.localeCompare(b.surname);}),sn=[];for(var j=0;j<so.length;j++)sn.push(so[j].surname);var fn=sanitize(selectedEntity.name)+'_'+sanitize(sn.join('_'))+'.pdf',fd=new FormData();fd.append('file',f);fd.append('tournamentCode',CONFIG.tournamentCode);fd.append('teamName',selectedEntity.name);var pi=[];for(var k=0;k<selectedPlayers.length;k++)pi.push(selectedPlayers[k].wbfId||selectedPlayers[k].surname);fd.append('playerIds',pi.join(','));fd.append('fileName',fn);fetch(CONFIG.apiEndpoint+'/upload',{method:'POST',body:fd}).then(function(r){if(!r.ok)throw new Error('Upload failed');var na=[];for(var m=0;m<so.length;m++)na.push(so[m].fullName);us.innerHTML='<div class="alert alert-success">✅ Uploaded successfully!<br><strong>Players:</strong> '+na.join(' & ')+'<br><small>Reloading page...</small><div class="disclaimer-note"><strong>ℹ️ Important:</strong> '+DISCLAIMER_TEXT+'</div></div>';setTimeout(function(){window.location.reload();},2000);}).catch(function(er){us.innerHTML='<div class="alert alert-error">❌ '+(er.message||'Upload failed')+'</div>';resetDropZone();});};rd.readAsArrayBuffer(f);}
+function resetDropZone(){document.getElementById('drop-zone').innerHTML='<div class="upload-icon">📄</div><p class="upload-text">Drop your PDF here or click to browse</p><p class="upload-hint">Max 10MB - PDF only</p>';document.getElementById('file-input').value='';}
 </script>
 </body>
 </html>
