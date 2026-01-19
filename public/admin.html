@@ -98,8 +98,58 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .alert-info{background:var(--info-light);color:var(--info);border:1px solid var(--info)}
 @media(max-width:768px){.main-tabs{flex-wrap:wrap}.stats-row{grid-template-columns:repeat(2,1fr)}.cards-table{font-size:13px}.action-btns{flex-direction:column}}
   </style>
+<script>
+var ADMIN_PASSWORD = 'systemhero123';
+var isAuthenticated = false;
+
+function checkAuth() {
+  var stored = sessionStorage.getItem('admin_auth');
+  if (stored === ADMIN_PASSWORD) {
+    isAuthenticated = true;
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    return true;
+  }
+  return false;
+}
+
+function login() {
+  var pwd = document.getElementById('password-input').value;
+  if (pwd === ADMIN_PASSWORD) {
+    sessionStorage.setItem('admin_auth', pwd);
+    isAuthenticated = true;
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+  } else {
+    document.getElementById('auth-error').style.display = 'block';
+    document.getElementById('password-input').value = '';
+  }
+}
+
+function handleKeyPress(e) {
+  if (e.key === 'Enter') login();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (!checkAuth()) {
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('main-content').style.display = 'none';
+  }
+});
+</script>
 </head>
 <body>
+<div id="auth-screen" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg-light);z-index:9999;align-items:center;justify-content:center;">
+<div style="background:var(--bg-white);padding:40px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.1);text-align:center;max-width:400px;width:90%;">
+<div style="font-size:48px;margin-bottom:16px;">🔐</div>
+<h2 style="margin-bottom:8px;color:var(--text-primary);">Admin Console</h2>
+<p style="color:var(--text-secondary);margin-bottom:24px;font-size:14px;">Enter password to access</p>
+<input type="password" id="password-input" onkeypress="handleKeyPress(event)" placeholder="Password" style="width:100%;padding:14px 16px;border:2px solid var(--border-color);border-radius:8px;font-size:16px;margin-bottom:16px;outline:none;" onfocus="this.style.borderColor='var(--primary)'" onblur="this.style.borderColor='var(--border-color)'">
+<div id="auth-error" style="display:none;background:var(--error-light);color:var(--error);padding:10px;border-radius:6px;margin-bottom:16px;font-size:14px;">❌ Incorrect password</div>
+<button onclick="login()" style="width:100%;padding:14px;background:var(--primary);color:white;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">Login</button>
+</div>
+</div>
+<div id="main-content">
 <div class="container">
   <div class="header">
     <h1>🎴 System Cards Admin Console</h1>
@@ -166,7 +216,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     </div>
   </div>
 </div>
-
+</div>
 <script>
 var API_BASE = window.location.origin + '/api';
 
