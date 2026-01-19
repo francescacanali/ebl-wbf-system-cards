@@ -1,809 +1,496 @@
+<!-- Admin Console v2 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Console - System Cards</title>
+  <title>System Cards Admin Console</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    :root {
-      --primary: #00854A;
-      --primary-dark: #006838;
-      --primary-light: #e6f5ed;
-      --bg-light: #f8fafc;
-      --bg-white: #ffffff;
-      --text-primary: #1e293b;
-      --text-secondary: #64748b;
-      --text-muted: #94a3b8;
-      --border-color: #e2e8f0;
-      --success: #16a34a;
-      --success-light: #dcfce7;
-      --warning: #ca8a04;
-      --warning-light: #fef9c3;
-      --error: #dc2626;
-      --error-light: #fee2e2;
-    }
-    
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-light);
-      color: var(--text-primary);
-      min-height: 100vh;
-      line-height: 1.6;
-    }
-    
-    .container { max-width: 1100px; margin: 0 auto; padding: 32px 20px; }
-    
-    .header { text-align: center; margin-bottom: 32px; }
-    
-    .admin-badge {
-      display: inline-block; padding: 6px 16px;
-      background: var(--error-light); border: 1px solid var(--error);
-      border-radius: 100px; font-size: 12px; color: var(--error); 
-      font-weight: 600; margin-bottom: 12px; text-transform: uppercase;
-    }
-    
-    .event-title {
-      font-size: clamp(18px, 3vw, 24px); font-weight: 800;
-      color: var(--primary); margin-bottom: 8px;
-    }
-    
-    .page-title {
-      font-size: clamp(24px, 4vw, 32px); font-weight: 800;
-      color: var(--text-primary);
-    }
-    
-    /* Login */
-    .login-card {
-      background: var(--bg-white); border: 1px solid var(--border-color);
-      border-radius: 16px; padding: 32px; max-width: 400px; margin: 60px auto;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    
-    .login-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; text-align: center; }
-    
-    .form-group { margin-bottom: 16px; }
-    .form-label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500; }
-    
-    .form-input, .form-textarea {
-      width: 100%; padding: 12px 14px; background: var(--bg-white);
-      border: 1px solid var(--border-color); border-radius: 8px;
-      font-size: 15px; font-family: inherit;
-    }
-    
-    .form-textarea { resize: vertical; min-height: 80px; }
-    
-    .form-input:focus, .form-textarea:focus { outline: none; border-color: var(--primary); }
-    
-    .btn {
-      width: 100%; padding: 14px; border: none; border-radius: 8px;
-      font-size: 15px; font-weight: 600; cursor: pointer;
-      background: var(--primary); color: white;
-      transition: background 0.2s;
-    }
-    
-    .btn:hover { background: var(--primary-dark); }
-    
-    .error-msg { color: var(--error); font-size: 14px; margin-top: 12px; text-align: center; }
-    
-    /* Admin Panel */
-    .admin-panel { display: none; }
-    .admin-panel.active { display: block; }
-    
-    .stats-row {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 16px; margin-bottom: 24px;
-    }
-    
-    .stat-card {
-      background: var(--bg-white); border: 1px solid var(--border-color);
-      border-radius: 12px; padding: 20px; text-align: center;
-    }
-    
-    .stat-value { font-size: 28px; font-weight: 800; color: var(--primary); }
-    .stat-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
-    
-    .stat-card.green .stat-value { color: var(--success); }
-    .stat-card.yellow .stat-value { color: var(--warning); }
-    .stat-card.red .stat-value { color: var(--error); }
-    
-    .card {
-      background: var(--bg-white); border: 1px solid var(--border-color);
-      border-radius: 16px; padding: 24px; margin-bottom: 16px;
-    }
-    
-    .card-title {
-      font-size: 18px; font-weight: 700; margin-bottom: 16px;
-      display: flex; align-items: center; gap: 10px;
-    }
-    
-    .filters {
-      display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
-      align-items: center;
-    }
-    
-    .search-input { flex: 1; min-width: 200px; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 8px; }
-    
-    .filter-btn {
-      padding: 10px 16px; border: 1px solid var(--border-color); border-radius: 8px;
-      background: var(--bg-white); cursor: pointer; font-size: 14px;
-      transition: all 0.2s;
-    }
-    
-    .filter-btn:hover { border-color: var(--primary); }
-    .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-    
-    /* Entity Row */
-    .entity-row {
-      display: flex; align-items: center; padding: 16px;
-      border-bottom: 1px solid var(--border-color);
-      gap: 16px;
-    }
-    
-    .entity-row:last-child { border-bottom: none; }
-    
-    .entity-info { flex: 1; min-width: 150px; }
-    .entity-name { font-weight: 600; font-size: 15px; }
-    .entity-country { font-size: 13px; color: var(--text-muted); }
-    
-    .entity-cards { flex: 2; }
-    
-    .card-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 6px 12px; border-radius: 6px; font-size: 12px;
-      margin-right: 8px; margin-bottom: 6px; cursor: pointer;
-      transition: all 0.2s;
-    }
-    
-    .card-badge:hover { opacity: 0.8; }
-    .card-badge.pending { background: var(--warning-light); color: var(--warning); }
-    .card-badge.validated { background: var(--success-light); color: var(--success); }
-    .card-badge.refused { background: var(--error-light); color: var(--error); }
-    .card-badge.none { background: var(--bg-light); color: var(--text-muted); }
-    
-    .entity-status { width: 120px; text-align: center; }
-    
-    .status-indicator {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 500;
-    }
-    
-    .status-indicator.green { background: var(--success-light); color: var(--success); }
-    .status-indicator.yellow { background: var(--warning-light); color: var(--warning); }
-    .status-indicator.red { background: var(--error-light); color: var(--error); }
-    
-    /* Cards Modal */
-    .modal-overlay {
-      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;
-      padding: 20px;
-    }
-    
-    .modal-overlay.active { display: flex; }
-    
-    .modal {
-      background: white; border-radius: 16px; padding: 24px; max-width: 700px;
-      width: 100%; max-height: 80vh; overflow-y: auto;
-    }
-    
-    .modal-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 20px;
-    }
-    
-    .modal-title { font-size: 18px; font-weight: 700; }
-    .modal-close { cursor: pointer; font-size: 24px; color: var(--text-muted); background: none; border: none; }
-    
-    .card-row {
-      padding: 16px; background: var(--bg-light); border-radius: 10px;
-      margin-bottom: 12px;
-    }
-    
-    .card-row-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 12px;
-    }
-    
-    .card-row-info { display: flex; align-items: center; gap: 12px; }
-    .card-row-name { font-weight: 600; font-size: 15px; }
-    .card-row-date { font-size: 12px; color: var(--text-muted); }
-    
-    .card-row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-    
-    .btn-action {
-      padding: 8px 14px; border-radius: 6px; cursor: pointer; border: none;
-      font-size: 13px; font-weight: 500; transition: all 0.2s;
-    }
-    
-    .btn-view { background: var(--primary-light); color: var(--primary); }
-    .btn-view:hover { background: var(--primary); color: white; }
-    
-    .btn-validate { background: var(--success-light); color: var(--success); }
-    .btn-validate:hover { background: var(--success); color: white; }
-    
-    .btn-pending { background: var(--warning-light); color: var(--warning); }
-    .btn-pending:hover { background: var(--warning); color: white; }
-    
-    .btn-refuse { background: var(--error-light); color: var(--error); }
-    .btn-refuse:hover { background: var(--error); color: white; }
-    
-    .refuse-form {
-      margin-top: 12px; padding: 12px; background: var(--error-light);
-      border-radius: 8px; display: none;
-    }
-    
-    .refuse-form.active { display: block; }
-    
-    .refuse-form label { font-size: 13px; font-weight: 500; color: var(--error); display: block; margin-bottom: 6px; }
-    
-    .refuse-form textarea {
-      width: 100%; padding: 10px; border: 1px solid var(--error); border-radius: 6px;
-      font-size: 14px; font-family: inherit; resize: vertical; min-height: 60px;
-    }
-    
-    .refuse-form-buttons { display: flex; gap: 8px; margin-top: 10px; }
-    
-    .btn-confirm-refuse {
-      background: var(--error-light); color: var(--error); 
-      border: 2px solid var(--error); padding: 8px 14px; border-radius: 6px;
-      cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s;
-    }
-    .btn-confirm-refuse:hover { background: var(--error); color: white; }
-    
-    .current-status {
-      padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-top: 8px;
-    }
-    
-    .current-status.validated { background: var(--success-light); color: var(--success); }
-    .current-status.pending { background: var(--warning-light); color: var(--warning); }
-    .current-status.refused { background: var(--error-light); color: var(--error); }
-    
-    /* Responsive */
-    @media (max-width: 768px) {
-      .entity-row { flex-wrap: wrap; }
-      .entity-cards { width: 100%; margin: 10px 0; }
-      .entity-status { width: auto; }
-      .stats-row { grid-template-columns: repeat(2, 1fr); }
-    }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#00854A;--primary-dark:#006838;--primary-light:#e6f5ed;--bg-light:#f8fafc;--bg-white:#fff;--text-primary:#1e293b;--text-secondary:#64748b;--text-muted:#94a3b8;--border-color:#e2e8f0;--success:#16a34a;--success-light:#dcfce7;--warning:#ca8a04;--warning-light:#fef9c3;--error:#dc2626;--error-light:#fee2e2;--info:#0284c7;--info-light:#e0f2fe}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg-light);color:var(--text-primary);min-height:100vh;line-height:1.6}
+.container{max-width:1200px;margin:0 auto;padding:24px 20px}
+.header{text-align:center;margin-bottom:32px;padding:24px;background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);border-radius:16px;color:#fff}
+.header h1{font-size:28px;font-weight:800;margin-bottom:8px}
+.header p{opacity:0.9;font-size:15px}
+.main-tabs{display:flex;gap:8px;margin-bottom:24px;border-bottom:2px solid var(--border-color);padding-bottom:0}
+.main-tab{padding:12px 24px;background:none;border:none;font-size:15px;font-weight:600;color:var(--text-secondary);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s}
+.main-tab:hover{color:var(--primary)}
+.main-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.card{background:var(--bg-white);border:1px solid var(--border-color);border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.card-title{font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;margin-bottom:6px;font-size:14px;font-weight:500}
+.form-input,.form-select{width:100%;padding:12px 14px;border:1px solid var(--border-color);border-radius:8px;font-size:15px;font-family:inherit}
+.form-input:focus,.form-select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.radio-group{display:flex;gap:20px;margin-top:8px}
+.radio-label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px}
+.radio-label input{width:18px;height:18px;accent-color:var(--primary)}
+.btn{padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-secondary{background:var(--bg-light);color:var(--text-secondary);border:1px solid var(--border-color)}
+.btn-secondary:hover{background:var(--border-color)}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.results-box{background:var(--bg-light);border:1px solid var(--border-color);border-radius:8px;padding:16px;margin-top:20px}
+.results-title{font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.event-item{background:var(--bg-white);border:1px solid var(--border-color);border-radius:8px;padding:16px;margin-bottom:12px}
+.event-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.event-item-title{font-weight:600;font-size:15px}
+.event-item-badge{font-size:12px;padding:4px 10px;border-radius:4px;background:var(--primary-light);color:var(--primary)}
+.code-block{background:#1e293b;color:#e2e8f0;padding:12px 16px;border-radius:8px;font-family:'Monaco','Menlo',monospace;font-size:12px;overflow-x:auto;margin-top:8px;position:relative}
+.code-block code{white-space:pre-wrap;word-break:break-all}
+.copy-btn{position:absolute;top:8px;right:8px;padding:6px 12px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer}
+.copy-btn:hover{background:var(--primary-dark)}
+.copy-btn.copied{background:var(--success)}
+.section-divider{border-top:1px solid var(--border-color);margin:16px 0;padding-top:16px}
+.section-label{font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px}
+.tournament-section{border:1px solid var(--border-color);border-radius:12px;margin-bottom:16px;overflow:hidden}
+.tournament-header{padding:16px 20px;background:var(--bg-light);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background 0.2s}
+.tournament-header:hover{background:var(--border-color)}
+.tournament-title{font-weight:700;font-size:16px;display:flex;align-items:center;gap:10px}
+.tournament-stats{display:flex;gap:16px;font-size:13px;color:var(--text-secondary)}
+.tournament-stat{display:flex;align-items:center;gap:4px}
+.tournament-content{display:none;border-top:1px solid var(--border-color)}
+.tournament-content.open{display:block}
+.event-tabs{display:flex;gap:4px;padding:12px 16px;background:var(--bg-white);border-bottom:1px solid var(--border-color);flex-wrap:wrap}
+.event-tab{padding:8px 16px;background:var(--bg-light);border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s}
+.event-tab:hover{border-color:var(--primary);color:var(--primary)}
+.event-tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.event-content{padding:20px}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:var(--bg-light);border-radius:8px;padding:16px;text-align:center}
+.stat-value{font-size:28px;font-weight:700;color:var(--primary)}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px}
+.stat-card.warning .stat-value{color:var(--warning)}
+.stat-card.error .stat-value{color:var(--error)}
+.stat-card.success .stat-value{color:var(--success)}
+.cards-table{width:100%;border-collapse:collapse}
+.cards-table th,.cards-table td{padding:12px;text-align:left;border-bottom:1px solid var(--border-color)}
+.cards-table th{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;background:var(--bg-light)}
+.cards-table tr:hover{background:var(--bg-light)}
+.status-badge{padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500}
+.status-badge.pending{background:var(--warning-light);color:var(--warning)}
+.status-badge.validated{background:var(--success-light);color:var(--success)}
+.status-badge.refused{background:var(--error-light);color:var(--error)}
+.action-btns{display:flex;gap:6px}
+.action-btn{padding:6px 12px;border-radius:4px;font-size:11px;font-weight:500;cursor:pointer;border:none;transition:all 0.2s}
+.action-btn.validate{background:var(--success-light);color:var(--success)}
+.action-btn.validate:hover{background:var(--success);color:#fff}
+.action-btn.refuse{background:var(--error-light);color:var(--error)}
+.action-btn.refuse:hover{background:var(--error);color:#fff}
+.action-btn.pending{background:var(--warning-light);color:var(--warning)}
+.action-btn.pending:hover{background:var(--warning);color:#fff}
+.refuse-form{margin-top:8px;display:flex;gap:8px}
+.refuse-form input{flex:1;padding:8px 12px;border:1px solid var(--border-color);border-radius:4px;font-size:13px}
+.refuse-form button{padding:8px 16px;background:var(--error);color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer}
+.loading{text-align:center;padding:40px;color:var(--text-muted)}
+.spinner{width:32px;height:32px;border:3px solid var(--border-color);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:40px;color:var(--text-muted)}
+.empty-state-icon{font-size:48px;margin-bottom:12px}
+.alert{padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:14px}
+.alert-success{background:var(--success-light);color:var(--success);border:1px solid var(--success)}
+.alert-error{background:var(--error-light);color:var(--error);border:1px solid var(--error)}
+.alert-info{background:var(--info-light);color:var(--info);border:1px solid var(--info)}
+@media(max-width:768px){.main-tabs{flex-wrap:wrap}.stats-row{grid-template-columns:repeat(2,1fr)}.cards-table{font-size:13px}.action-btns{flex-direction:column}}
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Login Form -->
-    <div id="login-section">
-      <div class="login-card">
-        <div class="login-title">🔐 Admin Login</div>
-        <div class="form-group">
-          <label class="form-label">Event</label>
-          <input type="text" id="event-display" class="form-input" readonly>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <input type="password" id="password-input" class="form-input" placeholder="Enter admin password">
-        </div>
-        <button class="btn" onclick="login()">Login</button>
-        <div id="login-error" class="error-msg" style="display: none;"></div>
-      </div>
-    </div>
-    
-    <!-- Admin Panel -->
-    <div id="admin-panel" class="admin-panel">
-      <div class="header">
-        <div class="admin-badge">🔐 Admin Console</div>
-        <div class="event-title" id="event-title"></div>
-        <h1 class="page-title">System Cards Validation</h1>
-      </div>
+<div class="container">
+  <div class="header">
+    <h1>🎴 System Cards Admin Console</h1>
+    <p>Manage system cards for all EBL and WBF tournaments</p>
+  </div>
+
+  <div class="main-tabs">
+    <button class="main-tab active" onclick="showMainTab('add-event')">➕ Add Event</button>
+    <button class="main-tab" onclick="showMainTab('manage')">📋 Manage Cards</button>
+  </div>
+
+  <!-- ADD EVENT TAB -->
+  <div id="add-event-tab" class="tab-content active">
+    <div class="card">
+      <div class="card-title">➕ Add New Event</div>
       
-      <!-- Stats -->
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="stat-value" id="stat-total">0</div>
-          <div class="stat-label">Total Teams</div>
-        </div>
-        <div class="stat-card green">
-          <div class="stat-value" id="stat-complete">0</div>
-          <div class="stat-label">Complete ✓</div>
-        </div>
-        <div class="stat-card yellow">
-          <div class="stat-value" id="stat-pending">0</div>
-          <div class="stat-label">Pending</div>
-        </div>
-        <div class="stat-card red">
-          <div class="stat-value" id="stat-nocards">0</div>
-          <div class="stat-label">No Cards</div>
-        </div>
-        <div class="stat-card red">
-          <div class="stat-value" id="stat-refused">0</div>
-          <div class="stat-label">Refused</div>
+      <div class="form-group">
+        <label class="form-label">Fotis Table URL</label>
+        <input type="text" id="fotis-url" class="form-input" placeholder="https://db.eurobridge.org/repository/competitions/...">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Organization</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="org" value="ebl" checked>
+            EBL (European Bridge League)
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="org" value="wbf">
+            WBF (World Bridge Federation)
+          </label>
         </div>
       </div>
-      
-      <!-- Entities List -->
-      <div class="card">
-        <div class="card-title">📋 All Entries</div>
-        
-        <div class="filters">
-          <input type="text" id="search-input" class="search-input" placeholder="🔍 Search..." oninput="filterEntities()">
-          <button class="filter-btn active" onclick="setFilter('all')">All</button>
-          <button class="filter-btn" onclick="setFilter('complete')">Complete</button>
-          <button class="filter-btn" onclick="setFilter('pending')">Pending</button>
-          <button class="filter-btn" onclick="setFilter('nocards')">No Cards</button>
-          <button class="filter-btn" onclick="setFilter('refused')">Refused</button>
+
+      <div class="form-group">
+        <label class="form-label">Tournament Code</label>
+        <input type="text" id="tournament-code" class="form-input" placeholder="e.g., 26prague, 26youthonline">
+        <small style="color:var(--text-muted);font-size:12px;margin-top:4px;display:block">This will be used in URLs. Use lowercase, no spaces.</small>
+      </div>
+
+      <button class="btn btn-primary" onclick="analyzeTable()" id="analyze-btn">🔍 Analyze Table</button>
+
+      <div id="analysis-results" style="display:none">
+        <div class="results-box">
+          <div class="results-title">📊 Events Found</div>
+          <div id="events-list"></div>
         </div>
-        
-        <div id="entities-list"></div>
+
+        <div class="section-divider"></div>
+        <div class="section-label">Generated Iframe Codes</div>
+        <div id="iframe-codes"></div>
       </div>
     </div>
   </div>
-  
-  <!-- Cards Modal -->
-  <div class="modal-overlay" id="cards-modal">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title" id="modal-entity-name"></div>
-        <button class="modal-close" onclick="closeCardsModal()">×</button>
+
+  <!-- MANAGE CARDS TAB -->
+  <div id="manage-tab" class="tab-content">
+    <div id="tournaments-container">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading tournaments...</p>
       </div>
-      <div id="modal-cards-list"></div>
     </div>
   </div>
+</div>
 
 <script>
-// ============================================
-// CONFIGURATION
-// ============================================
-const urlParams = new URLSearchParams(window.location.search);
-const tournamentCode = urlParams.get('tournament') || '26prague';
-const eventFilter = urlParams.get('event') || '';
+var API_BASE = window.location.origin + '/api';
 
-const EVENT_CONFIG = {
-  'Winter Open Teams': { type: 'teams', title: 'EUROPEAN WINTER OPEN TEAMS CHAMPIONSHIP' },
-  'Winter Swiss Cup': { type: 'teams', title: 'EUROPEAN WINTER SWISS CUP' },
-  'Winter Mixed Teams': { type: 'teams', title: 'EUROPEAN WINTER MIXED TEAMS CHAMPIONSHIP' },
-  'Winter Open BAM': { type: 'teams', title: 'EUROPEAN WINTER OPEN BAM' },
-  'Winter Open Pairs': { type: 'pairs', title: 'EUROPEAN WINTER OPEN PAIRS' },
-  'Winter Mixed Pairs': { type: 'pairs', title: 'EUROPEAN WINTER MIXED PAIRS' },
+var TOURNAMENTS = {
+  '26prague': {
+    name: 'European Winter Transnational Championships 2026',
+    org: 'ebl'
+  },
+  '26youthonline': {
+    name: 'European Youth Online Championships 2026',
+    org: 'ebl'
+  }
 };
 
-const CONFIG = {
-  tournamentCode,
-  eventFilter,
-  eventType: EVENT_CONFIG[eventFilter]?.type || 'teams',
-  eventTitle: EVENT_CONFIG[eventFilter]?.title || eventFilter,
-  apiEndpoint: window.location.origin + "/api",
-};
+var currentTournament = null;
+var currentEvent = null;
+var cardsData = {};
+var validationData = {};
 
-document.getElementById('event-display').value = CONFIG.eventTitle;
-
-// ============================================
-// STATE
-// ============================================
-let isLoggedIn = false;
-let entities = [];
-let uploadedCards = [];
-let validationStatus = {};
-let currentFilter = 'all';
-let currentModalEntity = null;
-
-// ============================================
-// LOGIN
-// ============================================
-async function login() {
-  const password = document.getElementById('password-input').value;
-  const errorDiv = document.getElementById('login-error');
-  
-  try {
-    const response = await fetch(`${CONFIG.apiEndpoint}/admin-login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        tournament: CONFIG.tournamentCode,
-        event: CONFIG.eventFilter,
-        password
-      })
-    });
-    
-    const data = await response.json();
-    
-    if (data.success) {
-      isLoggedIn = true;
-      sessionStorage.setItem('adminToken', data.token);
-      document.getElementById('login-section').style.display = 'none';
-      document.getElementById('admin-panel').classList.add('active');
-      document.getElementById('event-title').textContent = CONFIG.eventTitle;
-      await loadData();
-    } else {
-      errorDiv.textContent = 'Invalid password';
-      errorDiv.style.display = 'block';
-    }
-  } catch (error) {
-    errorDiv.textContent = 'Login failed. Please try again.';
-    errorDiv.style.display = 'block';
-  }
+function showMainTab(tab) {
+  document.querySelectorAll('.main-tab').forEach(function(t){t.classList.remove('active')});
+  document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active')});
+  document.querySelector('[onclick="showMainTab(\'' + tab + '\')"]').classList.add('active');
+  document.getElementById(tab + '-tab').classList.add('active');
+  if (tab === 'manage') loadTournaments();
 }
 
-// ============================================
-// DATA LOADING
-// ============================================
-async function loadData() {
-  await Promise.all([
-    loadEntities(),
-    loadUploadedCards(),
-    loadValidationStatus()
-  ]);
-  updateStats();
-  renderEntitiesList();
-}
-
-async function loadEntities() {
-  try {
-    const endpoint = CONFIG.eventType === 'pairs' ? 'pairs' : 'teams';
-    const response = await fetch(`${CONFIG.apiEndpoint}/${endpoint}?tournament=${CONFIG.tournamentCode}`);
-    const data = await response.json();
-    entities = data[endpoint] || data.teams || data.pairs || [];
-    
-    if (CONFIG.eventFilter) {
-      entities = entities.filter(e => e.event === CONFIG.eventFilter);
-    }
-  } catch (error) {
-    console.error('Failed to load entities:', error);
-  }
-}
-
-async function loadUploadedCards() {
-  try {
-    const response = await fetch(`${CONFIG.apiEndpoint}/cards?tournament=${CONFIG.tournamentCode}`);
-    const data = await response.json();
-    uploadedCards = data.cards || [];
-  } catch (error) {
-    console.error('Failed to load cards:', error);
-  }
-}
-
-async function loadValidationStatus() {
-  try {
-    const token = sessionStorage.getItem('adminToken');
-    const response = await fetch(
-      `${CONFIG.apiEndpoint}/admin-data?tournament=${CONFIG.tournamentCode}&event=${encodeURIComponent(CONFIG.eventFilter)}`,
-      { headers: { 'Authorization': `Bearer ${token}` } }
-    );
-    if (response.ok) {
-      const data = await response.json();
-      validationStatus = data.validationStatus || {};
-    }
-  } catch (error) {
-    console.log('Could not load validation status');
-  }
-}
-
-// ============================================
-// STATS
-// ============================================
-function updateStats() {
-  const total = entities.length;
-  let complete = 0;
-  let pending = 0;
-  let nocards = 0;
-  let refused = 0;
+async function analyzeTable() {
+  var url = document.getElementById('fotis-url').value.trim();
+  var org = document.querySelector('input[name="org"]:checked').value;
+  var tournamentCode = document.getElementById('tournament-code').value.trim();
   
-  entities.forEach(entity => {
-    const status = getEntityStatusInfo(entity);
-    if (status.color === 'green') complete++;
-    else if (status.color === 'yellow') pending++;
-    else if (status.hasRefused) refused++;
-    else nocards++;
-  });
+  if (!url) { alert('Please enter a Fotis table URL'); return; }
+  if (!tournamentCode) { alert('Please enter a tournament code'); return; }
   
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-complete').textContent = complete;
-  document.getElementById('stat-pending').textContent = pending;
-  document.getElementById('stat-nocards').textContent = nocards;
-  document.getElementById('stat-refused').textContent = refused;
-}
-
-// ============================================
-// RENDERING
-// ============================================
-function renderEntitiesList() {
-  const container = document.getElementById('entities-list');
+  var btn = document.getElementById('analyze-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Analyzing...';
   
-  let filtered = entities.filter(entity => {
-    const status = getEntityStatusInfo(entity);
-    
-    if (currentFilter === 'complete') return status.color === 'green';
-    if (currentFilter === 'pending') return status.color === 'yellow';
-    if (currentFilter === 'nocards') return status.color === 'red' && !status.hasRefused;
-    if (currentFilter === 'refused') return status.hasRefused;
-    return true;
-  });
+  var eventsInput = prompt('Enter the event names found in the Fotis table, separated by commas:\n\nExample: U26 Online Teams, U21 Online Teams, U16 Online Teams, U31 Online Teams');
   
-  // Apply search
-  const searchTerm = document.getElementById('search-input').value.toLowerCase();
-  if (searchTerm) {
-    filtered = filtered.filter(e => e.name.toLowerCase().includes(searchTerm));
-  }
-  
-  container.innerHTML = filtered.map(entity => {
-    const cards = getCardsForEntity(entity);
-    const status = getEntityStatusInfo(entity);
-    
-    return `
-      <div class="entity-row">
-        <div class="entity-info">
-          <div class="entity-name">${entity.name}</div>
-          ${entity.country ? `<div class="entity-country">${entity.country}</div>` : ''}
-        </div>
-        <div class="entity-cards">
-          ${cards.length > 0 ? cards.map(card => {
-            const cardStatus = getCardStatusInfo(card.fileName);
-            const players = getPlayersFromFileName(card.fileName, entity);
-            return `<span class="card-badge ${cardStatus.class}" onclick="openCardsModal('${entity.id}')">${players}: ${cardStatus.icon}</span>`;
-          }).join('') : '<span class="card-badge none">No cards uploaded</span>'}
-        </div>
-        <div class="entity-status">
-          <span class="status-indicator ${status.color}">${status.text}</span>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-function getCardsForEntity(entity) {
-  const entityNameSanitized = sanitize(entity.name);
-  return uploadedCards.filter(card => {
-    const cardEntityName = card.fileName.split('_')[0];
-    return cardEntityName === entityNameSanitized;
-  });
-}
-
-function getCardStatusInfo(fileName) {
-  const status = validationStatus[fileName];
-  
-  if (!status || status === 'pending') {
-    return { class: 'pending', icon: '⏳', label: 'Pending' };
-  } else if (status === 'validated') {
-    return { class: 'validated', icon: '✓', label: 'Validated' };
-  } else if (typeof status === 'object' && status.status === 'refused') {
-    return { class: 'refused', icon: '✗', label: 'Refused', reason: status.reason };
-  }
-  
-  return { class: 'pending', icon: '⏳', label: 'Pending' };
-}
-
-function getEntityStatusInfo(entity) {
-  const cards = getCardsForEntity(entity);
-  const playablePlayers = entity.players.filter(p => !isCoachOrCaptain(p));
-  
-  // Check for refused cards
-  const hasRefused = cards.some(card => {
-    const status = validationStatus[card.fileName];
-    return typeof status === 'object' && status.status === 'refused';
-  });
-  
-  if (hasRefused) {
-    return { color: 'red', text: 'Refused', hasRefused: true };
-  }
-  
-  if (cards.length === 0) {
-    return { color: 'red', text: 'No cards', hasRefused: false };
-  }
-  
-  // Check coverage
-  const playersWithCards = new Set();
-  cards.forEach(card => {
-    const surnames = card.fileName.replace('.pdf', '').split('_').slice(1);
-    surnames.forEach(surname => {
-      playablePlayers.forEach(player => {
-        if (sanitize(player.surname) === surname) {
-          playersWithCards.add(player.wbfId || player.surname);
-        }
-      });
-    });
-  });
-  
-  const allPlayersHaveCards = playablePlayers.every(p => 
-    playersWithCards.has(p.wbfId || p.surname)
-  );
-  
-  const allValidated = cards.every(card => validationStatus[card.fileName] === 'validated');
-  
-  if (allPlayersHaveCards && allValidated) {
-    return { color: 'green', text: 'Complete', hasRefused: false };
-  }
-  
-  return { color: 'yellow', text: 'Pending', hasRefused: false };
-}
-
-function isCoachOrCaptain(player) {
-  const name = player.fullName.toLowerCase();
-  const role = (player.role || '').toLowerCase();
-  return role.includes('coach') || role.includes('captain') || 
-         name.includes('(coach)') || name.includes('(captain)') ||
-         name.includes('(npc)') || role.includes('npc');
-}
-
-function getPlayersFromFileName(fileName, entity) {
-  const parts = fileName.replace('.pdf', '').split('_');
-  if (parts.length >= 3) {
-    const surnames = parts.slice(1);
-    const fullNames = surnames.map(surname => {
-      const player = entity.players.find(p => sanitize(p.surname) === surname);
-      return player ? player.fullName : surname;
-    });
-    return fullNames.join(' & ');
-  }
-  return fileName;
-}
-
-function sanitize(str) {
-  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_]/g, '').toUpperCase();
-}
-
-// ============================================
-// FILTERS
-// ============================================
-function setFilter(filter) {
-  currentFilter = filter;
-  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelector(`[onclick="setFilter('${filter}')"]`).classList.add('active');
-  renderEntitiesList();
-}
-
-function filterEntities() {
-  renderEntitiesList();
-}
-
-// ============================================
-// CARDS MODAL
-// ============================================
-function openCardsModal(entityId) {
-  const entity = entities.find(e => e.id === entityId);
-  if (!entity) return;
-  
-  currentModalEntity = entity;
-  const cards = getCardsForEntity(entity);
-  
-  document.getElementById('modal-entity-name').textContent = entity.name;
-  document.getElementById('modal-cards-list').innerHTML = cards.map((card, index) => {
-    const statusInfo = getCardStatusInfo(card.fileName);
-    const players = getPlayersFromFileName(card.fileName, entity);
-    
-    return `
-      <div class="card-row" id="card-row-${index}">
-        <div class="card-row-header">
-          <div class="card-row-info">
-            <span>📄</span>
-            <div>
-              <div class="card-row-name">${players}</div>
-              <div class="card-row-date">Uploaded: ${formatDate(card.lastModified)}</div>
-            </div>
-          </div>
-          <div class="card-row-actions">
-            <a href="${card.url}" target="_blank" class="btn-action btn-view">View PDF</a>
-          </div>
-        </div>
-        
-        <div class="current-status ${statusInfo.class}">
-          Current status: <strong>${statusInfo.label}</strong>
-          ${statusInfo.reason ? `<br>Reason: ${statusInfo.reason}` : ''}
-        </div>
-        
-        <div style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
-          <button class="btn-action btn-validate" onclick="setValidation('${card.fileName}', 'validated', ${index})">✓ Validate</button>
-          <button class="btn-action btn-pending" onclick="setValidation('${card.fileName}', 'pending', ${index})">⏳ Set Pending</button>
-          <button class="btn-action btn-refuse" onclick="showRefuseForm(${index})">✗ Refuse</button>
-        </div>
-        
-        <div class="refuse-form" id="refuse-form-${index}">
-          <label>Reason for refusal:</label>
-          <textarea id="refuse-reason-${index}" placeholder="Enter the reason why this card is refused..."></textarea>
-          <div class="refuse-form-buttons">
-            <button class="btn-confirm-refuse" onclick="submitRefusal('${card.fileName}', ${index})">⚠️ Confirm Refusal</button>
-            <button class="btn-action" style="background: var(--bg-light);" onclick="hideRefuseForm(${index})">Cancel</button>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
-  
-  document.getElementById('cards-modal').classList.add('active');
-}
-
-function closeCardsModal() {
-  document.getElementById('cards-modal').classList.remove('active');
-  currentModalEntity = null;
-}
-
-function showRefuseForm(index) {
-  document.getElementById(`refuse-form-${index}`).classList.add('active');
-}
-
-function hideRefuseForm(index) {
-  document.getElementById(`refuse-form-${index}`).classList.remove('active');
-}
-
-function formatDate(dateString) {
-  if (!dateString) return 'Unknown';
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-GB', {
-    day: '2-digit', month: 'short', year: 'numeric',
-    hour: '2-digit', minute: '2-digit'
-  });
-}
-
-// ============================================
-// API ACTIONS
-// ============================================
-async function setValidation(fileName, status, index) {
-  const token = sessionStorage.getItem('adminToken');
-  
-  try {
-    const response = await fetch(`${CONFIG.apiEndpoint}/admin-validate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        tournament: CONFIG.tournamentCode,
-        event: CONFIG.eventFilter,
-        fileName,
-        status
-      })
-    });
-    
-    if (response.ok) {
-      validationStatus[fileName] = status;
-      updateStats();
-      renderEntitiesList();
-      if (currentModalEntity) {
-        openCardsModal(currentModalEntity.id);
-      }
-    }
-  } catch (error) {
-    console.error('Failed to update validation:', error);
-    alert('Failed to update. Please try again.');
-  }
-}
-
-async function submitRefusal(fileName, index) {
-  const reason = document.getElementById(`refuse-reason-${index}`).value.trim();
-  
-  if (!reason) {
-    alert('Please enter a reason for the refusal.');
+  if (!eventsInput) {
+    btn.disabled = false;
+    btn.textContent = '🔍 Analyze Table';
     return;
   }
   
-  const token = sessionStorage.getItem('adminToken');
+  var events = eventsInput.split(',').map(function(e) {
+    var name = e.trim();
+    var type = name.toLowerCase().includes('pair') ? 'pairs' : 'teams';
+    return { name: name, type: type };
+  });
+  
+  displayResults(events, org, tournamentCode);
+  btn.disabled = false;
+  btn.textContent = '🔍 Analyze Table';
+}
+
+function displayResults(events, org, tournamentCode) {
+  var email = org === 'ebl' ? 'info@eurobridge.org' : 'info@worldbridge.org';
+  var baseUrl = window.location.origin;
+  
+  var eventsHtml = '';
+  events.forEach(function(ev) {
+    eventsHtml += '<div class="event-item"><div class="event-item-header">';
+    eventsHtml += '<span class="event-item-title">' + ev.name + '</span>';
+    eventsHtml += '<span class="event-item-badge">' + ev.type + '</span>';
+    eventsHtml += '</div></div>';
+  });
+  document.getElementById('events-list').innerHTML = eventsHtml;
+  
+  var iframeHtml = '';
+  events.forEach(function(ev) {
+    var eventEncoded = encodeURIComponent(ev.name);
+    var freezeMsg = encodeURIComponent('Upload closed - Contact ' + email);
+    
+    iframeHtml += '<div class="event-item">';
+    iframeHtml += '<div class="event-item-header"><span class="event-item-title">' + ev.name + '</span></div>';
+    
+    iframeHtml += '<div class="section-label" style="margin-top:12px">📋 Normal (Upload enabled)</div>';
+    iframeHtml += '<div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>&lt;iframe src="' + baseUrl + '/?tournament=' + tournamentCode + '&amp;event=' + eventEncoded + '" width="100%" height="800" style="border:none;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);" title="System Cards - ' + ev.name + '"&gt;&lt;/iframe&gt;</code></div>';
+    
+    iframeHtml += '<div class="section-label" style="margin-top:16px">🔒 Frozen (Upload disabled)</div>';
+    iframeHtml += '<div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>&lt;iframe src="' + baseUrl + '/?tournament=' + tournamentCode + '&amp;event=' + eventEncoded + '&amp;freeze=1&amp;freezeMsg=' + freezeMsg + '" width="100%" height="800" style="border:none;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);" title="System Cards - ' + ev.name + '"&gt;&lt;/iframe&gt;</code></div>';
+    
+    iframeHtml += '</div>';
+  });
+  
+  iframeHtml += '<div class="event-item" style="background:var(--primary-light);border-color:var(--primary)">';
+  iframeHtml += '<div class="event-item-header"><span class="event-item-title">🔧 Admin Console URL</span></div>';
+  iframeHtml += '<div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>' + baseUrl + '/admin</code></div>';
+  iframeHtml += '</div>';
+  
+  document.getElementById('iframe-codes').innerHTML = iframeHtml;
+  document.getElementById('analysis-results').style.display = 'block';
+}
+
+function copyCode(btn) {
+  var code = btn.nextElementSibling.textContent;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(function() {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = code;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  }
+}
+
+async function loadTournaments() {
+  var container = document.getElementById('tournaments-container');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading tournaments...</p></div>';
+  
+  var html = '';
+  
+  for (var code in TOURNAMENTS) {
+    var tournament = TOURNAMENTS[code];
+    
+    try {
+      var teamsRes = await fetch(API_BASE + '/teams?tournament=' + code);
+      var teamsData = await teamsRes.json();
+      var teams = teamsData.teams || [];
+      
+      var pairsRes = await fetch(API_BASE + '/pairs?tournament=' + code);
+      var pairsData = await pairsRes.json();
+      var pairs = pairsData.pairs || [];
+      
+      var cardsRes = await fetch(API_BASE + '/cards?tournament=' + code);
+      var cardsJson = await cardsRes.json();
+      cardsData[code] = cardsJson.cards || [];
+      
+      var events = {};
+      teams.forEach(function(t) {
+        if (t.event && !events[t.event]) events[t.event] = { type: 'teams', entities: [] };
+        if (t.event) events[t.event].entities.push(t);
+      });
+      pairs.forEach(function(p) {
+        if (p.event && !events[p.event]) events[p.event] = { type: 'pairs', entities: [] };
+        if (p.event) events[p.event].entities.push(p);
+      });
+      
+      var eventNames = Object.keys(events);
+      var totalEntities = teams.length + pairs.length;
+      var totalCards = cardsData[code].length;
+      
+      html += '<div class="tournament-section" data-code="' + code + '">';
+      html += '<div class="tournament-header" onclick="toggleTournament(\'' + code + '\')">';
+      html += '<div class="tournament-title">📁 ' + tournament.name + '</div>';
+      html += '<div class="tournament-stats">';
+      html += '<span class="tournament-stat">' + eventNames.length + ' events</span>';
+      html += '<span class="tournament-stat">' + totalEntities + ' teams/pairs</span>';
+      html += '<span class="tournament-stat">' + totalCards + ' cards</span>';
+      html += '</div></div>';
+      html += '<div class="tournament-content" id="content-' + code + '">';
+      
+      if (eventNames.length > 0) {
+        html += '<div class="event-tabs" id="tabs-' + code + '">';
+        eventNames.forEach(function(ev, idx) {
+          html += '<button class="event-tab' + (idx === 0 ? ' active' : '') + '" onclick="showEvent(\'' + code + '\',\'' + ev.replace(/'/g, "\\'") + '\')">' + ev + ' (' + events[ev].entities.length + ')</button>';
+        });
+        html += '</div>';
+        html += '<div class="event-content" id="event-content-' + code + '"></div>';
+        TOURNAMENTS[code].events = events;
+      } else {
+        html += '<div class="empty-state"><div class="empty-state-icon">📭</div><p>No events found</p></div>';
+      }
+      
+      html += '</div></div>';
+      
+    } catch (error) {
+      console.error('Error loading tournament ' + code + ':', error);
+      html += '<div class="tournament-section"><div class="tournament-header">';
+      html += '<div class="tournament-title">📁 ' + tournament.name + '</div>';
+      html += '<div class="tournament-stats"><span style="color:var(--error)">Error loading data</span></div>';
+      html += '</div></div>';
+    }
+  }
+  
+  container.innerHTML = html || '<div class="empty-state"><div class="empty-state-icon">📭</div><p>No tournaments configured</p></div>';
+}
+
+function toggleTournament(code) {
+  var content = document.getElementById('content-' + code);
+  content.classList.toggle('open');
+  if (content.classList.contains('open') && TOURNAMENTS[code].events) {
+    var firstEvent = Object.keys(TOURNAMENTS[code].events)[0];
+    if (firstEvent) showEvent(code, firstEvent);
+  }
+}
+
+async function showEvent(code, eventName) {
+  currentTournament = code;
+  currentEvent = eventName;
+  
+  var tabs = document.querySelectorAll('#tabs-' + code + ' .event-tab');
+  tabs.forEach(function(tab) {
+    tab.classList.remove('active');
+    if (tab.textContent.indexOf(eventName) === 0) tab.classList.add('active');
+  });
+  
+  var container = document.getElementById('event-content-' + code);
+  container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading...</p></div>';
   
   try {
-    const response = await fetch(`${CONFIG.apiEndpoint}/admin-validate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        tournament: CONFIG.tournamentCode,
-        event: CONFIG.eventFilter,
-        fileName,
-        status: { status: 'refused', reason }
-      })
+    var valRes = await fetch(API_BASE + '/validation?tournament=' + code + '&event=' + encodeURIComponent(eventName));
+    var valData = await valRes.json();
+    validationData[code + '_' + eventName] = valData.status || {};
+  } catch (e) {
+    validationData[code + '_' + eventName] = {};
+  }
+  
+  renderEventContent(code, eventName);
+}
+
+function renderEventContent(code, eventName) {
+  var container = document.getElementById('event-content-' + code);
+  var events = TOURNAMENTS[code].events;
+  var event = events[eventName];
+  var entities = event.entities;
+  var cards = cardsData[code] || [];
+  var validation = validationData[code + '_' + eventName] || {};
+  
+  var eventCards = cards.filter(function(c) {
+    return entities.some(function(e) { return c.fileName.startsWith(sanitize(e.name) + '_'); });
+  });
+  
+  var totalEntities = entities.length;
+  var entitiesWithCards = 0;
+  var pendingCards = 0;
+  var validatedCards = 0;
+  var refusedCards = 0;
+  
+  entities.forEach(function(e) {
+    var ec = eventCards.filter(function(c) { return c.fileName.startsWith(sanitize(e.name) + '_'); });
+    if (ec.length > 0) entitiesWithCards++;
+  });
+  
+  eventCards.forEach(function(c) {
+    var status = validation[c.fileName];
+    if (status === 'validated') validatedCards++;
+    else if (status === 'refused' || (typeof status === 'object' && status.status === 'refused')) refusedCards++;
+    else pendingCards++;
+  });
+  
+  var html = '<div class="stats-row">';
+  html += '<div class="stat-card"><div class="stat-value">' + totalEntities + '</div><div class="stat-label">Total ' + event.type + '</div></div>';
+  html += '<div class="stat-card' + (entitiesWithCards < totalEntities ? ' warning' : ' success') + '"><div class="stat-value">' + entitiesWithCards + '</div><div class="stat-label">With Cards</div></div>';
+  html += '<div class="stat-card warning"><div class="stat-value">' + pendingCards + '</div><div class="stat-label">Pending</div></div>';
+  html += '<div class="stat-card success"><div class="stat-value">' + validatedCards + '</div><div class="stat-label">Accepted</div></div>';
+  html += '<div class="stat-card error"><div class="stat-value">' + refusedCards + '</div><div class="stat-label">Refused</div></div>';
+  html += '</div>';
+  
+  if (eventCards.length > 0) {
+    html += '<table class="cards-table"><thead><tr><th>Team/Pair</th><th>Players</th><th>Uploaded</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+    
+    eventCards.forEach(function(card) {
+      var status = validation[card.fileName];
+      var statusClass = 'pending', statusText = 'Pending', reason = '';
+      
+      if (status === 'validated') { statusClass = 'validated'; statusText = 'Accepted'; }
+      else if (status === 'refused') { statusClass = 'refused'; statusText = 'Refused'; }
+      else if (typeof status === 'object' && status.status === 'refused') { statusClass = 'refused'; statusText = 'Refused'; reason = status.reason || ''; }
+      
+      var parts = card.fileName.replace('.pdf', '').split('_');
+      var teamName = parts[0];
+      var players = parts.slice(1).join(' & ');
+      var fn = card.fileName.replace(/'/g, "\\'");
+      var evn = eventName.replace(/'/g, "\\'");
+      
+      html += '<tr><td>' + teamName + '</td><td>' + players + '</td><td>' + formatDate(card.lastModified) + '</td>';
+      html += '<td><span class="status-badge ' + statusClass + '">' + statusText + '</span>';
+      if (reason) html += '<br><small style="color:var(--error)">' + reason + '</small>';
+      html += '</td><td><div class="action-btns">';
+      html += '<a href="' + card.url + '" target="_blank" class="action-btn" style="background:var(--info-light);color:var(--info)">View</a>';
+      html += '<button class="action-btn validate" onclick="validateCard(\'' + code + '\',\'' + evn + '\',\'' + fn + '\')">✓</button>';
+      html += '<button class="action-btn pending" onclick="setPending(\'' + code + '\',\'' + evn + '\',\'' + fn + '\')">⏳</button>';
+      html += '<button class="action-btn refuse" onclick="showRefuseForm(this,\'' + code + '\',\'' + evn + '\',\'' + fn + '\')">✗</button>';
+      html += '</div><div class="refuse-form" style="display:none">';
+      html += '<input type="text" placeholder="Reason...">';
+      html += '<button onclick="refuseCard(this,\'' + code + '\',\'' + evn + '\',\'' + fn + '\')">Confirm</button>';
+      html += '</div></td></tr>';
     });
     
-    if (response.ok) {
-      validationStatus[fileName] = { status: 'refused', reason };
-      updateStats();
-      renderEntitiesList();
-      if (currentModalEntity) {
-        openCardsModal(currentModalEntity.id);
-      }
-    }
-  } catch (error) {
-    console.error('Failed to update validation:', error);
-    alert('Failed to update. Please try again.');
+    html += '</tbody></table>';
+  } else {
+    html += '<div class="empty-state"><div class="empty-state-icon">📭</div><p>No cards uploaded yet</p></div>';
   }
+  
+  container.innerHTML = html;
+}
+
+function sanitize(s) { return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_]/g, '').toUpperCase(); }
+function formatDate(d) { if (!d) return '-'; return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+
+async function validateCard(code, eventName, fileName) { await updateValidation(code, eventName, fileName, 'validated'); }
+async function setPending(code, eventName, fileName) { await updateValidation(code, eventName, fileName, 'pending'); }
+function showRefuseForm(btn, code, eventName, fileName) { var form = btn.parentNode.nextElementSibling; form.style.display = form.style.display === 'none' ? 'flex' : 'none'; }
+async function refuseCard(btn, code, eventName, fileName) {
+  var reason = btn.previousElementSibling.value.trim();
+  if (!reason) { alert('Please enter a reason'); return; }
+  await updateValidation(code, eventName, fileName, { status: 'refused', reason: reason });
+}
+
+async function updateValidation(code, eventName, fileName, status) {
+  try {
+    var response = await fetch(API_BASE + '/admin-validate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tournament: code, event: eventName, fileName: fileName, status: status })
+    });
+    if (response.ok) {
+      validationData[code + '_' + eventName][fileName] = status;
+      renderEventContent(code, eventName);
+    } else { alert('Error updating validation'); }
+  } catch (error) { console.error('Error:', error); alert('Error updating validation'); }
 }
 </script>
 </body>
