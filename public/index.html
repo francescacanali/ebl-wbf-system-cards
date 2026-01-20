@@ -226,11 +226,11 @@ function showTab(t){if(isFrozen&&t==='upload')return;document.querySelectorAll('
 
 function populateEntitySelect(){var s=document.getElementById('entity-select');s.innerHTML='<option value="">Select your team...</option>';for(var i=0;i<entities.length;i++){var e=entities[i],o=document.createElement('option');o.value=e.id;o.textContent=e.name+(e.country?' ('+e.country+')':'');s.appendChild(o);}}
 
-function handleEntityChange(){var s=document.getElementById('entity-select'),pg=document.getElementById('players-group'),pc=document.getElementById('players-checkboxes');selectedEntity=null;for(var i=0;i<entities.length;i++)if(entities[i].id===s.value){selectedEntity=entities[i];break;}selectedPlayers=[];hideConfirmBox();if(!selectedEntity){pg.style.display='none';document.getElementById('file-preview').style.display='none';document.getElementById('upload-container').style.display='none';return;}var pl=[];for(var j=0;j<selectedEntity.players.length;j++)if(!isCoachOrCaptain(selectedEntity.players[j]))pl.push(selectedEntity.players[j]);var h='';for(var k=0;k<pl.length;k++){var p=pl[k];h+='<label class="player-checkbox"><input type="checkbox" value="'+p.wbfId+'" onchange="handlePlayerSelection()"><div><div class="player-name">👤 '+p.fullName+'</div><div class="player-id">WBF ID: '+p.wbfId+'</div></div></label>';}pc.innerHTML=h;pg.style.display='block';document.getElementById('file-preview').style.display='none';document.getElementById('upload-container').style.display='none';updateHint();}
+function handleEntityChange(){var s=document.getElementById('entity-select'),pg=document.getElementById('players-group'),pc=document.getElementById('players-checkboxes');selectedEntity=null;for(var i=0;i<entities.length;i++)if(entities[i].id===s.value){selectedEntity=entities[i];break;}selectedPlayers=[];hideConfirmBox();if(!selectedEntity){pg.style.display='none';document.getElementById('file-preview').style.display='none';document.getElementById('upload-container').style.display='none';return;}var h='';for(var k=0;k<selectedEntity.players.length;k++){var p=selectedEntity.players[k];var roleLabel=isCoachOrCaptain(p)?' <span style="color:var(--text-muted);font-size:11px">('+p.role+')</span>':'';h+='<label class="player-checkbox"><input type="checkbox" value="'+p.wbfId+'" onchange="handlePlayerSelection()"><div><div class="player-name">👤 '+p.fullName+roleLabel+'</div><div class="player-id">WBF ID: '+p.wbfId+'</div></div></label>';}pc.innerHTML=h;pg.style.display='block';document.getElementById('file-preview').style.display='none';document.getElementById('upload-container').style.display='none';updateHint();}
 
-function isCoachOrCaptain(p){var n=p.fullName.toLowerCase(),r=(p.role||'').toLowerCase();return r.indexOf('coach')>=0||r.indexOf('captain')>=0||n.indexOf('(coach)')>=0||n.indexOf('(captain)')>=0||n.indexOf('(npc)')>=0||r.indexOf('npc')>=0;}
+function isCoachOrCaptain(p){var n=p.fullName.toLowerCase(),r=(p.role||'').toLowerCase();return r==='coach'||r==='captain'||r==='npc'||n.indexOf('(coach)')>=0||n.indexOf('(captain)')>=0||n.indexOf('(npc)')>=0;}
 
-function handlePlayerSelection(){var cb=document.querySelectorAll('#players-checkboxes input[type="checkbox"]');selectedPlayers=[];var pl=[];for(var i=0;i<selectedEntity.players.length;i++)if(!isCoachOrCaptain(selectedEntity.players[i]))pl.push(selectedEntity.players[i]);for(var j=0;j<cb.length;j++){var c=cb[j],lb=c.closest('.player-checkbox');if(c.checked){lb.classList.add('selected');for(var k=0;k<pl.length;k++)if(pl[k].wbfId===c.value){selectedPlayers.push(pl[k]);break;}}else lb.classList.remove('selected');}updateHint();updateFilePreviewFromPlayers();hideConfirmBox();}
+function handlePlayerSelection(){var cb=document.querySelectorAll('#players-checkboxes input[type="checkbox"]');selectedPlayers=[];for(var j=0;j<cb.length;j++){var c=cb[j],lb=c.closest('.player-checkbox');if(c.checked){lb.classList.add('selected');for(var k=0;k<selectedEntity.players.length;k++)if(selectedEntity.players[k].wbfId===c.value){selectedPlayers.push(selectedEntity.players[k]);break;}}else lb.classList.remove('selected');}updateHint();updateFilePreviewFromPlayers();hideConfirmBox();}
 
 function updateHint(){var h=document.getElementById('players-hint'),c=selectedPlayers.length;if(c===0){h.textContent='Select at least 2 players who share this system card';h.className='hint-text';}else if(c===1){h.textContent='⚠️ Select at least 1 more player';h.className='hint-text error';}else{h.textContent='✓ '+c+' players selected';h.className='hint-text success';}}
 
@@ -282,10 +282,25 @@ return r;
 
 function getCardStatus(fn){var s=validationStatus[fn];var helpHtml='<span class="status-help">What does this mean?<span class="tooltip">'+DISCLAIMER_TEXT+'</span></span>';if(!s||s==='pending')return{cssClass:'pending',label:'Pending file check',reason:null,helpHtml:''};if(s==='validated')return{cssClass:'validated',label:'✓ File accepted',reason:null,helpHtml:helpHtml};if(typeof s==='object'&&s.status==='refused')return{cssClass:'refused',label:'✗ File issue',reason:s.reason||'No reason provided',helpHtml:''};return{cssClass:'pending',label:'Pending file check',reason:null,helpHtml:''};}
 
-function getEntityStatus(e,ca){var pl=[];for(var i=0;i<e.players.length;i++)if(!isCoachOrCaptain(e.players[i]))pl.push(e.players[i]);var hr=false;for(var j=0;j<ca.length;j++){var s=validationStatus[ca[j].fileName];if(s==='refused'||(typeof s==='object'&&s.status==='refused')){hr=true;break;}}if(hr)return{color:'red',text:'File issue'};if(ca.length===0)return{color:'red',text:'No System Cards'};var pw={};for(var k=0;k<ca.length;k++){var parts=ca[k].fileName.replace('.pdf','').split('_');
+function getEntityStatus(e,ca){
+// Get only playing members (not captain/coach) for completeness check
+var pl=[];for(var i=0;i<e.players.length;i++)if(!isCoachOrCaptain(e.players[i]))pl.push(e.players[i]);
+// Check for refused files
+var hr=false;for(var j=0;j<ca.length;j++){var s=validationStatus[ca[j].fileName];if(s==='refused'||(typeof s==='object'&&s.status==='refused')){hr=true;break;}}
+if(hr)return{color:'red',text:'File issue'};
+if(ca.length===0)return{color:'red',text:'No System Cards'};
+// Extract player IDs from uploaded cards
+var pw={};for(var k=0;k<ca.length;k++){var parts=ca[k].fileName.replace('.pdf','').split('_');
 // New format: TEAM_ID1_SURNAME1_ID2_SURNAME2...
-// Extract IDs (every other element starting from index 1)
-for(var x=1;x<parts.length;x+=2){pw[parts[x]]=true;}}var al=true;for(var m=0;m<pl.length;m++)if(!pw[pl[m].wbfId]){al=false;break;}var av=true;for(var n=0;n<ca.length;n++)if(validationStatus[ca[n].fileName]!=='validated'){av=false;break;}if(al&&av)return{color:'green',text:ca.length+' System Card(s) - Complete'};if(al&&!av)return{color:'yellow',text:ca.length+' System Card(s) - Pending file check'};return{color:'yellow',text:ca.length+' System Card(s) - Missing'};}
+for(var x=1;x<parts.length;x+=2){pw[parts[x]]=true;}}
+// Check if all PLAYING members (not captain/coach) have cards
+var al=true;for(var m=0;m<pl.length;m++)if(!pw[pl[m].wbfId]){al=false;break;}
+// Check if all cards are validated
+var av=true;for(var n=0;n<ca.length;n++)if(validationStatus[ca[n].fileName]!=='validated'){av=false;break;}
+if(al&&av)return{color:'green',text:ca.length+' System Card(s) - Complete'};
+if(al&&!av)return{color:'yellow',text:ca.length+' System Card(s) - Pending file check'};
+return{color:'yellow',text:ca.length+' System Card(s) - Missing'};
+}
 
 function getPlayersFromFileName(fn,e){
 // New format: TEAM_ID1_SURNAME1_ID2_SURNAME2[_ID3_SURNAME3...].pdf
