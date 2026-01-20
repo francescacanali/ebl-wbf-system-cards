@@ -73,6 +73,9 @@ function parsePairsHtml(html) {
   const rowRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
   const cellRegex = /<td[^>]*>([\s\S]*?)<\/td>/gi;
 
+  // Detect if table has ID column by checking header row
+  const hasIdColumn = /<th[^>]*>\s*ID\s*<\/th>/i.test(html);
+
   let rowMatch;
   while ((rowMatch = rowRegex.exec(html)) !== null) {
     const rowContent = rowMatch[1];
@@ -83,13 +86,28 @@ function parsePairsHtml(html) {
       cells.push(stripHtml(cellMatch[1]));
     }
 
-    if (cells.length >= 4) {
-      const event = cells[0];
-      const pairId = cells[1];
-      const pairName = cells[2];
-      const roster = cells[3];
+    // Adjust column indices based on whether ID column exists
+    const minCells = hasIdColumn ? 4 : 3;
 
-      if (!pairName || pairName === 'Team Name' || pairName === 'Pair Name' || !pairId || isNaN(parseInt(pairId))) continue;
+    if (cells.length >= minCells) {
+      let event, pairId, pairName, roster;
+
+      if (hasIdColumn) {
+        event = cells[0];
+        pairId = cells[1];
+        pairName = cells[2];
+        roster = cells[3];
+      } else {
+        event = cells[0];
+        pairName = cells[1];
+        roster = cells[2];
+        // Generate a unique ID from pair name if no ID column
+        pairId = generatePairId(pairName, event);
+      }
+
+      if (!pairName || pairName === 'Team Name' || pairName === 'Pair Name' || pairName === 'Pair') continue;
+      // Skip header rows
+      if (event === 'Event') continue;
 
       const players = parseRoster(roster);
 
@@ -106,6 +124,18 @@ function parsePairsHtml(html) {
   }
 
   return pairs;
+}
+
+function generatePairId(pairName, event) {
+  // Create a consistent ID from pair name and event
+  const str = (event + '_' + pairName).toLowerCase().replace(/[^a-z0-9]/g, '');
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash).toString();
 }
 
 function stripHtml(html) {
