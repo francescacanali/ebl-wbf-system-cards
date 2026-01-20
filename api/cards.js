@@ -18,20 +18,35 @@ export default async function handler(req, res) {
   }
   
   const tournamentCode = req.query.tournament || '26prague';
+  const eventFolder = req.query.event ? req.query.event.replace(/\s+/g, '_') : '';
   
   try {
+    // If event is specified, search in that specific folder
+    // Otherwise search in all subfolders of the tournament
+    const prefix = eventFolder 
+      ? `${tournamentCode}/${eventFolder}/`
+      : `${tournamentCode}/`;
+    
     const command = new ListObjectsV2Command({
       Bucket: process.env.R2_BUCKET_NAME,
-      Prefix: `${tournamentCode}/CC/`
+      Prefix: prefix
     });
     
     const response = await R2.send(command);
     
-    const cards = (response.Contents || []).map(obj => ({
-      fileName: obj.Key.split('/').pop(),
-      url: `${process.env.R2_PUBLIC_URL}/${obj.Key}`,
-      lastModified: obj.LastModified
-    }));
+    const cards = (response.Contents || [])
+      .filter(obj => obj.Key.endsWith('.pdf'))
+      .map(obj => {
+        const parts = obj.Key.split('/');
+        const fileName = parts.pop();
+        const folder = parts.length > 1 ? parts[parts.length - 1] : '';
+        return {
+          fileName,
+          folder,
+          url: `${process.env.R2_PUBLIC_URL}/${obj.Key}`,
+          lastModified: obj.LastModified
+        };
+      });
     
     return res.status(200).json({ cards });
     
