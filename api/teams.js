@@ -79,6 +79,9 @@ function parseTeamsHtml(html) {
   const rowRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
   const cellRegex = /<td[^>]*>([\s\S]*?)<\/td>/gi;
 
+  // Detect if table has ID column by checking header row
+  const hasIdColumn = /<th[^>]*>\s*ID\s*<\/th>/i.test(html);
+
   let rowMatch;
   while ((rowMatch = rowRegex.exec(html)) !== null) {
     const rowContent = rowMatch[1];
@@ -89,13 +92,30 @@ function parseTeamsHtml(html) {
       cells.push(stripHtml(cellMatch[1]));
     }
 
-    if (cells.length >= 4) {
-      const event = cells[0];
-      const teamId = cells[1];
-      const teamName = cells[2];
-      const roster = cells[3];
+    // Adjust column indices based on whether ID column exists
+    // With ID column: Event, ID, Team Name, Roster, ...
+    // Without ID column: Event, Team Name, Roster, ...
+    const minCells = hasIdColumn ? 4 : 3;
+    
+    if (cells.length >= minCells) {
+      let event, teamId, teamName, roster;
+      
+      if (hasIdColumn) {
+        event = cells[0];
+        teamId = cells[1];
+        teamName = cells[2];
+        roster = cells[3];
+      } else {
+        event = cells[0];
+        teamName = cells[1];
+        roster = cells[2];
+        // Generate a unique ID from team name if no ID column
+        teamId = generateTeamId(teamName, event);
+      }
 
-      if (!teamName || teamName === 'Team Name' || !teamId || isNaN(parseInt(teamId))) continue;
+      if (!teamName || teamName === 'Team Name' || teamName === 'Team') continue;
+      // Skip header rows - check if it looks like a header
+      if (event === 'Event' || teamName === 'Team Name') continue;
 
       const players = parseRoster(roster);
 
@@ -112,6 +132,18 @@ function parseTeamsHtml(html) {
   }
 
   return teams;
+}
+
+function generateTeamId(teamName, event) {
+  // Create a consistent ID from team name and event
+  const str = (event + '_' + teamName).toLowerCase().replace(/[^a-z0-9]/g, '');
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash).toString();
 }
 
 function stripHtml(html) {
