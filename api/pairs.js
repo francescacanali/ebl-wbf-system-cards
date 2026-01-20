@@ -170,13 +170,15 @@ function stripHtml(html) {
 
 function parseRoster(rosterText) {
   const players = [];
-  const regex = /([A-Za-zÀ-ÿ\s\-'\.]+)\s*\((\d+)\)/g;
+  // Match: Name (ID) optional_role
+  const regex = /([A-Za-zÀ-ÿ\s\-'\.]+)\s*\((\d+)\)\s*(captain|coach|npc)?/gi;
   let match;
   const seen = new Set();
 
   while ((match = regex.exec(rosterText)) !== null) {
     const fullName = match[1].trim();
     const wbfId = match[2];
+    const role = match[3] ? match[3].toLowerCase() : '';
 
     if (!seen.has(wbfId)) {
       seen.add(wbfId);
@@ -194,7 +196,8 @@ function parseRoster(rosterText) {
       players.push({
         fullName,
         surname: surname.toUpperCase(),
-        wbfId
+        wbfId,
+        role
       });
     }
   }
