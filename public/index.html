@@ -252,8 +252,9 @@ return parts.join('_')+'.pdf';
 }
 
 function generateEventFolder(){
-// Convert event name to folder format: "U26 Online Teams" -> "U26_Online_Teams"
-return CONFIG.eventFilter.replace(/\s+/g,'_');
+// Convert event name to folder format: "#26100 U26 Online Teams" -> "U26_Online_Teams"
+// Remove leading #number and spaces, then replace remaining spaces with underscores
+return CONFIG.eventFilter.replace(/^#\d+\s*/, '').replace(/\s+/g,'_');
 }
 
 function renderEntitiesList(){var ct=document.getElementById('entities-list');if(entities.length===0){ct.innerHTML='<p style="text-align:center;color:var(--text-muted)">No entries found</p>';return;}var h='';for(var i=0;i<entities.length;i++){var e=entities[i],ca=getCardsForEntity(e),st=getEntityStatus(e,ca);h+='<div class="team-card" data-name="'+e.name.toLowerCase()+'"><div class="team-header" onclick="toggleEntity(this)"><div><div class="team-name">'+e.name+'</div>'+(e.country?'<div class="team-country">'+e.country+'</div>':'')+'</div><div class="team-status"><span class="status-dot '+st.color+'"></span>'+st.text+'</div></div><div class="team-details"><div class="cards-list">';if(ca.length>0){for(var j=0;j<ca.length;j++){var c=ca[j],cs=getCardStatus(c.fileName),pn=getPlayersFromFileName(c.fileName,e);h+='<div class="card-item"><div class="card-info"><span class="card-icon">📄</span><div><div class="card-players">'+pn+'</div><div class="card-date">Uploaded: '+formatDate(c.lastModified)+'</div><span class="card-status '+cs.cssClass+'">'+cs.label+'</span>'+cs.helpHtml+(cs.reason?'<div class="refused-reason">Reason: '+cs.reason+'</div>':'')+'</div></div><div class="card-actions"><a href="'+c.url+'" target="_blank" class="btn-small btn-view">View PDF</a><button class="btn-small btn-copy" onclick="copyLink(\''+c.url+'\',this)">Copy Link</button></div></div>';}}else h+='<p class="no-cards">No System Cards uploaded yet</p>';h+='</div><div style="margin-top:12px"><strong>Players:</strong> <span style="color:var(--text-secondary);font-size:14px">';var pna=[];for(var p=0;p<e.players.length;p++)pna.push(e.players[p].fullName+(isCoachOrCaptain(e.players[p])?' (NPC)':''));h+=pna.join(', ')+'</span></div></div></div>';}ct.innerHTML=h;}
@@ -261,14 +262,18 @@ function renderEntitiesList(){var ct=document.getElementById('entities-list');if
 function getCardsForEntity(e,eventPrefix){
 // New format: files are in event folder, filename is TEAM_ID1_SURNAME1_ID2_SURNAME2.pdf
 var teamSan=sanitize(e.name),r=[];
-var eventFolder=CONFIG.eventFilter.replace(/\s+/g,'_');
+// Clean event folder: "#26100 U26 Online Teams" -> "U26_Online_Teams"
+var eventFolder=CONFIG.eventFilter.replace(/^#\d+\s*/, '').replace(/\s+/g,'_');
 for(var i=0;i<uploadedCards.length;i++){
 var card=uploadedCards[i];
 var fn=card.fileName;
 // Match cards that start with team name and are in the correct event folder (if filtering)
 if(fn.startsWith(teamSan+'_')){
 // If we have an event filter, only show cards from that folder
-if(CONFIG.eventFilter && card.folder && card.folder!==eventFolder) continue;
+if(CONFIG.eventFilter && card.folder){
+var cleanCardFolder=card.folder.replace(/^#\d+\s*/, '').replace(/\s+/g,'_');
+if(cleanCardFolder!==eventFolder) continue;
+}
 r.push(card);
 }
 }
