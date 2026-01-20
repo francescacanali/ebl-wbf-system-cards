@@ -1,4 +1,3 @@
-<!-- Admin Console v2 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,58 +13,47 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .header{text-align:center;margin-bottom:32px;padding:24px;background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);border-radius:16px;color:#fff}
 .header h1{font-size:28px;font-weight:800;margin-bottom:8px}
 .header p{opacity:0.9;font-size:15px}
-.main-tabs{display:flex;gap:8px;margin-bottom:24px;border-bottom:2px solid var(--border-color);padding-bottom:0}
+.main-tabs{display:flex;gap:8px;margin-bottom:24px;border-bottom:2px solid var(--border-color)}
 .main-tab{padding:12px 24px;background:none;border:none;font-size:15px;font-weight:600;color:var(--text-secondary);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s}
 .main-tab:hover{color:var(--primary)}
 .main-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
 .tab-content{display:none}.tab-content.active{display:block}
-.card{background:var(--bg-white);border:1px solid var(--border-color);border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
-.card-title{font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.card{background:var(--bg-white);border:1px solid var(--border-color);border-radius:12px;padding:24px;margin-bottom:20px}
+.card-title{font-size:18px;font-weight:700;margin-bottom:16px}
 .form-group{margin-bottom:16px}
 .form-label{display:block;margin-bottom:6px;font-size:14px;font-weight:500}
-.form-input,.form-select{width:100%;padding:12px 14px;border:1px solid var(--border-color);border-radius:8px;font-size:15px;font-family:inherit}
-.form-input:focus,.form-select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.form-input,.form-select{width:100%;padding:12px 14px;border:1px solid var(--border-color);border-radius:8px;font-size:15px}
+.form-input:focus,.form-select:focus{outline:none;border-color:var(--primary)}
 .form-hint{font-size:12px;color:var(--text-muted);margin-top:4px}
 .radio-group{display:flex;gap:20px;margin-top:8px}
 .radio-label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px}
 .radio-label input{width:18px;height:18px;accent-color:var(--primary)}
-.btn{padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s}
+.btn{padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none}
 .btn-primary{background:var(--primary);color:#fff}
 .btn-primary:hover{background:var(--primary-dark)}
 .btn-danger{background:var(--error);color:#fff}
-.btn-danger:hover{background:#b91c1c}
-.btn-secondary{background:var(--bg-light);color:var(--text-secondary);border:1px solid var(--border-color)}
-.btn:disabled{opacity:0.5;cursor:not-allowed}
 .btn-sm{padding:8px 16px;font-size:13px}
 .tournament-list{display:flex;flex-direction:column;gap:12px}
 .tournament-item{background:var(--bg-light);border:1px solid var(--border-color);border-radius:8px;padding:16px;display:flex;justify-content:space-between;align-items:center}
-.tournament-item-info h4{font-size:15px;font-weight:600;margin-bottom:4px}
-.tournament-item-info p{font-size:13px;color:var(--text-muted)}
-.tournament-item-info .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin-left:8px}
-.tournament-item-info .badge.ebl{background:var(--primary-light);color:var(--primary)}
-.tournament-item-info .badge.wbf{background:var(--info-light);color:var(--info)}
-.tournament-item-actions{display:flex;gap:8px}
-.results-box{background:var(--bg-light);border:1px solid var(--border-color);border-radius:8px;padding:16px;margin-top:20px}
-.results-title{font-weight:600;margin-bottom:12px}
-.event-item{background:var(--bg-white);border:1px solid var(--border-color);border-radius:8px;padding:16px;margin-bottom:12px}
-.event-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.event-item-title{font-weight:600;font-size:15px}
-.event-item-badge{font-size:12px;padding:4px 10px;border-radius:4px;background:var(--primary-light);color:var(--primary)}
-.code-block{background:#1e293b;color:#e2e8f0;padding:12px 16px;border-radius:8px;font-family:'Monaco','Menlo',monospace;font-size:12px;overflow-x:auto;margin-top:8px;position:relative}
+.tournament-item h4{font-size:15px;font-weight:600;margin-bottom:4px}
+.tournament-item p{font-size:13px;color:var(--text-muted)}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;margin-left:8px}
+.badge.ebl{background:var(--primary-light);color:var(--primary)}
+.badge.wbf{background:var(--info-light);color:var(--info)}
+.section-label{font-size:13px;font-weight:600;color:var(--text-muted);margin:16px 0 8px;text-transform:uppercase}
+.code-block{background:#1e293b;color:#e2e8f0;padding:12px 16px;border-radius:8px;font-family:monospace;font-size:12px;overflow-x:auto;margin-top:8px;position:relative}
 .code-block code{white-space:pre-wrap;word-break:break-all}
 .copy-btn{position:absolute;top:8px;right:8px;padding:6px 12px;background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer}
-.copy-btn:hover{background:var(--primary-dark)}
 .copy-btn.copied{background:var(--success)}
-.section-label{font-size:13px;font-weight:600;color:var(--text-muted);margin:16px 0 8px;text-transform:uppercase;letter-spacing:0.5px}
 .tournament-section{border:1px solid var(--border-color);border-radius:12px;margin-bottom:16px;overflow:hidden}
-.tournament-header{padding:16px 20px;background:var(--bg-light);display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background 0.2s}
+.tournament-header{padding:16px 20px;background:var(--bg-light);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
 .tournament-header:hover{background:var(--border-color)}
-.tournament-title{font-weight:700;font-size:16px;display:flex;align-items:center;gap:10px}
+.tournament-title{font-weight:700;font-size:16px}
 .tournament-stats{display:flex;gap:16px;font-size:13px;color:var(--text-secondary)}
 .tournament-content{display:none;border-top:1px solid var(--border-color)}
 .tournament-content.open{display:block}
 .event-tabs{display:flex;gap:4px;padding:12px 16px;background:var(--bg-white);border-bottom:1px solid var(--border-color);flex-wrap:wrap}
-.event-tab{padding:8px 16px;background:var(--bg-light);border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s}
+.event-tab{padding:8px 16px;background:var(--bg-light);border:1px solid var(--border-color);border-radius:6px;font-size:13px;font-weight:500;cursor:pointer}
 .event-tab:hover{border-color:var(--primary);color:var(--primary)}
 .event-tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
 .event-content{padding:20px}
@@ -79,13 +67,12 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .cards-table{width:100%;border-collapse:collapse}
 .cards-table th,.cards-table td{padding:12px;text-align:left;border-bottom:1px solid var(--border-color)}
 .cards-table th{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;background:var(--bg-light)}
-.cards-table tr:hover{background:var(--bg-light)}
 .status-badge{padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500}
 .status-badge.pending{background:var(--warning-light);color:var(--warning)}
 .status-badge.validated{background:var(--success-light);color:var(--success)}
 .status-badge.refused{background:var(--error-light);color:var(--error)}
 .action-btns{display:flex;gap:6px}
-.action-btn{padding:6px 12px;border-radius:4px;font-size:11px;font-weight:500;cursor:pointer;border:none;transition:all 0.2s}
+.action-btn{padding:6px 12px;border-radius:4px;font-size:11px;font-weight:500;cursor:pointer;border:none}
 .action-btn.validate{background:var(--success-light);color:var(--success)}
 .action-btn.validate:hover{background:var(--success);color:#fff}
 .action-btn.refuse{background:var(--error-light);color:var(--error)}
@@ -94,559 +81,96 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .action-btn.pending:hover{background:var(--warning);color:#fff}
 .refuse-form{margin-top:8px;display:flex;gap:8px}
 .refuse-form input{flex:1;padding:8px 12px;border:1px solid var(--border-color);border-radius:4px;font-size:13px}
-.refuse-form button{padding:8px 16px;background:var(--error);color:#fff;border:none;border-radius:4px;font-size:13px;cursor:pointer}
+.refuse-form button{padding:8px 16px;background:var(--error);color:#fff;border:none;border-radius:4px;cursor:pointer}
 .loading{text-align:center;padding:40px;color:var(--text-muted)}
 .spinner{width:32px;height:32px;border:3px solid var(--border-color);border-top-color:var(--primary);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .empty-state{text-align:center;padding:40px;color:var(--text-muted)}
-.empty-state-icon{font-size:48px;margin-bottom:12px}
-.alert{padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:14px}
-.alert-success{background:var(--success-light);color:var(--success);border:1px solid var(--success)}
-.alert-error{background:var(--error-light);color:var(--error);border:1px solid var(--error)}
-@media(max-width:768px){.main-tabs{flex-wrap:wrap}.stats-row{grid-template-columns:repeat(2,1fr)}.cards-table{font-size:13px}.action-btns{flex-direction:column}.tournament-item{flex-direction:column;gap:12px;align-items:flex-start}}
 </style>
-<script>
-var ADMIN_PASSWORD = 'systemhero123';
-function checkAuth() {
-  var stored = sessionStorage.getItem('admin_auth');
-  if (stored === ADMIN_PASSWORD) {
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('main-content').style.display = 'block';
-    return true;
-  }
-  return false;
-}
-function login() {
-  var pwd = document.getElementById('password-input').value;
-  if (pwd === ADMIN_PASSWORD) {
-    sessionStorage.setItem('admin_auth', pwd);
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('main-content').style.display = 'block';
-    loadConfig();
-  } else {
-    document.getElementById('auth-error').style.display = 'block';
-    document.getElementById('password-input').value = '';
-  }
-}
-function handleKeyPress(e) { if (e.key === 'Enter') login(); }
-document.addEventListener('DOMContentLoaded', function() {
-  if (!checkAuth()) {
-    document.getElementById('auth-screen').style.display = 'flex';
-    document.getElementById('main-content').style.display = 'none';
-  } else {
-    loadConfig();
-  }
-});
-</script>
 </head>
 <body>
 <div id="auth-screen" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg-light);z-index:9999;align-items:center;justify-content:center;">
 <div style="background:var(--bg-white);padding:40px;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.1);text-align:center;max-width:400px;width:90%;">
 <div style="font-size:48px;margin-bottom:16px;">🔐</div>
-<h2 style="margin-bottom:8px;color:var(--text-primary);">Admin Console</h2>
+<h2 style="margin-bottom:8px;">Admin Console</h2>
 <p style="color:var(--text-secondary);margin-bottom:24px;font-size:14px;">Enter password to access</p>
-<input type="password" id="password-input" onkeypress="handleKeyPress(event)" placeholder="Password" style="width:100%;padding:14px 16px;border:2px solid var(--border-color);border-radius:8px;font-size:16px;margin-bottom:16px;outline:none;">
-<div id="auth-error" style="display:none;background:var(--error-light);color:var(--error);padding:10px;border-radius:6px;margin-bottom:16px;font-size:14px;">❌ Incorrect password</div>
+<input type="password" id="password-input" onkeypress="if(event.key==='Enter')login()" placeholder="Password" style="width:100%;padding:14px 16px;border:2px solid var(--border-color);border-radius:8px;font-size:16px;margin-bottom:16px;">
+<div id="auth-error" style="display:none;background:var(--error-light);color:var(--error);padding:10px;border-radius:6px;margin-bottom:16px;">❌ Incorrect password</div>
 <button onclick="login()" style="width:100%;padding:14px;background:var(--primary);color:white;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">Login</button>
 </div>
 </div>
 <div id="main-content" style="display:none;">
 <div class="container">
-<div class="header">
-<h1>🎴 System Cards Admin Console</h1>
-<p>Manage system cards for all EBL and WBF tournaments</p>
-</div>
+<div class="header"><h1>🎴 System Cards Admin Console</h1><p>Manage system cards for all EBL and WBF tournaments</p></div>
 <div class="main-tabs">
 <button class="main-tab active" onclick="showMainTab('tournaments')">⚙️ Tournaments</button>
 <button class="main-tab" onclick="showMainTab('manage')">📋 Manage Cards</button>
 <button class="main-tab" onclick="showMainTab('generate')">🔗 Generate Iframes</button>
 </div>
-
-<!-- TOURNAMENTS TAB -->
 <div id="tournaments-tab" class="tab-content active">
 <div class="card">
 <div class="card-title">➕ Add New Tournament</div>
-<div class="form-group">
-<label class="form-label">Tournament Code</label>
-<input type="text" id="new-tournament-code" class="form-input" placeholder="e.g., 26prague, 26youthonline">
-<div class="form-hint">Lowercase, no spaces. Used in URLs.</div>
-</div>
-<div class="form-group">
-<label class="form-label">Tournament Name</label>
-<input type="text" id="new-tournament-name" class="form-input" placeholder="e.g., European Winter Championships 2026">
-</div>
-<div class="form-group">
-<label class="form-label">Organization</label>
-<div class="radio-group">
-<label class="radio-label"><input type="radio" name="new-org" value="ebl" checked> EBL (info@eurobridge.org)</label>
-<label class="radio-label"><input type="radio" name="new-org" value="wbf"> WBF (info@worldbridge.org)</label>
-</div>
-</div>
-<div class="form-group">
-<label class="form-label">Teams URL (Fotis table)</label>
-<input type="text" id="new-teams-url" class="form-input" placeholder="https://db.eurobridge.org/...">
-<div class="form-hint">Leave empty if no teams events</div>
-</div>
-<div class="form-group">
-<label class="form-label">Pairs URL (Fotis table)</label>
-<input type="text" id="new-pairs-url" class="form-input" placeholder="https://db.eurobridge.org/...">
-<div class="form-hint">Leave empty if no pairs events</div>
-</div>
+<div class="form-group"><label class="form-label">Tournament Code</label><input type="text" id="new-code" class="form-input" placeholder="e.g., 26prague"><div class="form-hint">Lowercase, no spaces. Used in URLs.</div></div>
+<div class="form-group"><label class="form-label">Tournament Name</label><input type="text" id="new-name" class="form-input" placeholder="e.g., European Winter Championships 2026"></div>
+<div class="form-group"><label class="form-label">Organization</label><div class="radio-group"><label class="radio-label"><input type="radio" name="new-org" value="ebl" checked> EBL</label><label class="radio-label"><input type="radio" name="new-org" value="wbf"> WBF</label></div></div>
+<div class="form-group"><label class="form-label">Teams URL</label><input type="text" id="new-teams" class="form-input" placeholder="https://db.eurobridge.org/..."><div class="form-hint">Leave empty if no teams</div></div>
+<div class="form-group"><label class="form-label">Pairs URL</label><input type="text" id="new-pairs" class="form-input" placeholder="https://db.eurobridge.org/..."><div class="form-hint">Leave empty if no pairs</div></div>
 <button class="btn btn-primary" onclick="addTournament()">➕ Add Tournament</button>
 </div>
-
-<div class="card">
-<div class="card-title">📋 Configured Tournaments</div>
-<div id="tournament-list" class="tournament-list">
-<div class="loading"><div class="spinner"></div><p>Loading...</p></div>
+<div class="card"><div class="card-title">📋 Configured Tournaments</div><div id="tournament-list" class="tournament-list"><div class="loading"><div class="spinner"></div>Loading...</div></div></div>
 </div>
-</div>
-</div>
-
-<!-- MANAGE CARDS TAB -->
-<div id="manage-tab" class="tab-content">
-<div id="tournaments-container">
-<div class="loading"><div class="spinner"></div><p>Loading tournaments...</p></div>
-</div>
-</div>
-
-<!-- GENERATE IFRAMES TAB -->
+<div id="manage-tab" class="tab-content"><div id="manage-container"><div class="loading"><div class="spinner"></div>Loading...</div></div></div>
 <div id="generate-tab" class="tab-content">
 <div class="card">
 <div class="card-title">🔗 Generate Iframe Codes</div>
-<div class="form-group">
-<label class="form-label">Select Tournament</label>
-<select id="iframe-tournament" class="form-select" onchange="loadEventsForIframe()">
-<option value="">Select a tournament...</option>
-</select>
-</div>
-<div id="iframe-events" style="display:none">
-<div class="form-group">
-<label class="form-label">Select Event</label>
-<select id="iframe-event" class="form-select" onchange="generateIframeCodes()">
-<option value="">Select an event...</option>
-</select>
+<div class="form-group"><label class="form-label">Select Tournament</label><select id="gen-tournament" class="form-select" onchange="loadEventsForGen()"><option value="">Select...</option></select></div>
+<div id="gen-events-wrap" style="display:none"><div class="form-group"><label class="form-label">Select Event</label><select id="gen-event" class="form-select" onchange="generateCodes()"><option value="">Select...</option></select></div></div>
+<div id="gen-codes" style="display:none"></div>
 </div>
 </div>
-<div id="iframe-codes" style="display:none"></div>
 </div>
 </div>
-
-</div>
-</div>
-
 <script>
-var API_BASE = window.location.origin + '/api';
-var CONFIG = { tournaments: {} };
-var cardsData = {};
-var validationData = {};
+var API_BASE=window.location.origin+'/api';
+var CONFIG={tournaments:{}};
+var cardsData={};
+var validationData={};
 
-function showMainTab(tab) {
-  document.querySelectorAll('.main-tab').forEach(function(t){t.classList.remove('active')});
-  document.querySelectorAll('.tab-content').forEach(function(c){c.classList.remove('active')});
-  document.querySelector('[onclick="showMainTab(\'' + tab + '\')"]').classList.add('active');
-  document.getElementById(tab + '-tab').classList.add('active');
-  if (tab === 'manage') loadTournamentsForManage();
-  if (tab === 'generate') populateTournamentSelect();
-}
+function checkAuth(){var s=sessionStorage.getItem('admin_auth');if(s==='systemhero123'){document.getElementById('auth-screen').style.display='none';document.getElementById('main-content').style.display='block';return true;}return false;}
+function login(){var p=document.getElementById('password-input').value;if(p==='systemhero123'){sessionStorage.setItem('admin_auth',p);document.getElementById('auth-screen').style.display='none';document.getElementById('main-content').style.display='block';loadConfig();}else{document.getElementById('auth-error').style.display='block';}}
+document.addEventListener('DOMContentLoaded',function(){if(!checkAuth()){document.getElementById('auth-screen').style.display='flex';}else{loadConfig();}});
 
-async function loadConfig() {
-  try {
-    var res = await fetch(API_BASE + '/config');
-    CONFIG = await res.json();
-    renderTournamentList();
-  } catch (e) {
-    console.error('Error loading config:', e);
-    CONFIG = { tournaments: {} };
-    renderTournamentList();
-  }
-}
+function showMainTab(t){document.querySelectorAll('.main-tab').forEach(function(x){x.classList.remove('active');});document.querySelectorAll('.tab-content').forEach(function(x){x.classList.remove('active');});document.querySelector('[onclick="showMainTab(\''+t+'\')"]').classList.add('active');document.getElementById(t+'-tab').classList.add('active');if(t==='manage')loadManage();if(t==='generate')populateGenSelect();}
 
-function renderTournamentList() {
-  var container = document.getElementById('tournament-list');
-  var tournaments = CONFIG.tournaments || {};
-  var keys = Object.keys(tournaments);
-  
-  if (keys.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p>No tournaments configured</p></div>';
-    return;
-  }
-  
-  var html = '';
-  keys.forEach(function(code) {
-    var t = tournaments[code];
-    html += '<div class="tournament-item">';
-    html += '<div class="tournament-item-info">';
-    html += '<h4>' + t.name + ' <span class="badge ' + t.org + '">' + t.org.toUpperCase() + '</span></h4>';
-    html += '<p>Code: <strong>' + code + '</strong>';
-    if (t.teamsUrl) html += ' • Teams ✓';
-    if (t.pairsUrl) html += ' • Pairs ✓';
-    html += '</p></div>';
-    html += '<div class="tournament-item-actions">';
-    html += '<button class="btn btn-danger btn-sm" onclick="deleteTournament(\'' + code + '\')">🗑️ Delete</button>';
-    html += '</div></div>';
-  });
-  container.innerHTML = html;
-}
+async function loadConfig(){try{var r=await fetch(API_BASE+'/config.js');CONFIG=await r.json();renderList();}catch(e){console.error(e);CONFIG={tournaments:{}};renderList();}}
 
-async function addTournament() {
-  var code = document.getElementById('new-tournament-code').value.trim().toLowerCase();
-  var name = document.getElementById('new-tournament-name').value.trim();
-  var org = document.querySelector('input[name="new-org"]:checked').value;
-  var teamsUrl = document.getElementById('new-teams-url').value.trim() || null;
-  var pairsUrl = document.getElementById('new-pairs-url').value.trim() || null;
-  
-  if (!code || !name) {
-    alert('Please enter tournament code and name');
-    return;
-  }
-  
-  if (!teamsUrl && !pairsUrl) {
-    alert('Please enter at least one URL (teams or pairs)');
-    return;
-  }
-  
-  try {
-    var res = await fetch(API_BASE + '/config', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: 'add',
-        tournamentCode: code,
-        tournamentData: { name: name, org: org, teamsUrl: teamsUrl, pairsUrl: pairsUrl }
-      })
-    });
-    
-    if (res.ok) {
-      var data = await res.json();
-      CONFIG = data.config;
-      renderTournamentList();
-      // Clear form
-      document.getElementById('new-tournament-code').value = '';
-      document.getElementById('new-tournament-name').value = '';
-      document.getElementById('new-teams-url').value = '';
-      document.getElementById('new-pairs-url').value = '';
-      alert('Tournament added successfully!');
-    } else {
-      alert('Error adding tournament');
-    }
-  } catch (e) {
-    console.error('Error:', e);
-    alert('Error adding tournament');
-  }
-}
+function renderList(){var c=document.getElementById('tournament-list');var t=CONFIG.tournaments||{};var k=Object.keys(t);if(k.length===0){c.innerHTML='<div class="empty-state">No tournaments configured</div>';return;}var h='';k.forEach(function(code){var x=t[code];h+='<div class="tournament-item"><div><h4>'+x.name+' <span class="badge '+x.org+'">'+x.org.toUpperCase()+'</span></h4><p>Code: <strong>'+code+'</strong>'+(x.teamsUrl?' • Teams ✓':'')+(x.pairsUrl?' • Pairs ✓':'')+'</p></div><button class="btn btn-danger btn-sm" onclick="delTournament(\''+code+'\')">🗑️</button></div>';});c.innerHTML=h;}
 
-async function deleteTournament(code) {
-  if (!confirm('Are you sure you want to delete this tournament?')) return;
-  
-  try {
-    var res = await fetch(API_BASE + '/config', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'delete', tournamentCode: code })
-    });
-    
-    if (res.ok) {
-      var data = await res.json();
-      CONFIG = data.config;
-      renderTournamentList();
-    } else {
-      alert('Error deleting tournament');
-    }
-  } catch (e) {
-    console.error('Error:', e);
-    alert('Error deleting tournament');
-  }
-}
+async function addTournament(){var code=document.getElementById('new-code').value.trim().toLowerCase();var name=document.getElementById('new-name').value.trim();var org=document.querySelector('input[name="new-org"]:checked').value;var teams=document.getElementById('new-teams').value.trim()||null;var pairs=document.getElementById('new-pairs').value.trim()||null;if(!code||!name){alert('Enter code and name');return;}if(!teams&&!pairs){alert('Enter at least one URL');return;}try{var r=await fetch(API_BASE+'/config.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'add',tournamentCode:code,tournamentData:{name:name,org:org,teamsUrl:teams,pairsUrl:pairs}})});if(r.ok){var d=await r.json();CONFIG=d.config;renderList();document.getElementById('new-code').value='';document.getElementById('new-name').value='';document.getElementById('new-teams').value='';document.getElementById('new-pairs').value='';alert('Added!');}else{alert('Error');}}catch(e){alert('Error');}}
 
-function populateTournamentSelect() {
-  var select = document.getElementById('iframe-tournament');
-  select.innerHTML = '<option value="">Select a tournament...</option>';
-  Object.keys(CONFIG.tournaments || {}).forEach(function(code) {
-    var t = CONFIG.tournaments[code];
-    select.innerHTML += '<option value="' + code + '">' + t.name + '</option>';
-  });
-}
+async function delTournament(code){if(!confirm('Delete '+code+'?'))return;try{var r=await fetch(API_BASE+'/config.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete',tournamentCode:code})});if(r.ok){var d=await r.json();CONFIG=d.config;renderList();}}catch(e){alert('Error');}}
 
-async function loadEventsForIframe() {
-  var code = document.getElementById('iframe-tournament').value;
-  var eventsDiv = document.getElementById('iframe-events');
-  var codesDiv = document.getElementById('iframe-codes');
-  
-  if (!code) {
-    eventsDiv.style.display = 'none';
-    codesDiv.style.display = 'none';
-    return;
-  }
-  
-  eventsDiv.style.display = 'block';
-  var select = document.getElementById('iframe-event');
-  select.innerHTML = '<option value="">Loading events...</option>';
-  
-  try {
-    var events = new Set();
-    
-    // Load teams
-    var teamsRes = await fetch(API_BASE + '/teams?tournament=' + code);
-    var teamsData = await teamsRes.json();
-    (teamsData.teams || []).forEach(function(t) { if (t.event) events.add(t.event); });
-    
-    // Load pairs
-    var pairsRes = await fetch(API_BASE + '/pairs?tournament=' + code);
-    var pairsData = await pairsRes.json();
-    (pairsData.pairs || []).forEach(function(p) { if (p.event) events.add(p.event); });
-    
-    select.innerHTML = '<option value="">Select an event...</option>';
-    Array.from(events).sort().forEach(function(ev) {
-      select.innerHTML += '<option value="' + ev + '">' + ev + '</option>';
-    });
-    
-  } catch (e) {
-    console.error('Error:', e);
-    select.innerHTML = '<option value="">Error loading events</option>';
-  }
-}
+function populateGenSelect(){var s=document.getElementById('gen-tournament');s.innerHTML='<option value="">Select...</option>';Object.keys(CONFIG.tournaments||{}).forEach(function(c){s.innerHTML+='<option value="'+c+'">'+CONFIG.tournaments[c].name+'</option>';});}
 
-function generateIframeCodes() {
-  var tournamentCode = document.getElementById('iframe-tournament').value;
-  var eventName = document.getElementById('iframe-event').value;
-  var codesDiv = document.getElementById('iframe-codes');
-  
-  if (!tournamentCode || !eventName) {
-    codesDiv.style.display = 'none';
-    return;
-  }
-  
-  var tournament = CONFIG.tournaments[tournamentCode];
-  var email = tournament.org === 'wbf' ? 'info@worldbridge.org' : 'info@eurobridge.org';
-  var baseUrl = window.location.origin;
-  var eventEncoded = encodeURIComponent(eventName);
-  var freezeMsg = encodeURIComponent('Upload closed - Contact ' + email);
-  
-  var html = '<div class="event-item">';
-  html += '<div class="section-label">📋 Normal (Upload enabled)</div>';
-  html += '<div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>&lt;iframe src="' + baseUrl + '/?tournament=' + tournamentCode + '&amp;event=' + eventEncoded + '" width="100%" height="800" style="border:none;" title="System Cards - ' + eventName + '"&gt;&lt;/iframe&gt;</code></div>';
-  
-  html += '<div class="section-label">🔒 Frozen (Upload disabled)</div>';
-  html += '<div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>&lt;iframe src="' + baseUrl + '/?tournament=' + tournamentCode + '&amp;event=' + eventEncoded + '&amp;freeze=1&amp;freezeMsg=' + freezeMsg + '" width="100%" height="800" style="border:none;" title="System Cards - ' + eventName + '"&gt;&lt;/iframe&gt;</code></div>';
-  html += '</div>';
-  
-  codesDiv.innerHTML = html;
-  codesDiv.style.display = 'block';
-}
+async function loadEventsForGen(){var code=document.getElementById('gen-tournament').value;var wrap=document.getElementById('gen-events-wrap');var codes=document.getElementById('gen-codes');if(!code){wrap.style.display='none';codes.style.display='none';return;}wrap.style.display='block';var sel=document.getElementById('gen-event');sel.innerHTML='<option value="">Loading...</option>';var events=new Set();try{var tr=await fetch(API_BASE+'/teams.js?tournament='+code);var td=await tr.json();(td.teams||[]).forEach(function(t){if(t.event)events.add(t.event);});var pr=await fetch(API_BASE+'/pairs.js?tournament='+code);var pd=await pr.json();(pd.pairs||[]).forEach(function(p){if(p.event)events.add(p.event);});}catch(e){}sel.innerHTML='<option value="">Select...</option>';Array.from(events).sort().forEach(function(ev){sel.innerHTML+='<option value="'+ev+'">'+ev+'</option>';});}
 
-function copyCode(btn) {
-  var code = btn.nextElementSibling.textContent;
-  navigator.clipboard.writeText(code).then(function() {
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
-    setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
-  });
-}
+function generateCodes(){var code=document.getElementById('gen-tournament').value;var ev=document.getElementById('gen-event').value;var div=document.getElementById('gen-codes');if(!code||!ev){div.style.display='none';return;}var t=CONFIG.tournaments[code];var email=t.org==='wbf'?'info@worldbridge.org':'info@eurobridge.org';var base=window.location.origin;var evEnc=encodeURIComponent(ev);var freeze=encodeURIComponent('Upload closed - Contact '+email);var h='<div class="section-label">📋 Normal</div><div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>&lt;iframe src="'+base+'/?tournament='+code+'&amp;event='+evEnc+'" width="100%" height="800" style="border:none;"&gt;&lt;/iframe&gt;</code></div>';h+='<div class="section-label">🔒 Frozen</div><div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>&lt;iframe src="'+base+'/?tournament='+code+'&amp;event='+evEnc+'&amp;freeze=1&amp;freezeMsg='+freeze+'" width="100%" height="800" style="border:none;"&gt;&lt;/iframe&gt;</code></div>';div.innerHTML=h;div.style.display='block';}
 
-async function loadTournamentsForManage() {
-  var container = document.getElementById('tournaments-container');
-  container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading tournaments...</p></div>';
-  
-  var html = '';
-  var tournaments = CONFIG.tournaments || {};
-  
-  for (var code in tournaments) {
-    var tournament = tournaments[code];
-    
-    try {
-      var teamsRes = await fetch(API_BASE + '/teams?tournament=' + code);
-      var teamsData = await teamsRes.json();
-      var teams = teamsData.teams || [];
-      
-      var pairsRes = await fetch(API_BASE + '/pairs?tournament=' + code);
-      var pairsData = await pairsRes.json();
-      var pairs = pairsData.pairs || [];
-      
-      var cardsRes = await fetch(API_BASE + '/cards?tournament=' + code);
-      var cardsJson = await cardsRes.json();
-      cardsData[code] = cardsJson.cards || [];
-      
-      var events = {};
-      teams.forEach(function(t) {
-        if (t.event && !events[t.event]) events[t.event] = { type: 'teams', entities: [] };
-        if (t.event) events[t.event].entities.push(t);
-      });
-      pairs.forEach(function(p) {
-        if (p.event && !events[p.event]) events[p.event] = { type: 'pairs', entities: [] };
-        if (p.event) events[p.event].entities.push(p);
-      });
-      
-      var eventNames = Object.keys(events);
-      var totalEntities = teams.length + pairs.length;
-      var totalCards = cardsData[code].length;
-      
-      html += '<div class="tournament-section" data-code="' + code + '">';
-      html += '<div class="tournament-header" onclick="toggleTournament(\'' + code + '\')">';
-      html += '<div class="tournament-title">📁 ' + tournament.name + '</div>';
-      html += '<div class="tournament-stats">';
-      html += '<span>' + eventNames.length + ' events</span>';
-      html += '<span>' + totalEntities + ' teams/pairs</span>';
-      html += '<span>' + totalCards + ' cards</span>';
-      html += '</div></div>';
-      html += '<div class="tournament-content" id="content-' + code + '">';
-      
-      if (eventNames.length > 0) {
-        html += '<div class="event-tabs" id="tabs-' + code + '">';
-        eventNames.forEach(function(ev, idx) {
-          html += '<button class="event-tab' + (idx === 0 ? ' active' : '') + '" onclick="showEvent(\'' + code + '\',\'' + ev.replace(/'/g, "\\'") + '\')">' + ev + ' (' + events[ev].entities.length + ')</button>';
-        });
-        html += '</div>';
-        html += '<div class="event-content" id="event-content-' + code + '"></div>';
-        CONFIG.tournaments[code].events = events;
-      } else {
-        html += '<div class="empty-state"><div class="empty-state-icon">📭</div><p>No events found</p></div>';
-      }
-      
-      html += '</div></div>';
-      
-    } catch (error) {
-      console.error('Error loading ' + code + ':', error);
-      html += '<div class="tournament-section"><div class="tournament-header">';
-      html += '<div class="tournament-title">📁 ' + tournament.name + '</div>';
-      html += '<div class="tournament-stats"><span style="color:var(--error)">Error loading</span></div>';
-      html += '</div></div>';
-    }
-  }
-  
-  container.innerHTML = html || '<div class="empty-state"><div class="empty-state-icon">📭</div><p>No tournaments configured</p></div>';
-}
+function copyCode(btn){var code=btn.nextElementSibling.textContent;navigator.clipboard.writeText(code);btn.textContent='Copied!';btn.classList.add('copied');setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied');},2000);}
 
-function toggleTournament(code) {
-  var content = document.getElementById('content-' + code);
-  content.classList.toggle('open');
-  if (content.classList.contains('open') && CONFIG.tournaments[code].events) {
-    var firstEvent = Object.keys(CONFIG.tournaments[code].events)[0];
-    if (firstEvent) showEvent(code, firstEvent);
-  }
-}
+async function loadManage(){var c=document.getElementById('manage-container');c.innerHTML='<div class="loading"><div class="spinner"></div>Loading...</div>';var h='';var ts=CONFIG.tournaments||{};for(var code in ts){var t=ts[code];try{var tr=await fetch(API_BASE+'/teams.js?tournament='+code);var td=await tr.json();var teams=td.teams||[];var pr=await fetch(API_BASE+'/pairs.js?tournament='+code);var pd=await pr.json();var pairs=pd.pairs||[];var cr=await fetch(API_BASE+'/cards.js?tournament='+code);var cd=await cr.json();cardsData[code]=cd.cards||[];var events={};teams.forEach(function(x){if(x.event){if(!events[x.event])events[x.event]={type:'teams',entities:[]};events[x.event].entities.push(x);}});pairs.forEach(function(x){if(x.event){if(!events[x.event])events[x.event]={type:'pairs',entities:[]};events[x.event].entities.push(x);}});var evKeys=Object.keys(events);h+='<div class="tournament-section"><div class="tournament-header" onclick="toggleT(\''+code+'\')"><div class="tournament-title">📁 '+t.name+'</div><div class="tournament-stats"><span>'+evKeys.length+' events</span><span>'+(teams.length+pairs.length)+' entries</span><span>'+cardsData[code].length+' cards</span></div></div><div class="tournament-content" id="tc-'+code+'">';if(evKeys.length>0){h+='<div class="event-tabs" id="tabs-'+code+'">';evKeys.forEach(function(ev,i){h+='<button class="event-tab'+(i===0?' active':'')+'" onclick="showEv(\''+code+'\',\''+ev.replace(/'/g,"\\'")+'\')">'+ ev+' ('+events[ev].entities.length+')</button>';});h+='</div><div class="event-content" id="ec-'+code+'"></div>';CONFIG.tournaments[code].events=events;}else{h+='<div class="empty-state">No events</div>';}h+='</div></div>';}catch(e){h+='<div class="tournament-section"><div class="tournament-header"><div class="tournament-title">📁 '+t.name+'</div><span style="color:var(--error)">Error</span></div></div>';}}c.innerHTML=h||'<div class="empty-state">No tournaments</div>';}
 
-async function showEvent(code, eventName) {
-  var tabs = document.querySelectorAll('#tabs-' + code + ' .event-tab');
-  tabs.forEach(function(tab) {
-    tab.classList.remove('active');
-    if (tab.textContent.indexOf(eventName) === 0) tab.classList.add('active');
-  });
-  
-  var container = document.getElementById('event-content-' + code);
-  container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading...</p></div>';
-  
-  try {
-    var valRes = await fetch(API_BASE + '/validation?tournament=' + code + '&event=' + encodeURIComponent(eventName));
-    var valData = await valRes.json();
-    validationData[code + '_' + eventName] = valData.status || {};
-  } catch (e) {
-    validationData[code + '_' + eventName] = {};
-  }
-  
-  renderEventContent(code, eventName);
-}
+function toggleT(code){var c=document.getElementById('tc-'+code);c.classList.toggle('open');if(c.classList.contains('open')&&CONFIG.tournaments[code].events){var first=Object.keys(CONFIG.tournaments[code].events)[0];if(first)showEv(code,first);}}
 
-function renderEventContent(code, eventName) {
-  var container = document.getElementById('event-content-' + code);
-  var events = CONFIG.tournaments[code].events;
-  var event = events[eventName];
-  var entities = event.entities;
-  var cards = cardsData[code] || [];
-  var validation = validationData[code + '_' + eventName] || {};
-  
-  var eventCards = cards.filter(function(c) {
-    return entities.some(function(e) { return c.fileName.startsWith(sanitize(e.name) + '_'); });
-  });
-  
-  var totalEntities = entities.length;
-  var entitiesWithCards = 0;
-  var pendingCards = 0, validatedCards = 0, refusedCards = 0;
-  
-  entities.forEach(function(e) {
-    var ec = eventCards.filter(function(c) { return c.fileName.startsWith(sanitize(e.name) + '_'); });
-    if (ec.length > 0) entitiesWithCards++;
-  });
-  
-  eventCards.forEach(function(c) {
-    var status = validation[c.fileName];
-    if (status === 'validated') validatedCards++;
-    else if (status === 'refused' || (typeof status === 'object' && status.status === 'refused')) refusedCards++;
-    else pendingCards++;
-  });
-  
-  var html = '<div class="stats-row">';
-  html += '<div class="stat-card"><div class="stat-value">' + totalEntities + '</div><div class="stat-label">Total</div></div>';
-  html += '<div class="stat-card' + (entitiesWithCards < totalEntities ? ' warning' : ' success') + '"><div class="stat-value">' + entitiesWithCards + '</div><div class="stat-label">With Cards</div></div>';
-  html += '<div class="stat-card warning"><div class="stat-value">' + pendingCards + '</div><div class="stat-label">Pending</div></div>';
-  html += '<div class="stat-card success"><div class="stat-value">' + validatedCards + '</div><div class="stat-label">Accepted</div></div>';
-  html += '<div class="stat-card error"><div class="stat-value">' + refusedCards + '</div><div class="stat-label">Refused</div></div>';
-  html += '</div>';
-  
-  if (eventCards.length > 0) {
-    html += '<table class="cards-table"><thead><tr><th>Team/Pair</th><th>Players</th><th>Uploaded</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
-    
-    eventCards.forEach(function(card) {
-      var status = validation[card.fileName];
-      var statusClass = 'pending', statusText = 'Pending', reason = '';
-      
-      if (status === 'validated') { statusClass = 'validated'; statusText = 'Accepted'; }
-      else if (status === 'refused') { statusClass = 'refused'; statusText = 'Refused'; }
-      else if (typeof status === 'object' && status.status === 'refused') { statusClass = 'refused'; statusText = 'Refused'; reason = status.reason || ''; }
-      
-      var parts = card.fileName.replace('.pdf', '').split('_');
-      var teamName = parts[0];
-      var players = parts.slice(1).join(' & ');
-      var fn = card.fileName.replace(/'/g, "\\'");
-      var evn = eventName.replace(/'/g, "\\'");
-      
-      html += '<tr><td>' + teamName + '</td><td>' + players + '</td><td>' + formatDate(card.lastModified) + '</td>';
-      html += '<td><span class="status-badge ' + statusClass + '">' + statusText + '</span>';
-      if (reason) html += '<br><small style="color:var(--error)">' + reason + '</small>';
-      html += '</td><td><div class="action-btns">';
-      html += '<a href="' + card.url + '" target="_blank" class="action-btn" style="background:var(--info-light);color:var(--info)">View</a>';
-      html += '<button class="action-btn validate" onclick="validateCard(\'' + code + '\',\'' + evn + '\',\'' + fn + '\')">✓</button>';
-      html += '<button class="action-btn pending" onclick="setPending(\'' + code + '\',\'' + evn + '\',\'' + fn + '\')">⏳</button>';
-      html += '<button class="action-btn refuse" onclick="showRefuseForm(this,\'' + code + '\',\'' + evn + '\',\'' + fn + '\')">✗</button>';
-      html += '</div><div class="refuse-form" style="display:none">';
-      html += '<input type="text" placeholder="Reason...">';
-      html += '<button onclick="refuseCard(this,\'' + code + '\',\'' + evn + '\',\'' + fn + '\')">Confirm</button>';
-      html += '</div></td></tr>';
-    });
-    
-    html += '</tbody></table>';
-  } else {
-    html += '<div class="empty-state"><div class="empty-state-icon">📭</div><p>No cards uploaded yet</p></div>';
-  }
-  
-  container.innerHTML = html;
-}
+async function showEv(code,ev){var tabs=document.querySelectorAll('#tabs-'+code+' .event-tab');tabs.forEach(function(x){x.classList.remove('active');if(x.textContent.indexOf(ev)===0)x.classList.add('active');});var c=document.getElementById('ec-'+code);c.innerHTML='<div class="loading"><div class="spinner"></div></div>';try{var vr=await fetch(API_BASE+'/validation.js?tournament='+code+'&event='+encodeURIComponent(ev));var vd=await vr.json();validationData[code+'_'+ev]=vd.status||{};}catch(e){validationData[code+'_'+ev]={};}renderEv(code,ev);}
 
-function sanitize(s) { return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_]/g, '').toUpperCase(); }
-function formatDate(d) { if (!d) return '-'; return new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+function renderEv(code,ev){var c=document.getElementById('ec-'+code);var evData=CONFIG.tournaments[code].events[ev];var entities=evData.entities;var cards=cardsData[code]||[];var val=validationData[code+'_'+ev]||{};var evCards=cards.filter(function(x){return entities.some(function(e){return x.fileName.startsWith(sanitize(e.name)+'_');});});var total=entities.length,withCards=0,pending=0,accepted=0,refused=0;entities.forEach(function(e){if(evCards.some(function(x){return x.fileName.startsWith(sanitize(e.name)+'_');}))withCards++;});evCards.forEach(function(x){var s=val[x.fileName];if(s==='validated')accepted++;else if(s==='refused'||(typeof s==='object'&&s.status==='refused'))refused++;else pending++;});var h='<div class="stats-row"><div class="stat-card"><div class="stat-value">'+total+'</div><div class="stat-label">Total</div></div><div class="stat-card'+(withCards<total?' warning':' success')+'"><div class="stat-value">'+withCards+'</div><div class="stat-label">With Cards</div></div><div class="stat-card warning"><div class="stat-value">'+pending+'</div><div class="stat-label">Pending</div></div><div class="stat-card success"><div class="stat-value">'+accepted+'</div><div class="stat-label">Accepted</div></div><div class="stat-card error"><div class="stat-value">'+refused+'</div><div class="stat-label">Refused</div></div></div>';if(evCards.length>0){h+='<table class="cards-table"><thead><tr><th>Team</th><th>Players</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody>';evCards.forEach(function(card){var s=val[card.fileName];var sc='pending',st='Pending',reason='';if(s==='validated'){sc='validated';st='Accepted';}else if(s==='refused'){sc='refused';st='Refused';}else if(typeof s==='object'&&s.status==='refused'){sc='refused';st='Refused';reason=s.reason||'';}var parts=card.fileName.replace('.pdf','').split('_');var team=parts[0],players=parts.slice(1).join(' & ');var fn=card.fileName.replace(/'/g,"\\'");var evn=ev.replace(/'/g,"\\'");h+='<tr><td>'+team+'</td><td>'+players+'</td><td>'+fmtDate(card.lastModified)+'</td><td><span class="status-badge '+sc+'">'+st+'</span>'+(reason?'<br><small style="color:var(--error)">'+reason+'</small>':'')+'</td><td><div class="action-btns"><a href="'+card.url+'" target="_blank" class="action-btn" style="background:var(--info-light);color:var(--info)">View</a><button class="action-btn validate" onclick="doVal(\''+code+'\',\''+evn+'\',\''+fn+'\',\'validated\')">✓</button><button class="action-btn pending" onclick="doVal(\''+code+'\',\''+evn+'\',\''+fn+'\',\'pending\')">⏳</button><button class="action-btn refuse" onclick="showRefuse(this)">✗</button></div><div class="refuse-form" style="display:none"><input placeholder="Reason..."><button onclick="doRefuse(this,\''+code+'\',\''+evn+'\',\''+fn+'\')">OK</button></div></td></tr>';});h+='</tbody></table>';}else{h+='<div class="empty-state">No cards yet</div>';}c.innerHTML=h;}
 
-async function validateCard(code, eventName, fileName) { await updateValidation(code, eventName, fileName, 'validated'); }
-async function setPending(code, eventName, fileName) { await updateValidation(code, eventName, fileName, 'pending'); }
-function showRefuseForm(btn, code, eventName, fileName) { var form = btn.parentNode.nextElementSibling; form.style.display = form.style.display === 'none' ? 'flex' : 'none'; }
-async function refuseCard(btn, code, eventName, fileName) {
-  var reason = btn.previousElementSibling.value.trim();
-  if (!reason) { alert('Please enter a reason'); return; }
-  await updateValidation(code, eventName, fileName, { status: 'refused', reason: reason });
-}
-
-async function updateValidation(code, eventName, fileName, status) {
-  try {
-    var response = await fetch(API_BASE + '/admin-validate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tournament: code, event: eventName, fileName: fileName, status: status })
-    });
-    if (response.ok) {
-      validationData[code + '_' + eventName][fileName] = status;
-      renderEventContent(code, eventName);
-    } else { alert('Error updating validation'); }
-  } catch (error) { console.error('Error:', error); alert('Error updating validation'); }
-}
+function sanitize(s){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_]/g,'').toUpperCase();}
+function fmtDate(d){return d?new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-';}
+function showRefuse(btn){var f=btn.parentNode.nextElementSibling;f.style.display=f.style.display==='none'?'flex':'none';}
+async function doRefuse(btn,code,ev,fn){var reason=btn.previousElementSibling.value.trim();if(!reason){alert('Enter reason');return;}await doVal(code,ev,fn,{status:'refused',reason:reason});}
+async function doVal(code,ev,fn,status){try{var r=await fetch(API_BASE+'/admin-validate.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tournament:code,event:ev,fileName:fn,status:status})});if(r.ok){validationData[code+'_'+ev][fn]=status;renderEv(code,ev);}else{alert('Error');}}catch(e){alert('Error');}}
 </script>
 </body>
 </html>
