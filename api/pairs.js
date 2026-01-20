@@ -73,8 +73,28 @@ function parsePairsHtml(html) {
   const rowRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
   const cellRegex = /<td[^>]*>([\s\S]*?)<\/td>/gi;
 
-  // Detect if table has ID column by checking header row
-  const hasIdColumn = /<th[^>]*>\s*ID\s*<\/th>/i.test(html);
+  // Detect if table has ID column by checking for ID header in th or td
+  const hasIdColumnHeader = /<t[hd][^>]*>\s*ID\s*<\/t[hd]>/i.test(html);
+  
+  // Alternative: check first data row to see if second column is numeric
+  let hasIdColumn = hasIdColumnHeader;
+  
+  // If not detected via header, try to detect from data pattern
+  if (!hasIdColumn) {
+    const firstDataRowMatch = /<tr[^>]*>(?:[\s\S]*?<td[^>]*>[\s\S]*?<\/td>){2,}/i.exec(html);
+    if (firstDataRowMatch) {
+      const cells = [];
+      let cellMatch;
+      const tempRegex = /<td[^>]*>([\s\S]*?)<\/td>/gi;
+      while ((cellMatch = tempRegex.exec(firstDataRowMatch[0])) !== null) {
+        cells.push(stripHtml(cellMatch[1]));
+      }
+      // If second cell is a number, we have an ID column
+      if (cells.length >= 2 && /^\d+$/.test(cells[1])) {
+        hasIdColumn = true;
+      }
+    }
+  }
 
   let rowMatch;
   while ((rowMatch = rowRegex.exec(html)) !== null) {
