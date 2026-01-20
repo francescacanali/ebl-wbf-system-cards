@@ -177,8 +177,13 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: validation.error });
     }
     
-    // Upload to R2
-    const key = `${tournamentCode}/CC/${fileName}`;
+    // Extract event folder from fileName (first part before first underscore with team)
+    // fileName format: EVENT_TEAM_ID1_SURNAME1_ID2_SURNAME2.pdf
+    // We need to get the event part to create the folder
+    const eventFolder = parts.eventFolder || 'CC';
+    
+    // Upload to R2 with new folder structure: tournament/Event_Folder/filename.pdf
+    const key = `${tournamentCode}/${eventFolder}/${fileName}`;
     
     console.log('Uploading to R2:', key);
     
