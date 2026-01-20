@@ -25,14 +25,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { tournament, fileName } = req.body;
+    const { tournament, eventFolder, fileName } = req.body;
 
     if (!tournament || !fileName) {
       return res.status(400).json({ error: 'Missing tournament or fileName' });
     }
 
-    // Delete the file from R2
-    const key = `${tournament}/${fileName}`;
+    // New structure: tournament/Event_Folder/filename.pdf
+    // eventFolder is optional for backward compatibility
+    const key = eventFolder 
+      ? `${tournament}/${eventFolder}/${fileName}`
+      : `${tournament}/CC/${fileName}`;
     
     await R2.send(new DeleteObjectCommand({
       Bucket: BUCKET,
