@@ -88,49 +88,41 @@ function validatePDF(buffer) {
 }
 
 // Reset validation status when a file is overwritten
-async function resetValidationStatus(tournamentCode, event, fileName) {
+async function resetValidationStatus(tournamentCode, eventFolder, fileName) {
   try {
-    // Try to find which event this file belongs to by checking all event configs
-    const events = [
-      'Winter Open Teams',
-      'Winter Swiss Cup', 
-      'Winter Mixed Teams',
-      'Winter Open BAM',
-      'Winter Open Pairs',
-      'Winter Mixed Pairs'
-    ];
+    // Convert folder name back to event name format for admin file lookup
+    // eventFolder is like "Winter_Mixed_Pairs" -> try to find matching admin file
+    const eventName = eventFolder.replace(/_/g, ' ');
+    const adminKey = `${tournamentCode}/admin/${encodeURIComponent(eventName)}.json`;
     
-    for (const eventName of events) {
-      const adminKey = `${tournamentCode}/admin/${encodeURIComponent(eventName)}.json`;
+    try {
+      // Get current admin data
+      const getResponse = await R2.send(new GetObjectCommand({
+        Bucket: process.env.R2_BUCKET_NAME,
+        Key: adminKey,
+      }));
       
-      try {
-        // Get current admin data
-        const getResponse = await R2.send(new GetObjectCommand({
+      const body = await getResponse.Body.transformToString();
+      const data = JSON.parse(body);
+      
+      // Check if this file exists in validation status
+      if (data.validationStatus && data.validationStatus[fileName]) {
+        // Reset to pending
+        delete data.validationStatus[fileName];
+        
+        // Save back
+        await R2.send(new PutObjectCommand({
           Bucket: process.env.R2_BUCKET_NAME,
           Key: adminKey,
+          Body: JSON.stringify(data),
+          ContentType: 'application/json',
         }));
         
-        const body = await getResponse.Body.transformToString();
-        const data = JSON.parse(body);
-        
-        // Check if this file exists in validation status
-        if (data.validationStatus && data.validationStatus[fileName]) {
-          // Reset to pending
-          data.validationStatus[fileName] = 'pending';
-          
-          // Save back
-          await R2.send(new PutObjectCommand({
-            Bucket: process.env.R2_BUCKET_NAME,
-            Key: adminKey,
-            Body: JSON.stringify(data),
-            ContentType: 'application/json',
-          }));
-          
-          console.log(`Reset validation status for ${fileName} in ${eventName}`);
-        }
-      } catch (e) {
-        // File doesn't exist for this event, skip
+        console.log(`Reset validation status for ${fileName} in ${eventName}`);
       }
+    } catch (e) {
+      // Admin file doesn't exist for this event, that's ok
+      console.log('No admin file found for event:', eventName);
     }
   } catch (error) {
     console.log('Could not reset validation status:', error.message);
@@ -196,7 +188,7 @@ export default async function handler(req, res) {
     }));
     
     // Reset validation status since file was overwritten
-    await resetValidationStatus(tournamentCode, '', fileName);
+    await resetValidationStatus(tournamentCode, eventFolder, fileName);
     
     const publicUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
     
