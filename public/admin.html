@@ -65,9 +65,15 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .stat-card.warning .stat-value{color:var(--warning)}
 .stat-card.error .stat-value{color:var(--error)}
 .stat-card.success .stat-value{color:var(--success)}
-.cards-table{width:100%;border-collapse:collapse}
-.cards-table th,.cards-table td{padding:12px;text-align:left;border-bottom:1px solid var(--border-color)}
+.cards-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.cards-table th,.cards-table td{padding:12px;text-align:left;border-bottom:1px solid var(--border-color);vertical-align:top}
 .cards-table th{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;background:var(--bg-light)}
+.cards-table th:nth-child(1){width:12%}
+.cards-table th:nth-child(2){width:30%}
+.cards-table th:nth-child(3){width:12%}
+.cards-table th:nth-child(4){width:14%}
+.cards-table th:nth-child(5){width:32%}
+.cards-table td{word-wrap:break-word;overflow-wrap:break-word}
 .status-badge{padding:4px 10px;border-radius:4px;font-size:11px;font-weight:500}
 .status-badge.pending{background:var(--warning-light);color:var(--warning)}
 .status-badge.validated{background:var(--success-light);color:var(--success)}
@@ -171,16 +177,32 @@ function toggleT(code){var c=document.getElementById('tc-'+code);c.classList.tog
 
 async function showEv(code,ev){var tabs=document.querySelectorAll('#tabs-'+code+' .event-tab');tabs.forEach(function(x){x.classList.remove('active');if(x.textContent.indexOf(ev)===0)x.classList.add('active');});var c=document.getElementById('ec-'+code);c.innerHTML='<div class="loading"><div class="spinner"></div></div>';try{var vr=await fetch(API_BASE+'/validation.js?tournament='+code+'&event='+encodeURIComponent(ev));var vd=await vr.json();validationData[code+'_'+ev]=vd.status||{};}catch(e){validationData[code+'_'+ev]={};}renderEv(code,ev);}
 
-function renderEv(code,ev){var c=document.getElementById('ec-'+code);var evData=CONFIG.tournaments[code].events[ev];var isPairs=evData.type==='pairs';var entityLabel=isPairs?'Pairs':'Teams';var entities=evData.entities;var cards=cardsData[code]||[];var val=validationData[code+'_'+ev]||{};var eventFolder=ev.replace(/^#\d+\s*/,'').replace(/\s+/g,'_');var evCards=cards.filter(function(x){var cleanFolder=x.folder?x.folder.replace(/^#\d+\s*/,'').replace(/\s+/g,'_'):'';return cleanFolder===eventFolder||(!x.folder&&x.fileName.startsWith(sanitize(ev.replace(/^#\d+\s*/,''))+'_'));});var total=entities.length,withCards=0,pending=0,accepted=0,refused=0;var entityTeams={};entities.forEach(function(e){entityTeams[sanitize(e.name)]=e;});evCards.forEach(function(card){var parts=card.fileName.split('_');if(parts.length>=1){var teamName=parts[0];if(entityTeams[teamName])withCards++;}var s=val[card.fileName];if(s==='validated')accepted++;else if(s==='refused'||(typeof s==='object'&&s.status==='refused'))refused++;else pending++;});var h='<div class="stats-row"><div class="stat-card"><div class="stat-value">'+total+'</div><div class="stat-label">Total '+entityLabel+'</div></div><div class="stat-card'+(withCards<total?' warning':' success')+'"><div class="stat-value">'+withCards+'</div><div class="stat-label">With Cards</div></div><div class="stat-card warning"><div class="stat-value">'+pending+'</div><div class="stat-label">Pending</div></div><div class="stat-card success"><div class="stat-value">'+accepted+'</div><div class="stat-label">Accepted</div></div><div class="stat-card error"><div class="stat-value">'+refused+'</div><div class="stat-label">Refused</div></div></div>';if(evCards.length>0){h+='<table class="cards-table"><thead><tr><th>'+(isPairs?'Pair':'Team')+'</th><th>Players</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody>';evCards.forEach(function(card){var s=val[card.fileName];var sc='pending',st='Pending',reason='';if(s==='validated'){sc='validated';st='Accepted';}else if(s==='refused'){sc='refused';st='Refused';}else if(typeof s==='object'&&s.status==='refused'){sc='refused';st='Refused';reason=s.reason||'';}var parts=card.fileName.replace('.pdf','').split('_');var team=parts.length>=1?parts[0]:'Unknown';var players=getPlayersFromParts(parts);var fn=card.fileName.replace(/'/g,"\\'");var evn=ev.replace(/'/g,"\\'");var ef=eventFolder.replace(/'/g,"\\'");h+='<tr><td><strong style="font-size:15px">'+team+'</strong></td><td><div style="font-size:14px;font-weight:500">'+players+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">'+card.fileName+'</div></td><td>'+fmtDate(card.lastModified)+'</td><td><span class="status-badge '+sc+'">'+st+'</span>'+(reason?'<br><small style="color:var(--error)">'+reason+'</small>':'')+'</td><td><div class="action-btns"><a href="'+card.url+'" target="_blank" class="action-btn view">View</a><button class="action-btn validate" onclick="doVal(\''+code+'\',\''+evn+'\',\''+fn+'\',\'validated\')">✓</button><button class="action-btn pending" onclick="doVal(\''+code+'\',\''+evn+'\',\''+fn+'\',\'pending\')">⏳</button><button class="action-btn refuse" onclick="showRefuse(this)">✗</button><button class="action-btn delete" onclick="doDelete(\''+code+'\',\''+evn+'\',\''+fn+'\',\''+ef+'\')">🗑️</button></div><div class="refuse-form" style="display:none"><input placeholder="Reason..."><button onclick="doRefuse(this,\''+code+'\',\''+evn+'\',\''+fn+'\')">OK</button></div></td></tr>';});h+='</tbody></table>';}else{h+='<div class="empty-state">No cards uploaded for this event yet</div>';}c.innerHTML=h;}
+function renderEv(code,ev){var c=document.getElementById('ec-'+code);var evData=CONFIG.tournaments[code].events[ev];var isPairs=evData.type==='pairs';var entityLabel=isPairs?'Pairs':'Teams';var entities=evData.entities;var cards=cardsData[code]||[];var val=validationData[code+'_'+ev]||{};var eventFolder=ev.replace(/^#\d+\s*/,'').replace(/\s+/g,'_');var evCards=cards.filter(function(x){var cleanFolder=x.folder?x.folder.replace(/^#\d+\s*/,'').replace(/\s+/g,'_'):'';return cleanFolder===eventFolder||(!x.folder&&x.fileName.startsWith(sanitize(ev.replace(/^#\d+\s*/,''))+'_'));});var total=entities.length,withCards=0,pending=0,accepted=0,refused=0;var entityTeams={};entities.forEach(function(e){entityTeams[sanitize(e.name)]=e;});evCards.forEach(function(card){var parts=card.fileName.split('_');if(parts.length>=1){var teamName=parts[0];if(entityTeams[teamName])withCards++;}var s=val[card.fileName];if(s==='validated')accepted++;else if(s==='refused'||(typeof s==='object'&&s.status==='refused'))refused++;else pending++;});var h='<div class="stats-row"><div class="stat-card"><div class="stat-value">'+total+'</div><div class="stat-label">Total '+entityLabel+'</div></div><div class="stat-card'+(withCards<total?' warning':' success')+'"><div class="stat-value">'+withCards+'</div><div class="stat-label">With Cards</div></div><div class="stat-card warning"><div class="stat-value">'+pending+'</div><div class="stat-label">Pending</div></div><div class="stat-card success"><div class="stat-value">'+accepted+'</div><div class="stat-label">Accepted</div></div><div class="stat-card error"><div class="stat-value">'+refused+'</div><div class="stat-label">Refused</div></div></div>';if(evCards.length>0){h+='<table class="cards-table"><thead><tr><th>'+(isPairs?'Pair':'Team')+'</th><th>Players</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody>';evCards.forEach(function(card){var s=val[card.fileName];var sc='pending',st='Pending',reason='';if(s==='validated'){sc='validated';st='Accepted';}else if(s==='refused'){sc='refused';st='Refused';}else if(typeof s==='object'&&s.status==='refused'){sc='refused';st='Refused';reason=s.reason||'';}var parts=card.fileName.replace('.pdf','').split('_');var team=parts.length>=1?parts[0]:'Unknown';var players=getPlayersFromParts(parts,entities);var fn=card.fileName.replace(/'/g,"\\'");var evn=ev.replace(/'/g,"\\'");var ef=eventFolder.replace(/'/g,"\\'");h+='<tr><td><strong style="font-size:15px">'+team+'</strong></td><td><div style="font-size:14px;font-weight:500">'+players+'</div><div style="font-size:11px;color:var(--text-muted);margin-top:2px">'+card.fileName+'</div></td><td>'+fmtDate(card.lastModified)+'</td><td><span class="status-badge '+sc+'">'+st+'</span>'+(reason?'<br><small style="color:var(--error)">'+reason+'</small>':'')+'</td><td><div class="action-btns"><a href="'+card.url+'" target="_blank" class="action-btn view">View</a><button class="action-btn validate" onclick="doVal(\''+code+'\',\''+evn+'\',\''+fn+'\',\'validated\')">✓</button><button class="action-btn pending" onclick="doVal(\''+code+'\',\''+evn+'\',\''+fn+'\',\'pending\')">⏳</button><button class="action-btn refuse" onclick="showRefuse(this)">✗</button><button class="action-btn delete" onclick="doDelete(\''+code+'\',\''+evn+'\',\''+fn+'\',\''+ef+'\')">🗑️</button></div><div class="refuse-form" style="display:none"><input placeholder="Reason..."><button onclick="doRefuse(this,\''+code+'\',\''+evn+'\',\''+fn+'\')">OK</button></div></td></tr>';});h+='</tbody></table>';}else{h+='<div class="empty-state">No cards uploaded for this event yet</div>';}c.innerHTML=h;}
 
-function getPlayersFromParts(parts){
+function getPlayersFromParts(parts,entities){
 // Format: TEAM_ID1_SURNAME1_ID2_SURNAME2...
-// Extract surnames (every other part starting from index 2)
-var names=[];
-for(var i=2;i<parts.length;i+=2){
-names.push(parts[i]);
+// Build a lookup of all players by WBF ID
+var playerLookup={};
+if(entities){
+entities.forEach(function(e){
+if(e.players){
+e.players.forEach(function(p){
+playerLookup[p.wbfId]=p.fullName;
+});
 }
-return names.join(' & ');
+});
+}
+// Extract ID and surname pairs, display one per line
+var lines=[];
+for(var i=1;i<parts.length;i+=2){
+var id=parts[i]||'';
+var surname=parts[i+1]||'';
+if(id&&surname){
+var fullName=playerLookup[id]||surname;
+lines.push(fullName+' <span style="color:var(--text-muted);font-size:11px">('+id+')</span>');
+}
+}
+return lines.join('<br>');
 }
 
 function fmtDate(d){return d?new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-';}
