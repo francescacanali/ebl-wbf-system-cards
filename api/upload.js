@@ -88,11 +88,11 @@ function validatePDF(buffer) {
 }
 
 // Reset validation status when a file is overwritten
-async function resetValidationStatus(tournamentCode, eventFolder, fileName) {
+async function resetValidationStatus(tournamentCode, eventFolder, fileName, eventNameParam) {
   try {
     // Convert folder name back to event name format for admin file lookup
     // eventFolder is like "Winter_Mixed_Pairs" -> try to find matching admin file
-    const eventName = eventFolder.replace(/_/g, ' ');
+    const eventName = eventNameParam || eventFolder.replace(/_/g, ' ');
     const adminKey = `${tournamentCode}/admin/${encodeURIComponent(eventName)}.json`;
     
     try {
@@ -188,7 +188,7 @@ export default async function handler(req, res) {
     }));
     
     // Reset validation status since file was overwritten
-    await resetValidationStatus(tournamentCode, eventFolder, fileName);
+    await resetValidationStatus(tournamentCode, eventFolder, fileName, parts.eventName);
     
     const publicUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
     
