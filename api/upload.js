@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 
 const R2 = new S3Client({
   region: 'auto',
@@ -87,6 +87,29 @@ function validatePDF(buffer) {
   return { valid: true };
 }
 
+// Find next available versioned filename: A.pdf -> A_v2.pdf -> A_v3.pdf etc.
+async function findVersionedFileName(tournamentCode, eventFolder, baseFileName) {
+  const namePart = baseFileName.replace(/\.pdf$/i, '');
+  const originalKey = `${tournamentCode}/${eventFolder}/${baseFileName}`;
+  try {
+    await R2.send(new HeadObjectCommand({ Bucket: process.env.R2_BUCKET_NAME, Key: originalKey }));
+    // Original exists — find next free version
+    for (let v = 2; v <= 99; v++) {
+      const vName = `${namePart}_v${v}.pdf`;
+      try {
+        await R2.send(new HeadObjectCommand({ Bucket: process.env.R2_BUCKET_NAME, Key: `${tournamentCode}/${eventFolder}/${vName}` }));
+        // This version also exists, try next
+      } catch {
+        return vName; // free slot found
+      }
+    }
+    return `${namePart}_v2.pdf`;
+  } catch {
+    return baseFileName; // original doesn't exist yet
+  }
+}
+
+
 // Reset validation status when a file is overwritten
 async function resetValidationStatus(tournamentCode, eventFolder, fileName, eventNameParam) {
   try {
@@ -169,13 +192,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: validation.error });
     }
     
-    // Extract event folder from fileName (first part before first underscore with team)
-    // fileName format: EVENT_TEAM_ID1_SURNAME1_ID2_SURNAME2.pdf
-    // We need to get the event part to create the folder
+    // Extract event folder from fileName
     const eventFolder = parts.eventFolder || 'CC';
     
-    // Upload to R2 with new folder structure: tournament/Event_Folder/filename.pdf
-    const key = `${tournamentCode}/${eventFolder}/${fileName}`;
+    // Find versioned filename (A.pdf -> A_v2.pdf if A.pdf already exists)
+    const versionedFileName = await findVersionedFileName(tournamentCode, eventFolder, fileName);
+    
+    // Upload to R2 with versioned filename
+    const key = `${tournamentCode}/${eventFolder}/${versionedFileName}`;
     
     console.log('Uploading to R2:', key);
     
@@ -187,8 +211,12 @@ export default async function handler(req, res) {
       CacheControl: 'public, max-age=31536000',
     }));
     
-    // Reset validation status since file was overwritten
-    await resetValidationStatus(tournamentCode, eventFolder, fileName, parts.eventName);
+    // Reset validation status if this is v1 being replaced (no reset needed for new versions)
+    if (versionedFileName === fileName) {
+      // First upload ever — nothing to reset
+    } else {
+      await resetValidationStatus(tournamentCode, eventFolder, fileName, parts.eventName);
+    }
     
     const publicUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
     
@@ -196,7 +224,7 @@ export default async function handler(req, res) {
     
     return res.status(200).json({
       success: true,
-      fileName,
+      fileName: versionedFileName,
       url: publicUrl
     });
     
