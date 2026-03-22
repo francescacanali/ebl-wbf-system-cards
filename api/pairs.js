@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     const html = await response.text();
     const pairs = parsePairsHtml(html);
 
-    return res.status(200).json({ pairs });
+    return res.status(200).json({ pairs, org: tournament.org || "ebl" });
 
   } catch (error) {
     console.error('Error:', error);
