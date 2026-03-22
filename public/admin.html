@@ -117,7 +117,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <button class="main-tab active" onclick="showMainTab('tournaments')">⚙️ Tournaments</button>
 <button class="main-tab" onclick="showMainTab('manage')">📋 Manage Cards</button>
 <button class="main-tab" onclick="showMainTab('generate')">🔗 Generate Iframes</button>
-<button class="main-tab" onclick="showMainTab('pairs-table')">📊 Pairs Table</button>
+<button class="main-tab" onclick="showMainTab('pairs-table')">🔗 SC Links</button>
 </div>
 <div id="tournaments-tab" class="tab-content active">
 <div class="card">
@@ -142,9 +142,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 </div>
 </div>
 </div>
-<div id="pairs-tab-tab" class="tab-content">
+<div id="pairs-table-tab" class="tab-content">
 <div class="card">
-<div class="card-title">📊 Pairs Table</div>
+<div class="card-title">🔗 SC Links</div>
 <div class="form-group" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
 <div style="flex:1;min-width:200px">
 <label class="form-label">Tournament</label>
@@ -270,34 +270,22 @@ async function buildPairsTable(){
   var container = document.getElementById('pt-container');
   var exportBtn = document.getElementById('pt-export-btn');
 
-  // Populate event dropdown when tournament changes
-  var evSel = document.getElementById('pt-event');
-  evSel.innerHTML = '<option value="">All events</option>';
-  if(code && CONFIG.tournaments[code] && CONFIG.tournaments[code].events){
-    Object.keys(CONFIG.tournaments[code].events).forEach(function(ev){
-      var opt = document.createElement('option');
-      opt.value = ev;
-      opt.textContent = ev;
-      evSel.appendChild(opt);
-    });
-    if(evFilter) evSel.value = evFilter;
+  if(!code){
+    container.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:32px">Select a tournament.</p>';
+    exportBtn.style.display='none';
+    return;
   }
-
-  if(!code){ container.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:32px">Select a tournament.</p>'; exportBtn.style.display='none'; return; }
 
   container.innerHTML = '<div class="loading"><div class="spinner"></div>Building table...</div>';
 
   try {
-    // Load cards + teams + validation for this tournament
-    var [cardsRes, teamsRes, valRes] = await Promise.all([
-      fetch(API_BASE+'/cards.js?tournament='+code).then(r=>r.json()),
-      fetch(API_BASE+'/teams.js?tournament='+code).then(r=>r.json()),
-      fetch(API_BASE+'/validation.js?tournament='+code+'&event=').then(r=>r.json()).catch(()=>({status:{}}))
-    ]);
+    // Load cards and teams independently (don't rely on loadManage having run)
+    var cardsRes = await fetch(API_BASE+'/cards.js?tournament='+code).then(r=>r.json()).catch(()=>({cards:[]}));
+    var teamsRes = await fetch(API_BASE+'/teams.js?tournament='+code).then(r=>r.json()).catch(()=>({teams:[]}));
+    var pairsRes = await fetch(API_BASE+'/pairs.js?tournament='+code).then(r=>r.json()).catch(()=>({pairs:[]}));
 
     var allCards = cardsRes.cards || [];
-    var allTeams = teamsRes.teams || [];
-    var valStatus = valRes.status || {};
+    var allEntities = (teamsRes.teams || []).concat(pairsRes.pairs || []);
 
     // Filter by event if selected
     if(evFilter){
@@ -306,20 +294,23 @@ async function buildPairsTable(){
         var cf = c.folder ? c.folder.replace(/^#\d+\s*/,'').replace(/\s+/g,'_') : '';
         return cf === evFolder;
       });
+      allEntities = allEntities.filter(function(e){ return e.event === evFilter; });
     }
 
     // Build player lookup: wbfId -> {fullName, firstName, lastName, teamName, event}
     var playerLookup = {};
-    allTeams.forEach(function(team){
+    allEntities.forEach(function(team){
       if(team.players){
         team.players.forEach(function(p){
           if(!playerLookup[p.wbfId]){
-            var parts = p.fullName.split(' ');
+            // fullName format varies - try to split sensibly
+            var nameParts = (p.fullName||'').trim().split(/\s+/);
             playerLookup[p.wbfId] = {
               fullName: p.fullName,
-              firstName: parts.slice(1).join(' ') || '',
-              lastName: parts[0] || '',
-              teamName: team.name,
+              // Assume first token that is ALL CAPS is surname, rest is firstname
+              lastName: nameParts.find(function(x){return x===x.toUpperCase()&&x.length>1;})||nameParts[0]||'',
+              firstName: nameParts.filter(function(x){return !(x===x.toUpperCase()&&x.length>1);}).join(' ')||'',
+              teamName: team.name || '',
               event: team.event || ''
             };
           }
@@ -327,91 +318,113 @@ async function buildPairsTable(){
       }
     });
 
-    // Build rows: for each card, extract all player IDs, compute all pairs
-    // Key: sorted "ID1|ID2" -> best card (prefer fewest players = most specific)
+    // Populate event dropdown from entities
+    var evSel = document.getElementById('pt-event');
+    var currentEvFilter = evSel.value;
+    var evSet = {};
+    allEntities.forEach(function(e){ if(e.event) evSet[e.event]=true; });
+    evSel.innerHTML = '<option value="">All events</option>';
+    Object.keys(evSet).sort().forEach(function(ev){
+      var opt = document.createElement('option');
+      opt.value = ev; opt.textContent = ev;
+      evSel.appendChild(opt);
+    });
+    evSel.value = currentEvFilter;
+
+    // Extract player IDs from card filename
+    // Format: TEAMNAME_ID1_SURNAME1_ID2_SURNAME2[_v2].pdf
+    // ID can be numeric or alphanumeric - it's the token BEFORE a surname
+    // Heuristic: alternating tokens after team name, odd positions = IDs, even = surnames
+    function extractIds(card){
+      var fn = card.fileName.replace(/\.pdf$/i,'').replace(/_v\d+$/,'');
+      var parts = fn.split('_');
+      var ids = [];
+      // skip parts[0] (team name), then take pairs: ID, SURNAME, ID, SURNAME...
+      for(var i=1; i+1<parts.length; i+=2){
+        var maybeId = parts[i];
+        // Accept anything that looks like an ID (not all letters, or short numeric)
+        if(maybeId && !/^[A-Za-z]{4,}$/.test(maybeId)){
+          ids.push(maybeId);
+        }
+      }
+      // Fallback: if no IDs found with above heuristic, try all numeric tokens
+      if(ids.length < 2){
+        ids = [];
+        for(var j=1; j<parts.length; j++){
+          if(/^\d+$/.test(parts[j])) ids.push(parts[j]);
+        }
+      }
+      return ids;
+    }
+
+    // Build pair map: "ID1|ID2" -> best card entry
     var pairMap = {};
 
     allCards.forEach(function(card){
-      var fn = card.fileName.replace('.pdf','');
-      // Strip version suffix _v2, _v3 etc
-      fn = fn.replace(/_v\d+$/,'');
-      var parts = fn.split('_');
-      // parts[0] = team, then ID/SURNAME pairs
-      var ids = [];
-      for(var i=1; i<parts.length; i+=2){
-        if(parts[i] && parts[i].match(/^\d+$/)) ids.push(parts[i]);
-      }
-      if(ids.length < 2) return; // need at least 2 players
+      var ids = extractIds(card);
+      if(ids.length < 2) return;
 
-      // Generate all pairs from this card
       for(var a=0; a<ids.length; a++){
         for(var b=a+1; b<ids.length; b++){
           var key = [ids[a],ids[b]].sort().join('|');
           var existing = pairMap[key];
-          // Prefer card with fewer players (more specific) or earlier version
+          var fn = card.fileName.replace(/\.pdf$/i,'').replace(/_v\d+$/,'');
+          var parts = fn.split('_');
+          var teamName = parts[0] || '';
+          // Prefer card with fewer players (more specific); tie-break: more recent
           if(!existing || ids.length < existing.playerCount ||
             (ids.length === existing.playerCount && new Date(card.lastModified) > new Date(existing.card.lastModified))){
-            pairMap[key] = {
-              id1: ids[a], id2: ids[b],
-              card: card,
-              playerCount: ids.length,
-              teamName: parts[0]
-            };
+            pairMap[key] = { id1: ids[a], id2: ids[b], card: card, playerCount: ids.length, teamName: teamName };
           }
         }
       }
     });
 
     var rows = Object.values(pairMap);
+
     if(rows.length === 0){
-      container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:32px">No cards found for this selection.</p>';
+      container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:32px">No cards found. Make sure cards have been uploaded for this tournament/event.</p>';
       exportBtn.style.display = 'none';
       return;
     }
 
-    // Sort by team name then player ID
+    // Sort by team then id1
     rows.sort(function(a,b){
-      return (a.teamName||'').localeCompare(b.teamName||'') || a.id1.localeCompare(b.id1);
+      return (a.teamName||'').localeCompare(b.teamName||'') || (a.id1||'').localeCompare(b.id1||'');
     });
 
-    // Store for export
     window._ptRows = rows;
     window._ptPlayerLookup = playerLookup;
 
-    // Render table
+    // Render
     var h = '<div style="overflow-x:auto"><table class="cards-table" id="pt-table">';
-    h += '<thead><tr><th>Team</th><th>Event</th><th>ID Player 1</th><th>Last Name 1</th><th>First Name 1</th><th>ID Player 2</th><th>Last Name 2</th><th>First Name 2</th><th>System Card</th></tr></thead><tbody>';
-
+    h += '<thead><tr><th>Team</th><th>Event</th><th>ID P1</th><th>Last Name 1</th><th>First Name 1</th><th>ID P2</th><th>Last Name 2</th><th>First Name 2</th><th>System Card</th></tr></thead><tbody>';
     rows.forEach(function(row){
       var p1 = playerLookup[row.id1] || {firstName:'',lastName:row.id1,teamName:'',event:''};
       var p2 = playerLookup[row.id2] || {firstName:'',lastName:row.id2,teamName:'',event:''};
       var teamName = p1.teamName || p2.teamName || row.teamName || '';
       var event = p1.event || p2.event || '';
-      var vs = valStatus[row.card.fileName];
-      var vClass = vs==='validated'?'validated':((typeof vs==='object'&&vs.status==='refused')||vs==='refused')?'refused':'pending';
       h += '<tr>';
       h += '<td><strong>'+teamName+'</strong></td>';
       h += '<td><small style="color:var(--text-muted)">'+event+'</small></td>';
       h += '<td><code>'+row.id1+'</code></td>';
-      h += '<td>'+p1.lastName+'</td>';
-      h += '<td>'+p1.firstName+'</td>';
+      h += '<td>'+p1.lastName+'</td><td>'+p1.firstName+'</td>';
       h += '<td><code>'+row.id2+'</code></td>';
-      h += '<td>'+p2.lastName+'</td>';
-      h += '<td>'+p2.firstName+'</td>';
-      h += '<td><a href="'+row.card.url+'" target="_blank" class="action-btn view" style="font-size:11px">View</a> <span class="status-badge '+vClass+'" style="font-size:10px">'+vClass+'</span></td>';
+      h += '<td>'+p2.lastName+'</td><td>'+p2.firstName+'</td>';
+      h += '<td><a href="'+row.card.url+'" target="_blank" class="action-btn view" style="font-size:11px">View</a></td>';
       h += '</tr>';
     });
-
     h += '</tbody></table></div>';
-    h += '<p style="color:var(--text-muted);font-size:12px;margin-top:8px">'+rows.length+' pairs total</p>';
+    h += '<p style="color:var(--text-muted);font-size:12px;margin-top:8px">'+rows.length+' pair'+( rows.length!==1?'s':'')+' — '+allCards.length+' card'+( allCards.length!==1?'s':'')+' loaded</p>';
     container.innerHTML = h;
     exportBtn.style.display = 'inline-flex';
 
   } catch(e){
-    container.innerHTML = '<p style="color:var(--error)">Error: '+e.message+'</p>';
+    container.innerHTML = '<p style="color:var(--error);padding:24px">Error: '+e.message+'</p>';
     console.error(e);
   }
 }
+
 
 function exportPairsExcel(){
   var rows = window._ptRows || [];
