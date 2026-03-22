@@ -117,6 +117,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <button class="main-tab active" onclick="showMainTab('tournaments')">⚙️ Tournaments</button>
 <button class="main-tab" onclick="showMainTab('manage')">📋 Manage Cards</button>
 <button class="main-tab" onclick="showMainTab('generate')">🔗 Generate Iframes</button>
+<button class="main-tab" onclick="showMainTab('pairs-table')">📊 Pairs Table</button>
 </div>
 <div id="tournaments-tab" class="tab-content active">
 <div class="card">
@@ -141,6 +142,27 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 </div>
 </div>
 </div>
+<div id="pairs-tab-tab" class="tab-content">
+<div class="card">
+<div class="card-title">📊 Pairs Table</div>
+<div class="form-group" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+<div style="flex:1;min-width:200px">
+<label class="form-label">Tournament</label>
+<select id="pt-tournament" class="form-input" onchange="onPtTournamentChange()">
+<option value="">Select tournament...</option>
+</select>
+</div>
+<div style="flex:1;min-width:200px">
+<label class="form-label">Event</label>
+<select id="pt-event" class="form-input" onchange="buildPairsTable()">
+<option value="">All events</option>
+</select>
+</div>
+<button class="btn btn-success" onclick="exportPairsExcel()" id="pt-export-btn" style="display:none">⬇️ Download Excel</button>
+</div>
+<div id="pt-container"><p style="color:var(--text-muted);text-align:center;padding:32px">Select a tournament to generate the table.</p></div>
+</div>
+</div>
 <script>
 var API_BASE=window.location.origin+'/api';
 var CONFIG={tournaments:{}};
@@ -151,7 +173,7 @@ function checkAuth(){var s=sessionStorage.getItem('admin_auth');if(s==='systemhe
 function login(){var p=document.getElementById('password-input').value;if(p==='systemhero123'){sessionStorage.setItem('admin_auth',p);document.getElementById('auth-screen').style.display='none';document.getElementById('main-content').style.display='block';loadConfig();}else{document.getElementById('auth-error').style.display='block';}}
 document.addEventListener('DOMContentLoaded',function(){if(!checkAuth()){document.getElementById('auth-screen').style.display='flex';}else{loadConfig();}});
 
-function showMainTab(t){document.querySelectorAll('.main-tab').forEach(function(x){x.classList.remove('active');});document.querySelectorAll('.tab-content').forEach(function(x){x.classList.remove('active');});document.querySelector('[onclick="showMainTab(\''+t+'\')"]').classList.add('active');document.getElementById(t+'-tab').classList.add('active');if(t==='manage')loadManage();if(t==='generate')populateGenSelect();}
+function showMainTab(t){document.querySelectorAll('.main-tab').forEach(function(x){x.classList.remove('active');});document.querySelectorAll('.tab-content').forEach(function(x){x.classList.remove('active');});document.querySelector('[onclick="showMainTab(\''+t+'\')"]').classList.add('active');document.getElementById(t+'-tab').classList.add('active');if(t==='manage')loadManage();if(t==='generate')populateGenSelect();if(t==='pairs-table')initPairsTable();}
 
 async function loadConfig(){try{var r=await fetch(API_BASE+'/config.js');CONFIG=await r.json();renderList();}catch(e){console.error(e);CONFIG={tournaments:{}};renderList();}}
 
@@ -208,6 +230,224 @@ return lines.join('<br>');
 function fmtDate(d){return d?new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'-';}
 function showRefuse(btn){var f=btn.parentNode.nextElementSibling;f.style.display=f.style.display==='none'?'flex':'none';}
 async function doRefuse(btn,code,ev,fn){var reason=btn.previousElementSibling.value.trim();if(!reason){alert('Enter reason');return;}await doVal(code,ev,fn,{status:'refused',reason:reason});}
+// ============================================================
+// PAIRS TABLE
+// ============================================================
+
+function initPairsTable(){
+  // Populate tournament select
+  var sel = document.getElementById('pt-tournament');
+  var cur = sel.value;
+  sel.innerHTML = '<option value="">Select tournament...</option>';
+  Object.keys(CONFIG.tournaments||{}).forEach(function(code){
+    var opt = document.createElement('option');
+    opt.value = code;
+    opt.textContent = CONFIG.tournaments[code].name;
+    sel.appendChild(opt);
+  });
+  if(cur) sel.value = cur;
+  if(sel.value) buildPairsTable();
+}
+
+function onPtTournamentChange(){
+  var code = document.getElementById('pt-tournament').value;
+  var evSel = document.getElementById('pt-event');
+  evSel.innerHTML = '<option value="">All events</option>';
+  if(code && CONFIG.tournaments[code] && CONFIG.tournaments[code].events){
+    Object.keys(CONFIG.tournaments[code].events).forEach(function(ev){
+      var opt = document.createElement('option');
+      opt.value = ev;
+      opt.textContent = ev;
+      evSel.appendChild(opt);
+    });
+  }
+  buildPairsTable();
+}
+
+async function buildPairsTable(){
+  var code = document.getElementById('pt-tournament').value;
+  var evFilter = document.getElementById('pt-event').value;
+  var container = document.getElementById('pt-container');
+  var exportBtn = document.getElementById('pt-export-btn');
+
+  // Populate event dropdown when tournament changes
+  var evSel = document.getElementById('pt-event');
+  evSel.innerHTML = '<option value="">All events</option>';
+  if(code && CONFIG.tournaments[code] && CONFIG.tournaments[code].events){
+    Object.keys(CONFIG.tournaments[code].events).forEach(function(ev){
+      var opt = document.createElement('option');
+      opt.value = ev;
+      opt.textContent = ev;
+      evSel.appendChild(opt);
+    });
+    if(evFilter) evSel.value = evFilter;
+  }
+
+  if(!code){ container.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:32px">Select a tournament.</p>'; exportBtn.style.display='none'; return; }
+
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Building table...</div>';
+
+  try {
+    // Load cards + teams + validation for this tournament
+    var [cardsRes, teamsRes, valRes] = await Promise.all([
+      fetch(API_BASE+'/cards.js?tournament='+code).then(r=>r.json()),
+      fetch(API_BASE+'/teams.js?tournament='+code).then(r=>r.json()),
+      fetch(API_BASE+'/validation.js?tournament='+code+'&event=').then(r=>r.json()).catch(()=>({status:{}}))
+    ]);
+
+    var allCards = cardsRes.cards || [];
+    var allTeams = teamsRes.teams || [];
+    var valStatus = valRes.status || {};
+
+    // Filter by event if selected
+    if(evFilter){
+      var evFolder = evFilter.replace(/^#\d+\s*/,'').replace(/\s+/g,'_');
+      allCards = allCards.filter(function(c){
+        var cf = c.folder ? c.folder.replace(/^#\d+\s*/,'').replace(/\s+/g,'_') : '';
+        return cf === evFolder;
+      });
+    }
+
+    // Build player lookup: wbfId -> {fullName, firstName, lastName, teamName, event}
+    var playerLookup = {};
+    allTeams.forEach(function(team){
+      if(team.players){
+        team.players.forEach(function(p){
+          if(!playerLookup[p.wbfId]){
+            var parts = p.fullName.split(' ');
+            playerLookup[p.wbfId] = {
+              fullName: p.fullName,
+              firstName: parts.slice(1).join(' ') || '',
+              lastName: parts[0] || '',
+              teamName: team.name,
+              event: team.event || ''
+            };
+          }
+        });
+      }
+    });
+
+    // Build rows: for each card, extract all player IDs, compute all pairs
+    // Key: sorted "ID1|ID2" -> best card (prefer fewest players = most specific)
+    var pairMap = {};
+
+    allCards.forEach(function(card){
+      var fn = card.fileName.replace('.pdf','');
+      // Strip version suffix _v2, _v3 etc
+      fn = fn.replace(/_v\d+$/,'');
+      var parts = fn.split('_');
+      // parts[0] = team, then ID/SURNAME pairs
+      var ids = [];
+      for(var i=1; i<parts.length; i+=2){
+        if(parts[i] && parts[i].match(/^\d+$/)) ids.push(parts[i]);
+      }
+      if(ids.length < 2) return; // need at least 2 players
+
+      // Generate all pairs from this card
+      for(var a=0; a<ids.length; a++){
+        for(var b=a+1; b<ids.length; b++){
+          var key = [ids[a],ids[b]].sort().join('|');
+          var existing = pairMap[key];
+          // Prefer card with fewer players (more specific) or earlier version
+          if(!existing || ids.length < existing.playerCount ||
+            (ids.length === existing.playerCount && new Date(card.lastModified) > new Date(existing.card.lastModified))){
+            pairMap[key] = {
+              id1: ids[a], id2: ids[b],
+              card: card,
+              playerCount: ids.length,
+              teamName: parts[0]
+            };
+          }
+        }
+      }
+    });
+
+    var rows = Object.values(pairMap);
+    if(rows.length === 0){
+      container.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:32px">No cards found for this selection.</p>';
+      exportBtn.style.display = 'none';
+      return;
+    }
+
+    // Sort by team name then player ID
+    rows.sort(function(a,b){
+      return (a.teamName||'').localeCompare(b.teamName||'') || a.id1.localeCompare(b.id1);
+    });
+
+    // Store for export
+    window._ptRows = rows;
+    window._ptPlayerLookup = playerLookup;
+
+    // Render table
+    var h = '<div style="overflow-x:auto"><table class="cards-table" id="pt-table">';
+    h += '<thead><tr><th>Team</th><th>Event</th><th>ID Player 1</th><th>Last Name 1</th><th>First Name 1</th><th>ID Player 2</th><th>Last Name 2</th><th>First Name 2</th><th>System Card</th></tr></thead><tbody>';
+
+    rows.forEach(function(row){
+      var p1 = playerLookup[row.id1] || {firstName:'',lastName:row.id1,teamName:'',event:''};
+      var p2 = playerLookup[row.id2] || {firstName:'',lastName:row.id2,teamName:'',event:''};
+      var teamName = p1.teamName || p2.teamName || row.teamName || '';
+      var event = p1.event || p2.event || '';
+      var vs = valStatus[row.card.fileName];
+      var vClass = vs==='validated'?'validated':((typeof vs==='object'&&vs.status==='refused')||vs==='refused')?'refused':'pending';
+      h += '<tr>';
+      h += '<td><strong>'+teamName+'</strong></td>';
+      h += '<td><small style="color:var(--text-muted)">'+event+'</small></td>';
+      h += '<td><code>'+row.id1+'</code></td>';
+      h += '<td>'+p1.lastName+'</td>';
+      h += '<td>'+p1.firstName+'</td>';
+      h += '<td><code>'+row.id2+'</code></td>';
+      h += '<td>'+p2.lastName+'</td>';
+      h += '<td>'+p2.firstName+'</td>';
+      h += '<td><a href="'+row.card.url+'" target="_blank" class="action-btn view" style="font-size:11px">View</a> <span class="status-badge '+vClass+'" style="font-size:10px">'+vClass+'</span></td>';
+      h += '</tr>';
+    });
+
+    h += '</tbody></table></div>';
+    h += '<p style="color:var(--text-muted);font-size:12px;margin-top:8px">'+rows.length+' pairs total</p>';
+    container.innerHTML = h;
+    exportBtn.style.display = 'inline-flex';
+
+  } catch(e){
+    container.innerHTML = '<p style="color:var(--error)">Error: '+e.message+'</p>';
+    console.error(e);
+  }
+}
+
+function exportPairsExcel(){
+  var rows = window._ptRows || [];
+  var lookup = window._ptPlayerLookup || {};
+  if(!rows.length) return;
+
+  // Build CSV with BOM for Excel UTF-8
+  var bom = '\uFEFF';
+  var headers = ['Team','Event','ID Player 1','Last Name 1','First Name 1','ID Player 2','Last Name 2','First Name 2','System Card URL'];
+  var lines = [headers.join('\t')];
+
+  rows.forEach(function(row){
+    var p1 = lookup[row.id1] || {firstName:'',lastName:row.id1,teamName:'',event:''};
+    var p2 = lookup[row.id2] || {firstName:'',lastName:row.id2,teamName:'',event:''};
+    var teamName = p1.teamName || p2.teamName || row.teamName || '';
+    var event = p1.event || p2.event || '';
+    lines.push([
+      teamName, event,
+      row.id1, p1.lastName, p1.firstName,
+      row.id2, p2.lastName, p2.firstName,
+      row.card.url
+    ].map(function(v){ return '"'+(v||'').replace(/"/g,'""')+'"'; }).join('\t'));
+  });
+
+  var blob = new Blob([bom + lines.join('\n')], {type:'text/tab-separated-values;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  var code = document.getElementById('pt-tournament').value;
+  var evFilter = document.getElementById('pt-event').value;
+  var safeName = (evFilter || code || 'pairs').replace(/[^a-z0-9]/gi,'_');
+  a.download = 'SystemCards_'+safeName+'.xls';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+
 async function doVal(code,ev,fn,status){try{var r=await fetch(API_BASE+'/admin-validate.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tournament:code,event:ev,fileName:fn,status:status})});if(r.ok){validationData[code+'_'+ev][fn]=status;renderEv(code,ev);}else{alert('Error');}}catch(e){alert('Error');}}
 
 async function doDelete(code,ev,fn,ef){if(!confirm('Delete file '+fn+'? This cannot be undone.')){return;}try{var r=await fetch(API_BASE+'/admin-delete.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tournament:code,eventFolder:ef,fileName:fn})});if(r.ok){cardsData[code]=cardsData[code].filter(function(c){return c.fileName!==fn;});delete validationData[code+'_'+ev][fn];renderEv(code,ev);alert('Deleted!');}else{alert('Error deleting file');}}catch(e){alert('Error deleting file');}}
