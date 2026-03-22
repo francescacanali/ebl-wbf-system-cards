@@ -396,32 +396,21 @@ async function buildPairsTable(){
     window._ptRows = rows;
     window._ptPlayerLookup = playerLookup;
 
-    // Render
-    var h = '<div style="overflow-x:auto"><table class="cards-table" id="pt-table" style="table-layout:fixed;width:100%">';
-    h += '<colgroup><col style="width:12%"><col style="width:14%"><col style="width:7%"><col style="width:10%"><col style="width:9%"><col style="width:7%"><col style="width:10%"><col style="width:9%"><col style="width:6%"></colgroup>';
-    h += '<thead><tr><th>Team</th><th>Event</th><th>ID P1</th><th>Last Name 1</th><th>First Name 1</th><th>ID P2</th><th>Last Name 2</th><th>First Name 2</th><th style="text-align:center">Link</th></tr></thead><tbody>';
-    rows.forEach(function(row){
-      var p1 = playerLookup[row.id1] || {firstName:'',lastName:row.id1,teamName:'',event:''};
-      var p2 = playerLookup[row.id2] || {firstName:'',lastName:row.id2,teamName:'',event:''};
-      var teamName = p1.teamName || p2.teamName || row.teamName || '';
-      var event = p1.event || p2.event || '';
-      var safeUrl = row.card.url.replace(/'/g,'%27');
-      h += '<tr>';
-      h += '<td><strong>'+teamName+'</strong></td>';
-      h += '<td><small style="color:var(--text-muted)">'+event+'</small></td>';
-      h += '<td>'+row.id1+'</td>';
-      h += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p1.lastName+'</td>';
-      h += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p1.firstName+'</td>';
-      h += '<td>'+row.id2+'</td>';
-      h += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p2.lastName+'</td>';
-      h += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p2.firstName+'</td>';
-      h += '<td style="text-align:center"><a href="'+safeUrl+'" target="_blank" class="action-btn view" style="font-size:11px;padding:4px 8px">View</a></td>';
-      h += '</tr>';
-    });
-    h += '</tbody></table></div>';
-    h += '<p style="color:var(--text-muted);font-size:12px;margin-top:8px">'+rows.length+' pair'+( rows.length!==1?'s':'')+' — '+allCards.length+' card'+( allCards.length!==1?'s':'')+' loaded</p>';
-    container.innerHTML = h;
-    exportBtn.style.display = 'inline-flex';
+    // Find most recent card date
+    var lastCardDate = 'N/A';
+    if(allCards.length > 0){
+      var newest = allCards.reduce(function(a,b){ return new Date(a.lastModified)>new Date(b.lastModified)?a:b; });
+      lastCardDate = newest.lastModified ? new Date(newest.lastModified).toLocaleString('en-GB') : 'N/A';
+    }
+    container.innerHTML = '<div style="text-align:center;padding:32px 16px">'
+      + '<div style="font-size:48px;margin-bottom:12px">📊</div>'
+      + '<p style="font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:6px">'+rows.length+' pairs found across '+allCards.length+' system cards</p>'
+      + '<p style="color:var(--text-muted);font-size:13px;margin-bottom:24px">Click the button below to download the full table as an Excel file.</p>'
+      + '<button onclick="exportPairsExcel()" style="background:var(--success);color:#fff;border:none;border-radius:10px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 12px rgba(22,163,74,.3)">'
+      + '⬇️ Download Excel</button>'
+      + '<p style="color:var(--text-muted);font-size:12px;margin-top:14px">🕐 Last card update: <strong style="color:var(--text-primary)">'+lastCardDate+'</strong></p>'
+      + '</div>';
+    exportBtn.style.display = 'none';
 
   } catch(e){
     container.innerHTML = '<p style="color:var(--error);padding:24px">Error: '+e.message+'</p>';
