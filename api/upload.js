@@ -211,12 +211,8 @@ export default async function handler(req, res) {
       CacheControl: 'public, max-age=31536000',
     }));
     
-    // Reset validation status if this is v1 being replaced (no reset needed for new versions)
-    if (versionedFileName === fileName) {
-      // First upload ever — nothing to reset
-    } else {
-      await resetValidationStatus(tournamentCode, eventFolder, fileName, parts.eventName);
-    }
+    // No reset needed: each version has its own filename and starts as pending automatically.
+    // v1 keeps its validation status (e.g. refused) unchanged.
     
     const publicUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
     
