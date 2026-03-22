@@ -111,6 +111,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .card-item{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 14px;background:var(--bg-light);border-radius:8px;margin-bottom:8px}
 .card-info{display:flex;align-items:flex-start;gap:10px;flex:1}
 .card-icon{font-size:20px}
+.card-item-versioned{background:#fffdf5;border-left:3px solid #fbbf24}
 .card-players{font-weight:500;font-size:14px;line-height:1.6}
 .card-date{font-size:12px;color:var(--text-muted);margin-top:4px}
 .card-status{font-size:11px;padding:4px 10px;border-radius:4px;margin-top:6px;display:inline-block}
@@ -302,7 +303,11 @@ function generateEventFolder(){
 return CONFIG.eventFilter.replace(/^#\d+\s*/, '').replace(/\s+/g,'_');
 }
 
-function renderEntitiesList(){var ct=document.getElementById('entities-list');if(entities.length===0){ct.innerHTML='<p style="text-align:center;color:var(--text-muted)">No entries found</p>';return;}var h='';for(var i=0;i<entities.length;i++){var e=entities[i],ca=getCardsForEntity(e),st=getEntityStatus(e,ca);h+='<div class="team-card" data-name="'+e.name.toLowerCase()+' '+e.players.map(function(p){return p.fullName;}).join(' ').toLowerCase()+'"><div class="team-header" onclick="toggleEntity(this)"><div><div class="team-name">'+e.name+'</div>'+(e.country?'<div class="team-country">'+e.country+'</div>':'')+'</div><div class="team-status"><span class="status-dot '+st.color+'"></span>'+st.text+'</div></div><div class="team-details"><div class="cards-list">';if(ca.length>0){for(var j=0;j<ca.length;j++){var c=ca[j],cs=getCardStatus(c.fileName),pn=getPlayersFromFileName(c.fileName,e);h+='<div class="card-item"><div class="card-info"><span class="card-icon">📄</span><div><div class="card-players">'+pn+'</div><div class="card-date">Uploaded: '+formatDate(c.lastModified)+'</div><span class="card-status '+cs.cssClass+'">'+cs.label+'</span>'+cs.helpHtml+(cs.reason?'<div class="refused-reason">Reason: '+cs.reason+'</div>':'')+'</div></div><div class="card-actions"><a href="'+c.url+'" target="_blank" class="btn-small btn-view">View PDF</a><button class="btn-small btn-copy" data-url="'+ c.url.replace(/'/g,'%27') +'" onclick="copyLink(this.dataset.url,this)">Copy Link</button></div></div>';}}else h+='<p class="no-cards">No System Cards uploaded yet</p>';h+='</div><div style="margin-top:12px"><strong>Players:</strong> <span style="color:var(--text-secondary);font-size:14px">';var pna=[];for(var p=0;p<e.players.length;p++)pna.push(e.players[p].fullName+(isCoachOrCaptain(e.players[p])?' (NPC)':''));h+=pna.join(', ')+'</span></div></div></div>';}ct.innerHTML=h;}
+function renderEntitiesList(){var ct=document.getElementById('entities-list');if(entities.length===0){ct.innerHTML='<p style="text-align:center;color:var(--text-muted)">No entries found</p>';return;}var h='';for(var i=0;i<entities.length;i++){var e=entities[i],ca=getCardsForEntity(e),st=getEntityStatus(e,ca);h+='<div class="team-card" data-name="'+e.name.toLowerCase()+' '+e.players.map(function(p){return p.fullName;}).join(' ').toLowerCase()+'"><div class="team-header" onclick="toggleEntity(this)"><div><div class="team-name">'+e.name+'</div>'+(e.country?'<div class="team-country">'+e.country+'</div>':'')+'</div><div class="team-status"><span class="status-dot '+st.color+'"></span>'+st.text+'</div></div><div class="team-details"><div class="cards-list">';if(ca.length>0){for(var j=0;j<ca.length;j++){var c=ca[j],cs=getCardStatus(c.fileName),pn=getPlayersFromFileName(c.fileName,e);var isVersioned=/\.pdf$/i.test(c.fileName)&&/_v\d+\.pdf$/i.test(c.fileName);
+var verNum=isVersioned?(c.fileName.match(/_v(\d+)\.pdf$/i)||[,''])[1]:'';
+var cardIcon=isVersioned?'🔄':'📄';
+var verBadge=isVersioned?'<span style="background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-left:6px">v'+verNum+'</span>':'';
+h+='<div class="card-item'+(isVersioned?' card-item-versioned':'')+'"><div class="card-info"><span class="card-icon">'+cardIcon+'</span><div><div class="card-players">'+pn+verBadge+'</div><div class="card-date">Uploaded: '+formatDate(c.lastModified)+'</div><span class="card-status '+cs.cssClass+'">'+cs.label+'</span>'+cs.helpHtml+(cs.reason?'<div class="refused-reason">Reason: '+cs.reason+'</div>':'')+'</div></div><div class="card-actions"><a href="'+c.url+'" target="_blank" class="btn-small btn-view">View PDF</a><button class="btn-small btn-copy" data-url="'+ c.url.replace(/'/g,'%27') +'" onclick="copyLink(this.dataset.url,this)">Copy Link</button></div></div>';}}else h+='<p class="no-cards">No System Cards uploaded yet</p>';h+='</div><div style="margin-top:12px"><strong>Players:</strong> <span style="color:var(--text-secondary);font-size:14px">';var pna=[];for(var p=0;p<e.players.length;p++)pna.push(e.players[p].fullName+(isCoachOrCaptain(e.players[p])?' (NPC)':''));h+=pna.join(', ')+'</span></div></div></div>';}ct.innerHTML=h;}
 
 function getCardsForEntity(e,eventPrefix){
 // New format: files are in event folder, filename is TEAM_ID1_SURNAME1_ID2_SURNAME2.pdf
@@ -348,15 +353,15 @@ return{color:'yellow',text:ca.length+' System Card(s) - Missing'};
 }
 
 function getPlayersFromFileName(fn,e){
-// New format: TEAM_ID1_SURNAME1_ID2_SURNAME2[_ID3_SURNAME3...].pdf
-var parts=fn.replace('.pdf','').split('_');
+// New format: TEAM_ID1_SURNAME1_ID2_SURNAME2[_v2].pdf
+// Strip version suffix first
+var base=fn.replace('.pdf','').replace(/_v\d+$/,'');
+var parts=base.split('_');
 if(parts.length>=3){
-// First part is team name, then pairs of ID_SURNAME
 var li=[];
 for(var i=1;i<parts.length;i+=2){
 var id=parts[i];
 var surname=parts[i+1]||'';
-// Try to find full name from entity players
 var found=null;
 for(var j=0;j<e.players.length;j++){
 if(e.players[j].wbfId===id){found=e.players[j].fullName;break;}
