@@ -68,6 +68,33 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .legend-dot.green{background:var(--success)}.legend-dot.yellow{background:var(--warning)}.legend-dot.red{background:var(--error)}
 .filters{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
 .search-input{flex:1;min-width:200px}
+.recent-changes{background:var(--bg-white);border:1px solid var(--border-color);border-radius:12px;margin-bottom:16px;overflow:hidden}
+.recent-changes-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;gap:12px}
+.recent-changes-header:hover{background:var(--bg-secondary)}
+.recent-changes-title{font-size:14px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px}
+.recent-changes-count{background:var(--primary);color:#fff;border-radius:20px;padding:1px 8px;font-size:12px;font-weight:600}
+.recent-changes-chevron{color:var(--text-muted);font-size:12px;transition:transform .25s}
+.recent-changes-chevron.open{transform:rotate(180deg)}
+.recent-changes-body{display:none;border-top:1px solid var(--border-color);max-height:340px;overflow-y:auto}
+.recent-changes-body.open{display:block}
+.change-item{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--border-color);font-size:13px}
+.change-item:last-child{border-bottom:none}
+.change-item:hover{background:var(--bg-secondary)}
+.change-date{color:var(--text-muted);font-size:11px;min-width:110px;flex-shrink:0}
+.change-players{flex:1;font-weight:500;color:var(--text-primary)}
+.change-team{color:var(--text-secondary);font-size:12px}
+.change-badge{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;flex-shrink:0}
+.change-badge.new{background:#e8f5e9;color:#2e7d32}
+.change-badge.replaced{background:#fff3e0;color:#e65100}
+.change-link{color:var(--primary);text-decoration:none;font-size:12px;flex-shrink:0}
+.change-link:hover{text-decoration:underline}
+.search-wrapper{position:relative}
+.search-wrapper .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;pointer-events:none}
+.search-wrapper input{padding-left:34px}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;padding:0;display:none;line-height:1}
+.search-clear.visible{display:block}
+.search-no-results{text-align:center;color:var(--text-muted);padding:32px 16px;font-size:14px}
+
 .team-card{background:var(--bg-white);border:1px solid var(--border-color);border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .team-header{padding:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .2s ease}
 .team-header:hover{background:var(--bg-light)}
@@ -178,7 +205,21 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div class="legend-item"><span class="legend-dot yellow"></span><span>System Cards pending or missing</span></div>
 <div class="legend-item"><span class="legend-dot red"></span><span>No System Cards or file issue</span></div>
 </div>
-<div class="filters"><input type="text" id="search-input" class="form-input search-input" placeholder="Search by name..." oninput="filterEntities()"></div>
+<div class="recent-changes" id="recent-changes-panel" style="display:none">
+<div class="recent-changes-header" onclick="toggleRecentChanges()">
+<span class="recent-changes-title">🕐 Recent Changes <span class="recent-changes-count" id="recent-count">0</span></span>
+<span class="recent-changes-chevron" id="rc-chevron">▼</span>
+</div>
+<div class="recent-changes-body" id="rc-body"></div>
+</div>
+<div class="filters">
+<div class="search-wrapper" style="flex:1">
+<span class="search-icon">🔍</span>
+<input type="text" id="search-input" class="form-input search-input" placeholder="Search team or player name..." oninput="filterEntities()">
+<button class="search-clear" id="search-clear" onclick="clearSearch()" title="Clear">✕</button>
+</div>
+</div>
+<div id="no-results" class="search-no-results" style="display:none">No results found for your search.</div>
 <div id="entities-list"><div class="loading-container"><div class="spinner"></div><p style="color:var(--text-muted)">Loading System Cards...</p></div></div>
 </div>
 </div>
@@ -195,7 +236,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <strong>ℹ️ Important:</strong> Staff only verifies that uploaded files are valid and readable PDFs. The accuracy and compliance of System Card contents with current regulations remains the sole responsibility of the players.
 </div>
 </div>
-<div class="contact-banner"><strong>Any problems?</strong> Contact us at <a href="mailto:info@eurobridge.org">info@eurobridge.org</a></div>
+<div class="contact-banner"><strong>Any problems?</strong> Contact us at <a id="contact-email" href="mailto:info@eurobridge.org">info@eurobridge.org</a></div>
 </div>
 <script>
 var DISCLAIMER_TEXT='Staff only verifies that uploaded files are valid and readable PDFs. The accuracy and compliance of System Card contents with current regulations remains the sole responsibility of the players.';
@@ -218,9 +259,9 @@ if(CONFIG.entityType==='pairs'){document.getElementById('entity-label').textCont
 loadEntities().then(function(){return loadUploadedCards();}).then(function(){return loadValidationStatus();}).then(function(){setupDragDrop();setupFileInput();});
 });
 
-function loadEntities(){return new Promise(function(resolve){var endpoint=CONFIG.entityType==='pairs'?'/pairs.js':'/teams.js';var dataKey=CONFIG.entityType==='pairs'?'pairs':'teams';fetch(API_BASE+endpoint+'?tournament='+CONFIG.tournamentCode).then(function(r){return r.json();}).then(function(d){entities=d[dataKey]||[];if(CONFIG.eventFilter)entities=entities.filter(function(e){return e.event===CONFIG.eventFilter;});populateEntitySelect();renderEntitiesList();resolve();}).catch(function(){resolve();});});}
+function loadEntities(){return new Promise(function(resolve){var endpoint=CONFIG.entityType==='pairs'?'/pairs.js':'/teams.js';var dataKey=CONFIG.entityType==='pairs'?'pairs':'teams';fetch(API_BASE+endpoint+'?tournament='+CONFIG.tournamentCode).then(function(r){return r.json();}).then(function(d){entities=d[dataKey]||[];CONFIG.org=d.org||'ebl';updateContactEmail();if(CONFIG.eventFilter)entities=entities.filter(function(e){return e.event===CONFIG.eventFilter;});populateEntitySelect();renderEntitiesList();resolve();}).catch(function(){resolve();});});}
 
-function loadUploadedCards(){return new Promise(function(resolve){fetch(API_BASE+'/cards.js?tournament='+CONFIG.tournamentCode).then(function(r){return r.json();}).then(function(d){uploadedCards=d.cards||[];renderEntitiesList();resolve();}).catch(function(){resolve();});});}
+function loadUploadedCards(){return new Promise(function(resolve){fetch(API_BASE+'/cards.js?tournament='+CONFIG.tournamentCode).then(function(r){return r.json();}).then(function(d){uploadedCards=d.cards||[];renderEntitiesList();buildRecentChanges();resolve();}).catch(function(){resolve();});});}
 
 function loadValidationStatus(){return new Promise(function(resolve){fetch(API_BASE+'/validation.js?tournament='+CONFIG.tournamentCode+'&event='+encodeURIComponent(CONFIG.eventFilter)).then(function(r){if(r.ok)return r.json();return{status:{}};}).then(function(d){validationStatus=d.status||{};renderEntitiesList();resolve();}).catch(function(){resolve();});});}
 
@@ -259,7 +300,7 @@ function generateEventFolder(){
 return CONFIG.eventFilter.replace(/^#\d+\s*/, '').replace(/\s+/g,'_');
 }
 
-function renderEntitiesList(){var ct=document.getElementById('entities-list');if(entities.length===0){ct.innerHTML='<p style="text-align:center;color:var(--text-muted)">No entries found</p>';return;}var h='';for(var i=0;i<entities.length;i++){var e=entities[i],ca=getCardsForEntity(e),st=getEntityStatus(e,ca);h+='<div class="team-card" data-name="'+e.name.toLowerCase()+'"><div class="team-header" onclick="toggleEntity(this)"><div><div class="team-name">'+e.name+'</div>'+(e.country?'<div class="team-country">'+e.country+'</div>':'')+'</div><div class="team-status"><span class="status-dot '+st.color+'"></span>'+st.text+'</div></div><div class="team-details"><div class="cards-list">';if(ca.length>0){for(var j=0;j<ca.length;j++){var c=ca[j],cs=getCardStatus(c.fileName),pn=getPlayersFromFileName(c.fileName,e);h+='<div class="card-item"><div class="card-info"><span class="card-icon">📄</span><div><div class="card-players">'+pn+'</div><div class="card-date">Uploaded: '+formatDate(c.lastModified)+'</div><span class="card-status '+cs.cssClass+'">'+cs.label+'</span>'+cs.helpHtml+(cs.reason?'<div class="refused-reason">Reason: '+cs.reason+'</div>':'')+'</div></div><div class="card-actions"><a href="'+c.url+'" target="_blank" class="btn-small btn-view">View PDF</a><button class="btn-small btn-copy" data-url="'+ c.url.replace(/'/g,'%27') +'" onclick="copyLink(this.dataset.url,this)">Copy Link</button></div></div>';}}else h+='<p class="no-cards">No System Cards uploaded yet</p>';h+='</div><div style="margin-top:12px"><strong>Players:</strong> <span style="color:var(--text-secondary);font-size:14px">';var pna=[];for(var p=0;p<e.players.length;p++)pna.push(e.players[p].fullName+(isCoachOrCaptain(e.players[p])?' (NPC)':''));h+=pna.join(', ')+'</span></div></div></div>';}ct.innerHTML=h;}
+function renderEntitiesList(){var ct=document.getElementById('entities-list');if(entities.length===0){ct.innerHTML='<p style="text-align:center;color:var(--text-muted)">No entries found</p>';return;}var h='';for(var i=0;i<entities.length;i++){var e=entities[i],ca=getCardsForEntity(e),st=getEntityStatus(e,ca);h+='<div class="team-card" data-name="'+e.name.toLowerCase()+' '+e.players.map(function(p){return p.fullName;}).join(' ').toLowerCase()+'"><div class="team-header" onclick="toggleEntity(this)"><div><div class="team-name">'+e.name+'</div>'+(e.country?'<div class="team-country">'+e.country+'</div>':'')+'</div><div class="team-status"><span class="status-dot '+st.color+'"></span>'+st.text+'</div></div><div class="team-details"><div class="cards-list">';if(ca.length>0){for(var j=0;j<ca.length;j++){var c=ca[j],cs=getCardStatus(c.fileName),pn=getPlayersFromFileName(c.fileName,e);h+='<div class="card-item"><div class="card-info"><span class="card-icon">📄</span><div><div class="card-players">'+pn+'</div><div class="card-date">Uploaded: '+formatDate(c.lastModified)+'</div><span class="card-status '+cs.cssClass+'">'+cs.label+'</span>'+cs.helpHtml+(cs.reason?'<div class="refused-reason">Reason: '+cs.reason+'</div>':'')+'</div></div><div class="card-actions"><a href="'+c.url+'" target="_blank" class="btn-small btn-view">View PDF</a><button class="btn-small btn-copy" data-url="'+ c.url.replace(/'/g,'%27') +'" onclick="copyLink(this.dataset.url,this)">Copy Link</button></div></div>';}}else h+='<p class="no-cards">No System Cards uploaded yet</p>';h+='</div><div style="margin-top:12px"><strong>Players:</strong> <span style="color:var(--text-secondary);font-size:14px">';var pna=[];for(var p=0;p<e.players.length;p++)pna.push(e.players[p].fullName+(isCoachOrCaptain(e.players[p])?' (NPC)':''));h+=pna.join(', ')+'</span></div></div></div>';}ct.innerHTML=h;}
 
 function getCardsForEntity(e,eventPrefix){
 // New format: files are in event folder, filename is TEAM_ID1_SURNAME1_ID2_SURNAME2.pdf
@@ -327,7 +368,76 @@ return fn;
 
 function toggleEntity(h){h.nextElementSibling.classList.toggle('open');}
 
-function filterEntities(){var t=document.getElementById('search-input').value.toLowerCase(),ca=document.querySelectorAll('.team-card');for(var i=0;i<ca.length;i++)ca[i].style.display=ca[i].dataset.name.indexOf(t)>=0?'block':'none';}
+function filterEntities(){
+var t=document.getElementById('search-input').value.toLowerCase();
+var ca=document.querySelectorAll('.team-card');
+var vis=0;
+for(var i=0;i<ca.length;i++){
+var show=ca[i].dataset.name.indexOf(t)>=0;
+ca[i].style.display=show?'block':'none';
+if(show)vis++;
+}
+var cl=document.getElementById('search-clear');
+if(cl)cl.className='search-clear'+(t?'  visible':'');
+var nr=document.getElementById('no-results');
+if(nr)nr.style.display=(vis===0&&t)?'block':'none';
+}
+
+function updateContactEmail(){
+var email=CONFIG.org==='wbf'?'info@worldbridge.org':'info@eurobridge.org';
+var el=document.getElementById('contact-email');
+if(el){el.href='mailto:'+email;el.textContent=email;}
+}
+
+function clearSearch(){
+var si=document.getElementById('search-input');
+if(si){si.value='';filterEntities();si.focus();}
+}
+
+function toggleRecentChanges(){
+var body=document.getElementById('rc-body');
+var chev=document.getElementById('rc-chevron');
+var open=body.classList.toggle('open');
+if(chev)chev.className='recent-changes-chevron'+(open?' open':'');
+}
+
+function buildRecentChanges(){
+if(!uploadedCards||uploadedCards.length===0)return;
+// Sort by lastModified descending
+var sorted=uploadedCards.slice().sort(function(a,b){
+return new Date(b.lastModified)-new Date(a.lastModified);
+});
+// Determine which are "new" vs "replaced" - if same team appears more than once it was replaced
+var seen={};
+var items=sorted.map(function(card){
+var parts=card.fileName.replace('.pdf','').split('_');
+var team=parts[0];
+var surnames=[];
+for(var i=2;i<parts.length;i+=2)if(parts[i])surnames.push(parts[i]);
+var badge=seen[team]?'replaced':'new';
+seen[team]=true;
+return{card:card,team:team,surnames:surnames,badge:badge};
+});
+var panel=document.getElementById('recent-changes-panel');
+var countEl=document.getElementById('recent-count');
+var body=document.getElementById('rc-body');
+if(!panel||!body)return;
+if(items.length===0){panel.style.display='none';return;}
+panel.style.display='block';
+if(countEl)countEl.textContent=items.length;
+var h='';
+items.forEach(function(item){
+var label=item.badge==='new'?'New':'Replaced';
+var players=item.surnames.length>0?item.surnames.join(' & '):item.team;
+h+='<div class="change-item">';
+h+='<span class="change-date">'+formatDate(item.card.lastModified)+'</span>';
+h+='<span class="change-players">'+players+'<br><span class="change-team">'+item.team+'</span></span>';
+h+='<span class="change-badge '+item.badge+'">'+label+'</span>';
+h+='<a href="'+item.card.url+'" target="_blank" class="change-link">View PDF</a>';
+h+='</div>';
+});
+body.innerHTML=h;
+}
 
 function formatDate(d){if(!d)return'Unknown';return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
 
