@@ -417,12 +417,35 @@ var version=versionMatch?parseInt(versionMatch[1]):1;
 var baseName=versionMatch?fn.slice(0,fn.lastIndexOf('_v')):fn;
 var parts=baseName.split('_');
 var team=parts[0];
-var surnames=[];
-for(var i=2;i<parts.length;i+=2)if(parts[i])surnames.push(parts[i]);
+// Build player lookup from entities (id -> fullName)
+var playerLookup={};
+for(var ei=0;ei<entities.length;ei++){
+  var ent=entities[ei];
+  if(ent.players){for(var pi=0;pi<ent.players.length;pi++){
+    playerLookup[ent.players[pi].wbfId]=ent.players[pi].fullName;
+  }}
+}
+// Extract player names: try full name from lookup, fallback to surname from filename
+var playerNames=[];
+for(var i=1;i<parts.length;i+=2){
+  var wbfId=parts[i];
+  var surname=parts[i+1]||'';
+  var fullName=playerLookup[wbfId];
+  if(fullName){
+    // fullName is e.g. "RENARD Jean-Baptiste" or "Jean-Baptiste RENARD"
+    // surname from filename is already uppercase (e.g. "RENARD")
+    // Extract first name by removing the surname part
+    var sur=surname.toUpperCase();
+    var fn2=fullName.replace(new RegExp('\\b'+sur+'\\b','i'),'').trim();
+    playerNames.push(fn2?sur+' '+fn2:fullName);
+  } else {
+    playerNames.push(surname);
+  }
+}
 // badge: v1=New, v2+=Replaced
 var badge=version>1?'replaced':'new';
 var versionLabel=version>1?' (v'+version+')':'';
-return{card:card,team:team,surnames:surnames,badge:badge,version:version,versionLabel:versionLabel};
+return{card:card,team:team,playerNames:playerNames,badge:badge,version:version,versionLabel:versionLabel};
 });
 var panel=document.getElementById('recent-changes-panel');
 var countEl=document.getElementById('recent-count');
@@ -434,7 +457,7 @@ if(countEl)countEl.textContent=items.length;
 var h='';
 items.forEach(function(item){
 var label=item.badge==='new'?'New':'Replaced';
-var players=item.surnames.length>0?item.surnames.join(' & '):item.team;
+var players=item.playerNames&&item.playerNames.length>0?item.playerNames.join(' & '):item.team;
 h+='<div class="change-item">';
 h+='<span class="change-date">'+formatDate(item.card.lastModified)+'</span>';
 h+='<span class="change-players">'+players+item.versionLabel+'<br><span class="change-team">'+item.team+'</span></span>';
