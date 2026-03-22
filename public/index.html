@@ -68,14 +68,14 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .legend-dot.green{background:var(--success)}.legend-dot.yellow{background:var(--warning)}.legend-dot.red{background:var(--error)}
 .filters{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
 .search-input{flex:1;min-width:200px}
-.recent-changes{background:var(--bg-white);border:1px solid var(--border-color);border-radius:12px;margin-bottom:16px;overflow:hidden}
+.recent-changes{background:#fffbeb;border:2px solid #fbbf24;border-radius:12px;margin-bottom:16px;overflow:hidden;box-shadow:0 2px 8px rgba(251,191,36,.18)}
 .recent-changes-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;gap:12px}
-.recent-changes-header:hover{background:var(--bg-secondary)}
-.recent-changes-title{font-size:14px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:8px}
-.recent-changes-count{background:var(--primary);color:#fff;border-radius:20px;padding:1px 8px;font-size:12px;font-weight:600}
-.recent-changes-chevron{color:var(--text-muted);font-size:12px;transition:transform .25s}
+.recent-changes-header:hover{background:#fef3c7}
+.recent-changes-title{font-size:14px;font-weight:700;color:#92400e;display:flex;align-items:center;gap:8px}
+.recent-changes-count{background:#f59e0b;color:#fff;border-radius:20px;padding:1px 8px;font-size:12px;font-weight:700}
+.recent-changes-chevron{color:#f59e0b;font-size:12px;transition:transform .25s;font-weight:700}
 .recent-changes-chevron.open{transform:rotate(180deg)}
-.recent-changes-body{display:none;border-top:1px solid var(--border-color);max-height:340px;overflow-y:auto}
+.recent-changes-body{display:none;border-top:2px solid #fbbf24;max-height:340px;overflow-y:auto;background:#fffdf5}
 .recent-changes-body.open{display:block}
 .change-item{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--border-color);font-size:13px}
 .change-item:last-child{border-bottom:none}
@@ -89,10 +89,12 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .change-link{color:var(--primary);text-decoration:none;font-size:12px;flex-shrink:0}
 .change-link:hover{text-decoration:underline}
 .search-wrapper{position:relative}
-.search-wrapper .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;pointer-events:none}
-.search-wrapper input{padding-left:34px}
-.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:16px;padding:0;display:none;line-height:1}
-.search-clear.visible{display:block}
+.search-wrapper .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none}
+.search-wrapper input{padding-left:38px;background:#eef6ff;border:2px solid #93c5fd;border-radius:10px;color:#1e3a5f;font-weight:500}
+.search-wrapper input:focus{background:#fff;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15);outline:none}
+.search-wrapper input::placeholder{color:#93c5fd}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#93c5fd;font-size:16px;padding:0;display:none;line-height:1}
+.search-clear.visible{display:block;color:#3b82f6}
 .search-no-results{text-align:center;color:var(--text-muted);padding:32px 16px;font-size:14px}
 
 .team-card{background:var(--bg-white);border:1px solid var(--border-color);border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
@@ -407,16 +409,20 @@ if(!uploadedCards||uploadedCards.length===0)return;
 var sorted=uploadedCards.slice().sort(function(a,b){
 return new Date(b.lastModified)-new Date(a.lastModified);
 });
-// Determine which are "new" vs "replaced" - if same team appears more than once it was replaced
-var seen={};
 var items=sorted.map(function(card){
-var parts=card.fileName.replace('.pdf','').split('_');
+// Detect version suffix: TEAM_ID1_SUR1_v2.pdf or TEAM_ID1_SUR1_ID2_SUR2_v3.pdf
+var fn=card.fileName.replace('.pdf','');
+var versionMatch=fn.match(/_v(\d+)$/);
+var version=versionMatch?parseInt(versionMatch[1]):1;
+var baseName=versionMatch?fn.slice(0,fn.lastIndexOf('_v')):fn;
+var parts=baseName.split('_');
 var team=parts[0];
 var surnames=[];
 for(var i=2;i<parts.length;i+=2)if(parts[i])surnames.push(parts[i]);
-var badge=seen[team]?'replaced':'new';
-seen[team]=true;
-return{card:card,team:team,surnames:surnames,badge:badge};
+// badge: v1=New, v2+=Replaced
+var badge=version>1?'replaced':'new';
+var versionLabel=version>1?' (v'+version+')':'';
+return{card:card,team:team,surnames:surnames,badge:badge,version:version,versionLabel:versionLabel};
 });
 var panel=document.getElementById('recent-changes-panel');
 var countEl=document.getElementById('recent-count');
@@ -431,7 +437,7 @@ var label=item.badge==='new'?'New':'Replaced';
 var players=item.surnames.length>0?item.surnames.join(' & '):item.team;
 h+='<div class="change-item">';
 h+='<span class="change-date">'+formatDate(item.card.lastModified)+'</span>';
-h+='<span class="change-players">'+players+'<br><span class="change-team">'+item.team+'</span></span>';
+h+='<span class="change-players">'+players+item.versionLabel+'<br><span class="change-team">'+item.team+'</span></span>';
 h+='<span class="change-badge '+item.badge+'">'+label+'</span>';
 h+='<a href="'+item.card.url+'" target="_blank" class="change-link">View PDF</a>';
 h+='</div>';
