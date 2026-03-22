@@ -397,21 +397,25 @@ async function buildPairsTable(){
     window._ptPlayerLookup = playerLookup;
 
     // Render
-    var h = '<div style="overflow-x:auto"><table class="cards-table" id="pt-table">';
-    h += '<thead><tr><th>Team</th><th>Event</th><th>ID P1</th><th>Last Name 1</th><th>First Name 1</th><th>ID P2</th><th>Last Name 2</th><th>First Name 2</th><th>System Card</th></tr></thead><tbody>';
+    var h = '<div style="overflow-x:auto"><table class="cards-table" id="pt-table" style="table-layout:fixed;width:100%">';
+    h += '<colgroup><col style="width:12%"><col style="width:14%"><col style="width:7%"><col style="width:10%"><col style="width:9%"><col style="width:7%"><col style="width:10%"><col style="width:9%"><col style="width:6%"></colgroup>';
+    h += '<thead><tr><th>Team</th><th>Event</th><th>ID P1</th><th>Last Name 1</th><th>First Name 1</th><th>ID P2</th><th>Last Name 2</th><th>First Name 2</th><th style="text-align:center">Link</th></tr></thead><tbody>';
     rows.forEach(function(row){
       var p1 = playerLookup[row.id1] || {firstName:'',lastName:row.id1,teamName:'',event:''};
       var p2 = playerLookup[row.id2] || {firstName:'',lastName:row.id2,teamName:'',event:''};
       var teamName = p1.teamName || p2.teamName || row.teamName || '';
       var event = p1.event || p2.event || '';
+      var safeUrl = row.card.url.replace(/'/g,'%27');
       h += '<tr>';
       h += '<td><strong>'+teamName+'</strong></td>';
       h += '<td><small style="color:var(--text-muted)">'+event+'</small></td>';
-      h += '<td><code>'+row.id1+'</code></td>';
-      h += '<td>'+p1.lastName+'</td><td>'+p1.firstName+'</td>';
-      h += '<td><code>'+row.id2+'</code></td>';
-      h += '<td>'+p2.lastName+'</td><td>'+p2.firstName+'</td>';
-      h += '<td><a href="'+row.card.url+'" target="_blank" class="action-btn view" style="font-size:11px">View</a></td>';
+      h += '<td>'+row.id1+'</td>';
+      h += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p1.lastName+'</td>';
+      h += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p1.firstName+'</td>';
+      h += '<td>'+row.id2+'</td>';
+      h += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p2.lastName+'</td>';
+      h += '<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p2.firstName+'</td>';
+      h += '<td style="text-align:center"><a href="'+safeUrl+'" target="_blank" class="action-btn view" style="font-size:11px;padding:4px 8px">View</a></td>';
       h += '</tr>';
     });
     h += '</tbody></table></div>';
@@ -445,7 +449,7 @@ function exportPairsExcel(){
       teamName, event,
       row.id1, p1.lastName, p1.firstName,
       row.id2, p2.lastName, p2.firstName,
-      row.card.url
+      row.card.url.replace(/'/g,'%27')
     ].map(function(v){ return '"'+(v||'').replace(/"/g,'""')+'"'; }).join('\t'));
   });
 
