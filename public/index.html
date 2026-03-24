@@ -314,7 +314,7 @@ if(sv==='validated'){newestValidatedBase=ca[jj].fileName.replace(/_v\d+\.pdf$/i,
 for(var j=0;j<ca.length;j++){var c=ca[j];
 // A card is REPLACED if: it's validated, there's a newer validated version of same base
 var baseThis=c.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
-var isReplaced=hasNewerSibling;
+var isReplaced=(hasAnySibling&&!isNewest);
 var cs=getCardStatus(c.fileName);
 var pn=getPlayersFromFileName(c.fileName,e);var verNum=c.fileName.match(/_v(\d+)\.pdf$/i)?(parseInt(c.fileName.match(/_v(\d+)\.pdf$/i)[1])):1;
 var baseThis=c.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
