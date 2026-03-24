@@ -111,7 +111,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .card-item{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 14px;background:var(--bg-light);border-radius:8px;margin-bottom:8px}
 .card-info{display:flex;align-items:flex-start;gap:10px;flex:1}
 .card-icon{font-size:20px}
-.card-item-versioned{background:#fffdf5;border-left:3px solid #fbbf24}
+.card-item-versioned{background:#fffbeb}
+.card-group{border:2px solid #fbbf24;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.card-group .card-item{margin-bottom:0;border-bottom:1px dashed #fde68a}
+.card-group .card-item:last-child{border-bottom:none}
+.card-item-versioned{background:#fffbeb}
 .card-players{font-weight:500;font-size:14px;line-height:1.6}
 .card-date{font-size:12px;color:var(--text-muted);margin-top:4px}
 .card-status{font-size:11px;padding:4px 10px;border-radius:4px;margin-top:6px;display:inline-block}
@@ -240,9 +244,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <strong>ℹ️ Important:</strong> Staff only verifies that uploaded files are valid and readable PDFs. The accuracy and compliance of System Card contents with current regulations remains the sole responsibility of the players.
 </div>
 </div>
-<div class="contact-banner"><strong>Any problems?</strong> Contact us at <a id="contact-email" href="mailto:info@eurobridge.org">info@eurobridge.org</a></div>
+<div class="contact-banner"><strong>Any problems?</strong> Contact us at <a id="contact-email" href="/cdn-cgi/l/email-protection#abc2c5cdc4ebceded9c4c9d9c2cfccce85c4d9cc"><span class="__cf_email__" data-cfemail="50393e363f103525223f3222393437357e3f2237">[email&#160;protected]</span></a></div>
 </div>
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var DISCLAIMER_TEXT='Staff only verifies that uploaded files are valid and readable PDFs. The accuracy and compliance of System Card contents with current regulations remains the sole responsibility of the players.';
 var urlParams=new URLSearchParams(window.location.search);
 var tournamentCode=urlParams.get('tournament')||'26prague';
@@ -312,23 +316,28 @@ var bk=ca[bi].fileName.replace(/_v\d+\.pdf$/i,'.pdf');
 if(!baseMap[bk])baseMap[bk]=[];
 baseMap[bk].push(bi);
 }
+var lastBase2=null;
 for(var j=0;j<ca.length;j++){var c=ca[j];
 var baseThis=c.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
 var siblings=baseMap[baseThis]||[j];
-// hasAnySibling: more than one card shares this base
 var hasAnySibling=siblings.length>1;
-// isNewest: this card has the most recent lastModified among siblings
 var isNewest=true;
 for(var si=0;si<siblings.length;si++){
 if(siblings[si]!==j&&new Date(ca[siblings[si]].lastModified)>new Date(c.lastModified)){isNewest=false;break;}
 }
-// Replaced badge: has siblings AND is not the newest
 var isReplaced=hasAnySibling&&!isNewest;
 var cs=getCardStatus(c.fileName);
 var pn=getPlayersFromFileName(c.fileName,e);var verNum=c.fileName.match(/_v(\d+)\.pdf$/i)?(parseInt(c.fileName.match(/_v(\d+)\.pdf$/i)[1])):1;
 var cardIcon=hasAnySibling?'🔄':'📄';
 var verBadge=verNum>1?'<span style="background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-left:6px">v'+verNum+'</span>':'';
-h+='<div class="card-item'+((isNewest&&hasAnySibling)?' card-item-versioned':'')+'"><div class="card-info"><span class="card-icon">'+cardIcon+'</span><div><div class="card-players">'+pn+verBadge+'</div><div class="card-date">Uploaded: '+formatDate(c.lastModified)+'</div><span class="card-status '+cs.cssClass+'">'+cs.label+'</span>'+(isReplaced?'<span class="card-status replaced">Replaced</span>':'')+cs.helpHtml+(cs.reason?'<div class="refused-reason">Reason: '+cs.reason+'</div>':'')+'</div></div><div class="card-actions"><a href="'+c.url+'" target="_blank" class="btn-small btn-view">View PDF</a><button class="btn-small btn-copy" data-url="'+ c.url.replace(/'/g,'%27') +'" onclick="copyLink(this.dataset.url,this)">Copy Link</button></div></div>';}}else h+='<p class="no-cards">No System Cards uploaded yet</p>';h+='</div><div style="margin-top:12px"><strong>Players:</strong> <span style="color:var(--text-secondary);font-size:14px">';var pna=[];for(var p=0;p<e.players.length;p++)pna.push(e.players[p].fullName+(isCoachOrCaptain(e.players[p])?' (NPC)':''));h+=pna.join(', ')+'</span></div></div></div>';}ct.innerHTML=h;}
+if(baseThis!==lastBase2){
+if(lastBase2!==null&&baseMap[lastBase2]&&baseMap[lastBase2].length>1)h+='</div>';
+if(hasAnySibling)h+='<div class="card-group">';
+}
+lastBase2=baseThis;
+h+='<div class="card-item'+((isNewest&&hasAnySibling)?' card-item-versioned':'')+'"><div class="card-info"><span class="card-icon">'+cardIcon+'</span><div><div class="card-players">'+pn+verBadge+'</div><div class="card-date">Uploaded: '+formatDate(c.lastModified)+'</div><span class="card-status '+cs.cssClass+'">'+cs.label+'</span>'+(isReplaced?'<span class="card-status replaced">Replaced</span>':'')+cs.helpHtml+(cs.reason?'<div class="refused-reason">Reason: '+cs.reason+'</div>':'')+'</div></div><div class="card-actions"><a href="'+c.url+'" target="_blank" class="btn-small btn-view">View PDF</a><button class="btn-small btn-copy" data-url="'+ c.url.replace(/'/g,'%27') +'" onclick="copyLink(this.dataset.url,this)">Copy Link</button></div></div>';
+if(lastBase2&&baseMap[lastBase2]&&baseMap[lastBase2].length>1)h+='</div>';
+}else h+='<p class="no-cards">No System Cards uploaded yet</p>';h+='</div><div style="margin-top:12px"><strong>Players:</strong> <span style="color:var(--text-secondary);font-size:14px">';var pna=[];for(var p=0;p<e.players.length;p++)pna.push(e.players[p].fullName+(isCoachOrCaptain(e.players[p])?' (NPC)':''));h+=pna.join(', ')+'</span></div></div></div>';}ct.innerHTML=h;}
 
 function getCardsForEntity(e,eventPrefix){
 // New format: files are in event folder, filename is TEAM_ID1_SURNAME1_ID2_SURNAME2.pdf
@@ -526,7 +535,4 @@ function handleFile(f){var us=document.getElementById('upload-status');us.innerH
 
 function processUpload(f){var us=document.getElementById('upload-status'),dz=document.getElementById('drop-zone');document.getElementById('upload-container').style.display='block';dz.innerHTML='<div class="spinner"></div><p style="color:var(--primary)">Uploading...</p>';var rd=new FileReader();rd.onload=function(ev){var by=new Uint8Array(ev.target.result),hd='';for(var i=0;i<5&&i<by.length;i++)hd+=String.fromCharCode(by[i]);if(hd!=='%PDF-'){us.innerHTML='<div class="alert alert-error">❌ Invalid PDF file</div>';resetDropZone();return;}var fn=generateFileName();var ef=generateEventFolder();var fd=new FormData();fd.append('file',f);fd.append('tournamentCode',CONFIG.tournamentCode);fd.append('teamName',selectedEntity.name);fd.append('eventFolder',ef);fd.append('eventName',CONFIG.eventFilter);var ids=selectedPlayers.map(function(p){return p.wbfId;});fd.append('playerIds',ids.join(','));fd.append('fileName',fn);fetch(API_BASE+'/upload.js',{method:'POST',body:fd}).then(function(r){if(!r.ok)throw new Error('Upload failed');var na=selectedPlayers.map(function(p){return p.fullName;});us.innerHTML='<div class="alert alert-success">✅ Uploaded successfully!<br><strong>Players:</strong> '+na.join(' & ')+'<br><small>Reloading page...</small><div class="disclaimer-note"><strong>ℹ️ Important:</strong> '+DISCLAIMER_TEXT+'</div></div>';setTimeout(function(){window.location.reload();},2000);}).catch(function(err){us.innerHTML='<div class="alert alert-error">❌ '+(err.message||'Upload failed')+'</div>';resetDropZone();});};rd.readAsArrayBuffer(f);}
 
-function resetDropZone(){document.getElementById('drop-zone').innerHTML='<div class="upload-icon">📄</div><p class="upload-text">Drop your PDF here or click to browse</p><p class="upload-hint">Max 10MB - PDF only</p>';document.getElementById('file-input').value='';}
-</script>
-</body>
-</html>
+function resetDropZone(){document.getElementById('dr
