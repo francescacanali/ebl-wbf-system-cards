@@ -314,7 +314,7 @@ if(sv==='validated'){newestValidatedBase=ca[jj].fileName.replace(/_v\d+\.pdf$/i,
 for(var j=0;j<ca.length;j++){var c=ca[j];
 // A card is REPLACED if: it's validated, there's a newer validated version of same base
 var baseThis=c.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
-var isReplaced=(!isNewest&&hasNewerSibling);
+var isReplaced=hasNewerSibling;
 var cs=getCardStatus(c.fileName);
 var pn=getPlayersFromFileName(c.fileName,e);var verNum=c.fileName.match(/_v(\d+)\.pdf$/i)?(parseInt(c.fileName.match(/_v(\d+)\.pdf$/i)[1])):1;
 var baseThis=c.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
@@ -322,7 +322,7 @@ var hasNewerSibling=(j>0&&ca[j-1].fileName.replace(/_v\d+\.pdf$/i,'.pdf')===base
 var hasAnySibling=ca.some(function(x,xi){return xi!==j&&x.fileName.replace(/_v\d+\.pdf$/i,'.pdf')===baseThis;});
 var cardIcon=hasAnySibling?'🔄':'📄';
 var verBadge=verNum>1?'<span style="background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-left:6px">v'+verNum+'</span>':'';
-var isNewest=(j===0);
+var isNewest=(j===0||ca[j-1].fileName.replace(/_v\d+\.pdf$/i,'.pdf')!==baseThis);
 h+='<div class="card-item'+((isNewest&&hasAnySibling)?' card-item-versioned':'')+'"><div class="card-info"><span class="card-icon">'+cardIcon+'</span><div><div class="card-players">'+pn+verBadge+'</div><div class="card-date">Uploaded: '+formatDate(c.lastModified)+'</div><span class="card-status '+cs.cssClass+'">'+cs.label+'</span>'+(isReplaced?'<span class="card-status replaced">Replaced</span>':'')+cs.helpHtml+(cs.reason?'<div class="refused-reason">Reason: '+cs.reason+'</div>':'')+'</div></div><div class="card-actions"><a href="'+c.url+'" target="_blank" class="btn-small btn-view">View PDF</a><button class="btn-small btn-copy" data-url="'+ c.url.replace(/'/g,'%27') +'" onclick="copyLink(this.dataset.url,this)">Copy Link</button></div></div>';}}else h+='<p class="no-cards">No System Cards uploaded yet</p>';h+='</div><div style="margin-top:12px"><strong>Players:</strong> <span style="color:var(--text-secondary);font-size:14px">';var pna=[];for(var p=0;p<e.players.length;p++)pna.push(e.players[p].fullName+(isCoachOrCaptain(e.players[p])?' (NPC)':''));h+=pna.join(', ')+'</span></div></div></div>';}ct.innerHTML=h;}
 
 function getCardsForEntity(e,eventPrefix){
