@@ -1,4 +1,4 @@
-import { S3Client, ListObjectsV2Command } from '@aws-sdk/client-s3';
+import { S3Client, ListObjectsV2Command, GetObjectCommand } from '@aws-sdk/client-s3';
 
 const R2 = new S3Client({
   region: 'auto',
@@ -21,8 +21,20 @@ export default async function handler(req, res) {
   const eventFolder = req.query.event ? req.query.event.replace(/\s+/g, '_') : '';
   
   try {
-    // If event is specified, search in that specific folder
-    // Otherwise search in all subfolders of the tournament
+    // Load hidden list
+    let hiddenSet = new Set();
+    try {
+      const hiddenRes = await R2.send(new GetObjectCommand({
+        Bucket: process.env.R2_BUCKET_NAME,
+        Key: `${tournamentCode}/hidden.json`,
+      }));
+      const hiddenBody = await hiddenRes.Body.transformToString();
+      const hiddenList = JSON.parse(hiddenBody);
+      hiddenList.forEach(h => hiddenSet.add(h.fileName));
+    } catch {
+      // No hidden list, that's fine
+    }
+
     const prefix = eventFolder 
       ? `${tournamentCode}/${eventFolder}/`
       : `${tournamentCode}/`;
@@ -36,6 +48,10 @@ export default async function handler(req, res) {
     
     const cards = (response.Contents || [])
       .filter(obj => obj.Key.endsWith('.pdf'))
+      .filter(obj => {
+        const fileName = obj.Key.split('/').pop();
+        return !hiddenSet.has(fileName);
+      })
       .map(obj => {
         const parts = obj.Key.split('/');
         const fileName = parts.pop();
