@@ -1,4 +1,4 @@
-import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 
 const R2 = new S3Client({
   region: 'auto',
@@ -31,21 +31,38 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing tournament or fileName' });
     }
 
-    // New structure: tournament/Event_Folder/filename.pdf
-    // eventFolder is optional for backward compatibility
-    const key = eventFolder 
-      ? `${tournament}/${eventFolder}/${fileName}`
-      : `${tournament}/CC/${fileName}`;
+    // Instead of deleting, add to hidden list in R2
+    const hiddenKey = `${tournament}/hidden.json`;
     
-    await R2.send(new DeleteObjectCommand({
+    let hiddenList = [];
+    try {
+      const response = await R2.send(new GetObjectCommand({
+        Bucket: BUCKET,
+        Key: hiddenKey,
+      }));
+      const body = await response.Body.transformToString();
+      hiddenList = JSON.parse(body);
+    } catch {
+      // No hidden list yet, start fresh
+    }
+
+    // Add with folder info for reference
+    const entry = { fileName, eventFolder: eventFolder || 'CC', hiddenAt: new Date().toISOString() };
+    if (!hiddenList.find(h => h.fileName === fileName)) {
+      hiddenList.push(entry);
+    }
+
+    await R2.send(new PutObjectCommand({
       Bucket: BUCKET,
-      Key: key,
+      Key: hiddenKey,
+      Body: JSON.stringify(hiddenList),
+      ContentType: 'application/json',
     }));
 
-    return res.status(200).json({ success: true, deleted: fileName });
+    return res.status(200).json({ success: true, hidden: fileName });
 
   } catch (error) {
-    console.error('Delete error:', error);
-    return res.status(500).json({ error: 'Failed to delete file' });
+    console.error('Hide error:', error);
+    return res.status(500).json({ error: 'Failed to hide file' });
   }
 }
