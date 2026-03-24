@@ -344,7 +344,13 @@ r.push(card);
 }
 }
 // Sort ascending by date so v1 comes before v2
-r.sort(function(a,b){return new Date(b.lastModified)-new Date(a.lastModified);});
+// Sort: group by base filename (strips _v2 etc), newest first within each group
+r.sort(function(a,b){
+var baseA=a.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
+var baseB=b.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
+if(baseA!==baseB)return baseA.localeCompare(baseB);
+return new Date(b.lastModified)-new Date(a.lastModified); // newest first within group
+});
 return r;
 }
 
