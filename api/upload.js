@@ -1,4 +1,5 @@
 import { S3Client, PutObjectCommand, GetObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
+import { saveCard } from './db.js';
 
 const R2 = new S3Client({
   region: 'auto',
@@ -215,9 +216,31 @@ export default async function handler(req, res) {
     // v1 keeps its validation status (e.g. refused) unchanged.
     
     const publicUrl = `${process.env.R2_PUBLIC_URL}/${key}`;
-    
+
     console.log('Upload successful:', publicUrl);
-    
+
+    // Save to D1 database
+    // player_ids and player_names come from the form (array of WBF IDs and names)
+    const playerIds   = parts.player_ids   ? JSON.parse(parts.player_ids)   : [];
+    const playerNames = parts.player_names ? JSON.parse(parts.player_names) : [];
+    const subEvent    = parts.subEvent || parts.eventFolder?.replace(/_/g, ' ') || null;
+
+    try {
+      const cardId = await saveCard({
+        tournament:   tournamentCode,
+        sub_event:    subEvent,
+        event_folder: eventFolder,
+        file_name:    versionedFileName,
+        file_url:     publicUrl,
+        player_ids:   playerIds,
+        player_names: playerNames,
+      });
+      console.log('Saved to D1, card id:', cardId);
+    } catch (dbErr) {
+      // DB write failure should not block the upload response
+      console.error('D1 write failed (upload still succeeded):', dbErr.message);
+    }
+
     return res.status(200).json({
       success: true,
       fileName: versionedFileName,
