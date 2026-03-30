@@ -220,10 +220,22 @@ export default async function handler(req, res) {
     console.log('Upload successful:', publicUrl);
 
     // Save to D1 database
-    // player_ids and player_names come from the form (array of WBF IDs and names)
-    const playerIds   = parts.player_ids   ? JSON.parse(parts.player_ids)   : [];
-    const playerNames = parts.player_names ? JSON.parse(parts.player_names) : [];
-    const subEvent    = parts.subEvent || parts.eventFolder?.replace(/_/g, ' ') || null;
+    // player_ids: try JSON first, fallback to comma-separated playerIds
+    let playerIds = [];
+    let playerNames = [];
+    try {
+      if (parts.player_ids) playerIds = JSON.parse(parts.player_ids).map(Number);
+    } catch(e) {}
+    if (!playerIds.length && parts.playerIds) {
+      playerIds = parts.playerIds.split(',').map(s => parseInt(s.trim())).filter(Boolean);
+    }
+    try {
+      if (parts.player_names) playerNames = JSON.parse(parts.player_names);
+    } catch(e) {}
+    const subEvent = parts.subEvent || parts.eventName || parts.eventFolder?.replace(/_/g, ' ') || null;
+
+    console.log('player_ids parsed:', playerIds);
+    console.log('player_names parsed:', playerNames);
 
     try {
       const cardId = await saveCard({
