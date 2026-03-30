@@ -1,4 +1,5 @@
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { updateCardStatus } from './db.js';
 
 const R2 = new S3Client({
   region: 'auto',
@@ -49,7 +50,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { tournament, event, fileName, status } = req.body;
+    const { tournament, event, fileName, status, card_id, refused_reason, validated_by } = req.body;
 
     if (!tournament || !event || !fileName || status === undefined) {
       return res.status(400).json({ error: 'Missing required fields' });
@@ -58,11 +59,45 @@ export default async function handler(req, res) {
     // Load current data
     const data = await getAdminData(tournament, event);
 
-    // Update validation status
+    // Update validation status in R2 (keep existing behaviour)
     data.validationStatus[fileName] = status;
 
-    // Save
+    // Save to R2
     await saveAdminData(tournament, event, data);
+
+    // Also update D1 database if card_id provided
+    if (card_id) {
+      try {
+        await updateCardStatus({
+          card_id,
+          status,
+          refused_reason: refused_reason || null,
+          validated_by:   validated_by   || null,
+        });
+      } catch (dbErr) {
+        console.error('D1 update failed (R2 update still succeeded):', dbErr.message);
+      }
+    } else {
+      // Try to find card by tournament + filename
+      try {
+        const { d1 } = await import('./db.js');
+        const res2 = await d1(
+          `SELECT id FROM system_cards WHERE tournament=? AND file_name=? LIMIT 1`,
+          [tournament, fileName]
+        );
+        const foundId = res2.results?.[0]?.id;
+        if (foundId) {
+          await updateCardStatus({
+            card_id:       foundId,
+            status,
+            refused_reason: refused_reason || null,
+            validated_by:   validated_by   || null,
+          });
+        }
+      } catch (dbErr) {
+        console.error('D1 lookup failed:', dbErr.message);
+      }
+    }
 
     return res.status(200).json({ success: true });
 
