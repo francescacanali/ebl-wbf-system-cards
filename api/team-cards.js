@@ -1,9 +1,21 @@
 // api/team-cards.js
-// GET /api/team-cards?tournament=26riga&player_ids=123,456,789
-// Returns all cards for the given player IDs with status
-// Used by Fotis's team portal to display system card status
+//
+// Three query modes:
+//
+// 1) All cards for a tournament:
+//    GET /api/team-cards?tournament=26riga
+//
+// 2) All cards for a specific sub-event:
+//    GET /api/team-cards?tournament=26riga&sub_event=Open+Teams
+//
+// 3) A specific card by ID:
+//    GET /api/team-cards?card_id=42
+//
+// Optional filters (modes 1 and 2):
+//    &player_ids=30303,17813   → only cards involving these players
+//    &status=accepted          → only cards with this status (pending/accepted/refused)
 
-import { getCardsForTournament, getPlayerSCStatus } from './db.js';
+import { d1, getPlayerSCStatus } from './db.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -13,42 +25,92 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { tournament, player_ids } = req.query;
-
-  if (!tournament || !player_ids) {
-    return res.status(400).json({ error: 'Missing tournament or player_ids' });
-  }
-
-  const playerIdList = player_ids.split(',').map(id => parseInt(id.trim())).filter(Boolean);
-  if (!playerIdList.length) {
-    return res.status(400).json({ error: 'No valid player IDs' });
-  }
+  const { tournament, sub_event, card_id, player_ids, status } = req.query;
 
   try {
-    // Get all cards for this tournament
-    const allCards = await getCardsForTournament(tournament);
 
-    // Filter to only cards that include at least one of the requested players
-    const teamCards = allCards.filter(card =>
-      card.players.some(p => playerIdList.includes(p.player_id))
-    );
+    // ── Mode 3: specific card by ID ──────────────────────────────────────
+    if (card_id) {
+      const cardRes = await d1(
+        `SELECT * FROM system_cards WHERE id=?`, [parseInt(card_id)]
+      );
+      const card = cardRes.results?.[0];
+      if (!card) return res.status(404).json({ error: 'Card not found' });
 
-    // Per-player status: has at least one accepted card?
-    const playerStatus = await getPlayerSCStatus(tournament, playerIdList);
+      const playersRes = await d1(
+        `SELECT player_id, player_name FROM system_card_players WHERE card_id=? ORDER BY id`,
+        [card.id]
+      );
+      return res.status(200).json({
+        card: { ...card, players: playersRes.results || [] }
+      });
+    }
+
+    // ── Modes 1 & 2: by tournament (+ optional sub_event) ────────────────
+    if (!tournament) {
+      return res.status(400).json({
+        error: 'Provide either card_id or tournament',
+        usage: [
+          'GET /api/team-cards?tournament=26riga',
+          'GET /api/team-cards?tournament=26riga&sub_event=Open+Teams',
+          'GET /api/team-cards?card_id=42',
+        ]
+      });
+    }
+
+    // Build query
+    let sql    = `SELECT * FROM system_cards WHERE tournament=?`;
+    let params = [tournament];
+
+    if (sub_event) {
+      sql += ` AND sub_event=?`;
+      params.push(sub_event);
+    }
+    if (status) {
+      sql += ` AND status=?`;
+      params.push(status);
+    }
+    sql += ` ORDER BY uploaded_at DESC`;
+
+    const cardsRes = await d1(sql, params);
+    let cards = cardsRes.results || [];
+
+    // Attach players to each card
+    const cardsWithPlayers = await Promise.all(cards.map(async card => {
+      const pRes = await d1(
+        `SELECT player_id, player_name FROM system_card_players WHERE card_id=? ORDER BY id`,
+        [card.id]
+      );
+      return { ...card, players: pRes.results || [] };
+    }));
+
+    // Optional player_ids filter
+    let filtered = cardsWithPlayers;
+    let playerStatus = {};
+
+    if (player_ids) {
+      const playerIdList = player_ids.split(',').map(id => parseInt(id.trim())).filter(Boolean);
+      filtered = cardsWithPlayers.filter(card =>
+        card.players.some(p => playerIdList.includes(p.player_id))
+      );
+      playerStatus = await getPlayerSCStatus(tournament, playerIdList);
+    }
 
     return res.status(200).json({
       tournament,
-      cards: teamCards.map(c => ({
-        id:            c.id,
-        file_name:     c.file_name,
-        file_url:      c.file_url,
-        sub_event:     c.sub_event,
-        status:        c.status,        // 'pending' | 'accepted' | 'refused'
+      sub_event:  sub_event || null,
+      total:      filtered.length,
+      cards:      filtered.map(c => ({
+        id:             c.id,
+        file_name:      c.file_name,
+        file_url:       c.file_url,
+        sub_event:      c.sub_event,
+        status:         c.status,
         refused_reason: c.refused_reason,
-        uploaded_at:   c.uploaded_at,
-        players:       c.players,       // [{player_id, player_name}, ...]
+        uploaded_at:    c.uploaded_at,
+        players:        c.players,
       })),
-      player_status: playerStatus,      // {player_id: true/false, ...}
+      ...(player_ids ? { player_status: playerStatus } : {}),
     });
 
   } catch (err) {
