@@ -22,20 +22,22 @@ const SYNC_KEY = process.env.SYNC_API_KEY || 'change-this-key';
 
 // Try to extract WBF player IDs from filename
 // e.g. CANIRL_230755_BURNS_234451_CROCKER.pdf → [230755, 234451]
-// e.g. BAKKE_30303_BERG_17813.pdf → [30303, 17813]
+// e.g. CALEDONIA_4063_MCQUAKER_746_MCGOWAN.pdf → [4063, 746]
+// IDs can be any length (1+ digits) — alternating with name parts
 function parsePlayerIdsFromFilename(fileName) {
-  const name = fileName.replace(/\.pdf$/i, '');
+  const name = fileName.replace(/\.pdf$/i, '').replace(/_v\d+$/, ''); // strip version suffix
   const parts = name.split('_');
   const ids = [];
   const names = [];
 
-  // IDs are typically 4-6 digit numbers between name parts
-  for (let i = 0; i < parts.length; i++) {
+  // Skip first part (team name), then alternate: NAME_ID_NAME_ID...
+  // IDs are pure numeric parts, names are non-numeric
+  for (let i = 1; i < parts.length; i++) {
     const n = parseInt(parts[i]);
-    if (!isNaN(n) && parts[i].length >= 4 && parts[i].length <= 7) {
+    if (!isNaN(n) && /^\d+$/.test(parts[i])) {
       ids.push(n);
-      // The name is the part before the ID
-      if (i > 0 && isNaN(parseInt(parts[i-1]))) {
+      // The name part before this ID
+      if (i > 1 && !/^\d+$/.test(parts[i-1])) {
         names.push(parts[i-1]);
       }
     }
