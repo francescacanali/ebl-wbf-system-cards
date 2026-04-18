@@ -185,8 +185,33 @@ async function delTournament(code){if(!confirm('Delete '+code+'?'))return;try{va
 
 function populateGenSelect(){var s=document.getElementById('gen-tournament');s.innerHTML='<option value="">Select...</option>';Object.keys(CONFIG.tournaments||{}).forEach(function(c){s.innerHTML+='<option value="'+c+'">'+CONFIG.tournaments[c].name+'</option>';});}
 
-async function loadEventsForGen(){var code=document.getElementById('gen-tournament').value;var wrap=document.getElementById('gen-events-wrap');var codes=document.getElementById('gen-codes');if(!code){wrap.style.display='none';codes.style.display='none';return;}wrap.style.display='block';var sel=document.getElementById('gen-event');sel.innerHTML='<option value="">Loading...</option>';var events=new Set();try{var tr=await fetch(API_BASE+'/teams.js?tournament='+code);var td=await tr.json();(td.teams||[]).forEach(function(t){if(t.event)events.add(t.event);});var pr=await fetch(API_BASE+'/pairs.js?tournament='+code);var pd=await pr.json();(pd.pairs||[]).forEach(function(p){if(p.event)events.add(p.event);});}catch(e){}sel.innerHTML='<option value="">Select...</option>';Array.from(events).sort().forEach(function(ev){sel.innerHTML+='<option value="'+ev+'">'+ev+'</option>';});}
-
+async function loadEventsForGen(){
+  var code=document.getElementById('gen-tournament').value;
+  var wrap=document.getElementById('gen-events-wrap');
+  var codes=document.getElementById('gen-codes');
+  if(!code){wrap.style.display='none';codes.style.display='none';return;}
+  wrap.style.display='block';
+  var sel=document.getElementById('gen-event');
+  sel.innerHTML='<option value="">Loading...</option>';
+  var eventMap={};
+  try{
+    var tr=await fetch(API_BASE+'/teams.js?tournament='+code);
+    var td=await tr.json();
+    (td.teams||[]).forEach(function(t){if(t.event&&!eventMap[t.event])eventMap[t.event]={type:'teams'};});
+    var pr=await fetch(API_BASE+'/pairs.js?tournament='+code);
+    var pd=await pr.json();
+    (pd.pairs||[]).forEach(function(p){if(p.event)eventMap[p.event]={type:'pairs'};});
+  }catch(e){}
+  if(!CONFIG.tournaments[code])CONFIG.tournaments[code]={};
+  if(!CONFIG.tournaments[code].events)CONFIG.tournaments[code].events={};
+  Object.keys(eventMap).forEach(function(ev){
+    if(!CONFIG.tournaments[code].events[ev])CONFIG.tournaments[code].events[ev]={};
+    CONFIG.tournaments[code].events[ev].type=eventMap[ev].type;
+  });
+  sel.innerHTML='<option value="">Select...</option>';
+  Object.keys(eventMap).sort().forEach(function(ev){sel.innerHTML+='<option value="'+ev+'">'+ev+'</option>';});
+}
+  
 function generateCodes(){var code=document.getElementById('gen-tournament').value;var ev=document.getElementById('gen-event').value;var div=document.getElementById('gen-codes');if(!code||!ev){div.style.display='none';return;}var t=CONFIG.tournaments[code];var email=t.org==='wbf'?'info@worldbridge.org':'info@eurobridge.org';var base=window.location.origin;var evEnc=encodeURIComponent(ev);var freeze=encodeURIComponent('Upload closed - Contact '+email);var evData=CONFIG.tournaments[code].events?CONFIG.tournaments[code].events[ev]:null;var typeParam=evData&&evData.type==='pairs'?'&amp;type=pairs':'';var h='<div class="section-label">📋 Normal</div><div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>&lt;iframe src="'+base+'/?tournament='+code+'&amp;event='+evEnc+typeParam+'" width="100%" height="800" style="border:none;"&gt;&lt;/iframe&gt;</code></div>';h+='<div class="section-label">🔒 Frozen</div><div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>&lt;iframe src="'+base+'/?tournament='+code+'&amp;event='+evEnc+typeParam+'&amp;freeze=1&amp;freezeMsg='+freeze+'" width="100%" height="800" style="border:none;"&gt;&lt;/iframe&gt;</code></div>';div.innerHTML=h;div.style.display='block';}
 
 function copyCode(btn){var code=btn.nextElementSibling.textContent;navigator.clipboard.writeText(code);btn.textContent='Copied!';btn.classList.add('copied');setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied');},2000);}
