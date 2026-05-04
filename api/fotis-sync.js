@@ -38,6 +38,11 @@ export async function syncToFotis({ tournament, subEvent, action, players }) {
     return { ok: true, applied: [] };
   }
 
+  // Strip the EBL/WBF event-code prefix ("#26135 ") that the SC
+  // platform's UI uses but Fotis's tblTournaments.TournName doesn't.
+  // E.g. "#26135 U16 Teams" -> "U16 Teams"
+  const cleanSubEvent = String(subEvent).replace(/^#\d+\s*/, '').trim();
+
   // Filter to players with a usable contactinfoid (numeric, > 0)
   const cleaned = players
     .map(p => ({
@@ -53,7 +58,7 @@ export async function syncToFotis({ tournament, subEvent, action, players }) {
   const url = tournament.fotisBaseUrl.replace(/\/+$/, '') + '/system_cards.asp';
   const body = JSON.stringify({
     tournamentName: tournament.groupName,
-    subEvent,
+    subEvent: cleanSubEvent,
     action,
     players: cleaned,
   });
