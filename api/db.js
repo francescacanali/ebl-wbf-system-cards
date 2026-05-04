@@ -98,3 +98,40 @@ export async function getPlayerSCStatus(tournament, player_ids) {
   }
   return status;
 }
+
+// Get the players (id + name) attached to a single card by tournament+filename
+export async function getCardPlayersByFileName(tournament, file_name) {
+  const cardRow = await d1(
+    `SELECT id, sub_event FROM system_cards
+      WHERE tournament=? AND file_name=? LIMIT 1`,
+    [tournament, file_name]
+  );
+  const card = (cardRow.results || [])[0];
+  if (!card) return { card: null, players: [] };
+
+  const players = await d1(
+    `SELECT player_id, player_name FROM system_card_players WHERE card_id=?`,
+    [card.id]
+  );
+  return { card, players: players.results || [] };
+}
+
+// For a given (tournament, sub_event, player), is there any OTHER card
+// (i.e. excluding the supplied file_name) that hasn't been hidden? We
+// don't have a "hidden" column in D1 yet — hiding lives in R2's
+// hidden.json — so the caller needs to filter the hidden list itself.
+// This helper just returns the file_names of all cards for that player
+// in that sub_event.
+export async function getOtherCardFileNamesForPlayer(tournament, sub_event, player_id, exclude_file_name) {
+  const rows = await d1(
+    `SELECT sc.file_name
+       FROM system_cards sc
+       JOIN system_card_players scp ON scp.card_id = sc.id
+      WHERE sc.tournament = ?
+        AND sc.sub_event  = ?
+        AND scp.player_id = ?
+        AND sc.file_name <> ?`,
+    [tournament, sub_event, player_id, exclude_file_name]
+  );
+  return (rows.results || []).map(r => r.file_name);
+}
