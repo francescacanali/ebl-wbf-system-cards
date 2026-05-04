@@ -1,5 +1,6 @@
 import { S3Client, PutObjectCommand, GetObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { saveCard } from './db.js';
+import { syncToFotis } from './fotis-sync.js';
 
 const R2 = new S3Client({
   region: 'auto',
@@ -9,6 +10,24 @@ const R2 = new S3Client({
     secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
   },
 });
+
+const CONFIG_KEY = 'config/tournaments.json';
+
+// Read the tournament config from R2 to find this tournament's
+// Fotis settings (groupName, fotisBaseUrl). Returns null on miss.
+async function getTournamentConfigForUpload(tournamentCode) {
+  try {
+    const resp = await R2.send(new GetObjectCommand({
+      Bucket: process.env.R2_BUCKET_NAME,
+      Key: CONFIG_KEY,
+    }));
+    const body = await resp.Body.transformToString();
+    const config = JSON.parse(body);
+    return config?.tournaments?.[tournamentCode] || null;
+  } catch {
+    return null;
+  }
+}
 
 export const config = {
   api: {
@@ -251,6 +270,33 @@ export default async function handler(req, res) {
     } catch (dbErr) {
       // DB write failure should not block the upload response
       console.error('D1 write failed (upload still succeeded):', dbErr.message);
+    }
+
+    // Best-effort sync to Fotis console (server-to-server). Failures
+    // here must NOT block the player's upload response — Fotis may be
+    // down, the token may be wrong, or this tournament may simply not
+    // have a Fotis console configured. We log and move on.
+    try {
+      const tournamentCfg = await getTournamentConfigForUpload(tournamentCode);
+      if (tournamentCfg) {
+        const players = playerIds.map((id, i) => ({
+          contactinfoid: id,
+          fullName: playerNames[i] || null,
+        }));
+        const syncResult = await syncToFotis({
+          tournament: tournamentCfg,
+          subEvent,
+          action: 'upsert',
+          players,
+        });
+        if (syncResult.ok) {
+          console.log('Fotis sync ok:', syncResult.skipped || syncResult.applied || 'updated');
+        } else {
+          console.warn('Fotis sync failed (non-fatal):', syncResult.error);
+        }
+      }
+    } catch (syncErr) {
+      console.warn('Fotis sync threw (non-fatal):', syncErr.message);
     }
 
     return res.status(200).json({
