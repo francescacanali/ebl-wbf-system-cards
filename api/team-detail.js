@@ -111,15 +111,23 @@ export default async function handler(req, res) {
       });
     }
 
-    // 3. Fetch cards in this sub-event from D1, in one shot
+    // 3. Fetch cards in this sub-event from D1, in one shot.
+    //    The user's `subEvent` comes from Fotis's TournName (e.g. "U16
+    //    Teams"). D1's `sub_event` may include the EBL/WBF event-code
+    //    prefix the upload form uses (e.g. "#26135 U16 Teams"). We
+    //    fetch all cards for the tournament and match in JS using the
+    //    same prefix-stripping rule.
     const cardsRes = await d1(
       `SELECT id, file_name, file_url, sub_event, status, refused_reason, uploaded_at
          FROM system_cards
-        WHERE tournament=? AND sub_event=?
+        WHERE tournament=?
         ORDER BY uploaded_at ASC`,
-      [tournament, subEvent]
+      [tournament]
     );
-    const allCards = cardsRes.results || [];
+    const wantedKey = cleanEvent(subEvent).toLowerCase();
+    const allCards = (cardsRes.results || []).filter(c =>
+      cleanEvent(c.sub_event || '').toLowerCase() === wantedKey
+    );
 
     // Attach players to each card (one query per card; D1 doesn't
     // have IN-array placeholders so this is the cheapest approach
