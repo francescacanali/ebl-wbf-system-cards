@@ -18,6 +18,7 @@
     { "src": "/api/sync-db",          "dest": "/api/sync-db.js" },
     { "src": "/api/team-cards",       "dest": "/api/team-cards.js" },
     { "src": "/api/team-detail",      "dest": "/api/team-detail.js" },
+    { "src": "/api/sync-fotis",       "dest": "/api/sync-fotis.js" },
     { "src": "/admin",                "dest": "/public/admin.html" },
     { "src": "/",                     "dest": "/public/index.html" },
     { "src": "/(.*)",                 "dest": "/public/$1" }
