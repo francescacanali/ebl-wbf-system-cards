@@ -281,7 +281,9 @@ export default async function handler(req, res) {
       if (tournamentCfg) {
         const players = playerIds.map((id, i) => ({
           contactinfoid: id,
-          fullName: playerNames[i] || null,
+          fullName:      playerNames[i] || null,
+          statusint:     0,            // newly uploaded card => pending review
+          pdflink:       publicUrl,    // R2 public URL, stored on Fotis as backup
         }));
         const syncResult = await syncToFotis({
           tournament: tournamentCfg,
