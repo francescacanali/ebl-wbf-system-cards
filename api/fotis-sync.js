@@ -21,7 +21,12 @@ const TOKEN = process.env.FOTIS_SC_TOKEN || '';
  * @param {Object} args.tournament      Tournament record from R2 config
  * @param {string} args.subEvent        Sub-event name, e.g. "Open Teams"
  * @param {"upsert"|"remove"} args.action
- * @param {Array<{contactinfoid:number, fullName?:string}>} args.players
+ * @param {Array<{
+ *   contactinfoid: number,
+ *   fullName?: string,
+ *   statusint?: number,   // 0=pending (default), 1=accepted
+ *   pdflink?: string      // R2 public URL of the PDF (optional)
+ * }>} args.players
  * @returns {Promise<{ok:boolean, skipped?:string, error?:string, applied?:any[]}>}
  */
 export async function syncToFotis({ tournament, subEvent, action, players }) {
@@ -43,12 +48,24 @@ export async function syncToFotis({ tournament, subEvent, action, players }) {
   // E.g. "#26135 U16 Teams" -> "U16 Teams"
   const cleanSubEvent = String(subEvent).replace(/^#\d+\s*/, '').trim();
 
-  // Filter to players with a usable contactinfoid (numeric, > 0)
+  // Filter to players with a usable contactinfoid (numeric, > 0).
+  // Forward statusint and pdflink so Fotis can populate tblPlayerEventSC.
   const cleaned = players
-    .map(p => ({
-      contactinfoid: parseInt(p.contactinfoid, 10),
-      fullName: p.fullName || null,
-    }))
+    .map(p => {
+      const out = {
+        contactinfoid: parseInt(p.contactinfoid, 10),
+        fullName: p.fullName || null,
+      };
+      // Only include optional fields if present, so we don't change wire
+      // format for callers that don't care about them.
+      if (p.statusint !== undefined && p.statusint !== null) {
+        out.statusint = (Number(p.statusint) === 1) ? 1 : 0;
+      }
+      if (p.pdflink) {
+        out.pdflink = String(p.pdflink);
+      }
+      return out;
+    })
     .filter(p => Number.isFinite(p.contactinfoid) && p.contactinfoid > 0);
 
   if (!cleaned.length) {
