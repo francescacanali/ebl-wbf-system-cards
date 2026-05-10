@@ -34,6 +34,9 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  // Always serve fresh data — admin accept/refuse actions must be reflected
+  // on the team page immediately, with no caching layer in between.
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET')     return res.status(405).json({ error: 'Method not allowed' });
@@ -231,31 +234,42 @@ function buildTeamBlock(t, allCards) {
     };
   });
 
-  // Compute team-level summary, mirroring getEntityStatus() in index.html
+  // Compute team-level summary.
+  // Priority: red > yellow > green.
+  //   red    = no cards at all, OR at least one card refused, OR at least one
+  //            playing member is not covered by any active card
+  //   yellow = all playing members covered, no refusals, but at least one
+  //            card is still pending review
+  //   green  = all playing members covered, all cards accepted, no refusals
   const playingMembers = (t.players || []).filter(p => !isNpc(p));
-  const hasRefusal     = cards.some(c => c.statusKind === 'refused');
   const cardCount      = cards.length;
 
-  let summary = { kind: 'red',    label: 'No System Cards' };
-  if (hasRefusal) {
-    summary = { kind: 'red', label: 'File issue' };
-  } else if (cardCount > 0) {
+  let summary;
+  if (cardCount === 0) {
+    summary = { kind: 'red', label: 'No System Cards' };
+  } else {
+    // Active (non-replaced) cards drive coverage and review checks
+    const activeCards = cards.filter(c => !c.replaced);
+
+    const hasRefusal = activeCards.some(c => c.statusKind === 'refused');
+
     const playersWithCards = new Set();
-    for (const c of cards) {
-      // Skip replaced (older versions) when checking coverage
-      if (c.replaced) continue;
+    for (const c of activeCards) {
       for (const p of c.players) playersWithCards.add(String(p.id));
     }
     const everyoneCovered = playingMembers.length > 0 &&
       playingMembers.every(p => playersWithCards.has(String(p.wbfId)));
-    const allAccepted = cards.every(c => c.statusKind === 'accepted');
 
-    if (everyoneCovered && allAccepted) {
-      summary = { kind: 'green',  label: `${cardCount} System Card(s) - Complete` };
-    } else if (everyoneCovered) {
-      summary = { kind: 'yellow', label: `${cardCount} System Card(s) - Pending file check` };
+    const hasPending = activeCards.some(c => c.statusKind === 'pending');
+
+    if (hasRefusal) {
+      summary = { kind: 'red', label: `${cardCount} System Card(s) - File issue` };
+    } else if (!everyoneCovered) {
+      summary = { kind: 'red', label: `${cardCount} System Card(s) - Missing for some players` };
+    } else if (hasPending) {
+      summary = { kind: 'yellow', label: `${cardCount} System Card(s) - Pending review` };
     } else {
-      summary = { kind: 'yellow', label: `${cardCount} System Card(s) - Missing` };
+      summary = { kind: 'green', label: `${cardCount} System Card(s) - Complete` };
     }
   }
 
@@ -276,9 +290,16 @@ function buildTeamBlock(t, allCards) {
 // ───────────────────────── helpers ─────────────────────────
 
 function displayStatus(raw) {
-  if (raw === 'accepted')  return { kind: 'accepted', label: '✓ File accepted' };
-  if (raw === 'refused')   return { kind: 'refused',  label: '✗ File issue' };
-  return                          { kind: 'pending',  label: 'Pending file check' };
+  // Admin UI writes 'validated' when accepting a card; the legacy convention
+  // expected here was 'accepted'. Treat both as the same approved state.
+  if (raw === 'accepted' || raw === 'validated') {
+    return { kind: 'accepted', label: 'File accepted' };
+  }
+  if (raw === 'refused') {
+    return { kind: 'refused', label: 'File issue' };
+  }
+  // Default (pending or anything else): file uploaded but not yet reviewed
+  return { kind: 'pending', label: 'Pending review' };
 }
 
 function isNpc(p) {
