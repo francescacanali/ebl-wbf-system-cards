@@ -91,7 +91,7 @@ export async function getPlayerSCStatus(tournament, player_ids) {
     const res = await d1(
       `SELECT COUNT(*) as cnt FROM system_cards sc
        INNER JOIN system_card_players scp ON scp.card_id=sc.id
-       WHERE sc.tournament=? AND sc.status='accepted' AND scp.player_id=?`,
+       WHERE sc.tournament=? AND sc.status IN ('accepted','validated') AND scp.player_id=?`,
       [tournament, pid]
     );
     status[pid] = (res.results[0]?.cnt || 0) > 0;
