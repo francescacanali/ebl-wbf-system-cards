@@ -41,7 +41,7 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'GET')     return res.status(405).json({ error: 'Method not allowed' });
 
-  const { tournament: tournamentParam, groupName, subEvent, team } = req.query;
+  const { tournament: tournamentParam, groupName, subEvent, team, type } = req.query;
   if ((!tournamentParam && !groupName) || !subEvent) {
     return res.status(400).json({
       error: 'Provide subEvent and either tournament (code) or groupName',
@@ -49,9 +49,11 @@ export default async function handler(req, res) {
         'GET /api/team-detail?tournament=26riga&subEvent=Open+Teams',
         'GET /api/team-detail?groupName=European+Mixed+Teams+2026&subEvent=Open+Teams',
         'add &team=FRANCE to limit to one team',
+        'add &type=pairs to query pair events (uses pairsUrl + pair parser)',
       ]
     });
   }
+  const isPairs = (String(type || '').toLowerCase() === 'pairs');
 
   try {
     // 1. Resolve tournament code: either supplied directly, or looked
@@ -96,21 +98,26 @@ export default async function handler(req, res) {
     }
 
     const tCfg = config.tournaments?.[tournament];
-    if (!tCfg || !tCfg.teamsUrl) {
-      return res.status(404).json({ error: `No teams URL configured for ${tournament}` });
+    const entityUrl = isPairs ? tCfg?.pairsUrl : tCfg?.teamsUrl;
+    if (!tCfg || !entityUrl) {
+      return res.status(404).json({
+        error: `No ${isPairs ? 'pairs' : 'teams'} URL configured for ${tournament}`,
+      });
     }
 
-    // 2. Fetch teams (live from Fotis) + filter to this sub-event
-    const teamsHtml = await (await fetch(tCfg.teamsUrl)).text();
-    const allTeams  = parseTeamsHtml(teamsHtml);
-    const inEvent   = allTeams.filter(t =>
+    // 2. Fetch entities (live from Fotis) + filter to this sub-event
+    const entitiesHtml = await (await fetch(entityUrl)).text();
+    const allEntities  = isPairs
+      ? parsePairsHtml(entitiesHtml)
+      : parseTeamsHtml(entitiesHtml);
+    const inEvent      = allEntities.filter(t =>
       cleanEvent(t.event) === cleanEvent(subEvent)
     );
 
     if (!inEvent.length) {
       return res.status(404).json({
-        error: 'No teams found for that sub-event',
-        availableEvents: [...new Set(allTeams.map(t => t.event))]
+        error: `No ${isPairs ? 'pairs' : 'teams'} found for that sub-event`,
+        availableEvents: [...new Set(allEntities.map(t => t.event))]
       });
     }
 
@@ -380,6 +387,44 @@ function parseRoster(rosterText) {
     players.push({ fullName, wbfId, role });
   }
   return players;
+}
+
+// Pairs HTML parser (for displaypairsparticipcc.asp).
+// Expected columns: Event | ID | Pair | Roster | Submitted by | Email | Code
+// (At minimum we need Event, Pair name, Roster.)
+// Returns objects with the same shape as parseTeamsHtml:
+//   { event, name, players: [{fullName, wbfId, role}] }
+function parsePairsHtml(html) {
+  const pairs = [];
+  const rowRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
+  const cellRegex = /<td[^>]*>([\s\S]*?)<\/td>/gi;
+
+  let rowMatch;
+  while ((rowMatch = rowRegex.exec(html)) !== null) {
+    const cells = [];
+    let cellMatch;
+    cellRegex.lastIndex = 0;
+    while ((cellMatch = cellRegex.exec(rowMatch[1])) !== null) {
+      cells.push(stripHtml(cellMatch[1]));
+    }
+    // Need at least: Event, ID, Pair, Roster
+    if (cells.length < 4) continue;
+
+    const event   = cells[0];
+    const pairId  = cells[1];
+    const pairName = cells[2];
+    const roster  = cells[3];
+
+    if (!event || event === 'Event' || event === 'Pair') continue;
+    if (!pairName || pairName === 'Pair' || pairName === 'Pair Name') continue;
+    if (!/^\d+$/.test(pairId)) continue; // skip header
+
+    const players = parseRoster(roster);
+    if (players.length >= 2) {
+      pairs.push({ event, name: pairName, players });
+    }
+  }
+  return pairs;
 }
 
 function stripHtml(html) {
