@@ -35,7 +35,7 @@ const DEFAULT_CONFIG = {
       pairsUrl: null
     }
         'katowice.26': {
-      name: "World Bridge Series 2026",
+      name: "Katowice 2026",
       org: 'wbf',
       teamsUrl: 'https://db.worldbridge.org/repository/tourn/katowice.26/Reg/displayteamsparticipanalytical.asp',
       pairsUrl: 'https://db.worldbridge.org/Repository/tourn/katowice.26/Reg/displaypairsparticipcc.asp'
