@@ -33,7 +33,7 @@ const DEFAULT_CONFIG = {
       org: 'wbf',
       teamsUrl: 'https://db.worldbridge.org/Repository/tourn/womenonline.26/Reg/fullentriesreview.asp',
       pairsUrl: null
-    }
+    },
         'katowice.26': {
       name: "Katowice 2026",
       org: 'wbf',
