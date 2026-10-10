@@ -1,6 +1,6 @@
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { updateCardStatus, d1 } from './db.js';
-import { syncToFotis } from './fotis-sync.js';
+import { syncToFotis, normalizeStatusText, statusToStatusInt } from './fotis-sync.js';
 
 const R2 = new S3Client({
   region: 'auto',
@@ -92,7 +92,26 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // 1. Update R2 admin data (kept for back-compat with admin.html UI)
+    // The admin page sends an acceptance as the string 'validated' but a
+    // refusal as an OBJECT: {status:'refused', reason:'...'}. Comparing
+    // that object with 'refused' always failed, so refusals were pushed
+    // to Fotis as "pending" and the D1 update received an object.
+    // From here on we work with the plain text + the reason separately.
+    //   statusText     - plain status text ('validated' | 'refused' | ...)
+    //   refusalReason  - reason typed by the admin (object form) or the
+    //                    older refused_reason field
+    const statusText    = normalizeStatusText(status);
+    const refusalReason = (status && typeof status === 'object' && status.reason)
+      ? String(status.reason)
+      : (refused_reason || null);
+
+    if (!statusText) {
+      return res.status(400).json({ error: 'Missing or empty status' });
+    }
+
+    // 1. Update R2 admin data (kept for back-compat with admin.html UI).
+    //    Stored exactly as received: admin.html reads the object form
+    //    back to show the refusal reason.
     const data = await getAdminData(tournament, event);
     data.validationStatus[fileName] = status;
     await saveAdminData(tournament, event, data);
@@ -114,8 +133,8 @@ export default async function handler(req, res) {
       try {
         await updateCardStatus({
           card_id:        resolvedCardId,
-          status,
-          refused_reason: refused_reason || null,
+          status:         statusText,
+          refused_reason: (statusText === 'refused') ? refusalReason : null,
           validated_by:   validated_by   || null,
         });
       } catch (dbErr) {
@@ -123,35 +142,33 @@ export default async function handler(req, res) {
       }
     }
 
-    // 3. Propagate to Fotis tblPlayerEventSC.
-    //    'validated'/'accepted' -> upsert with statusint=1 + pdflink
-    //    'pending'              -> upsert with statusint=0 + pdflink
-    //    'refused'              -> remove (delete row -- "no record" convention)
+    // 3. Propagate to Fotis tblPlayerEventSC -- ALWAYS an upsert with an
+    //    explicit status. The row is kept for refusals so the portal
+    //    pages can show "refused" instead of "no card".
+    //      'validated'/'accepted' -> statusint=1
+    //      'refused'              -> statusint=2
+    //      anything else          -> statusint=0 (pending)
+    //    Only admin-delete.js sends "remove" (card deleted).
     let fotisResult = { skipped: 'Fotis sync not attempted' };
     if (resolvedCardId) {
       try {
         const cardInfo      = await getCardForSync(resolvedCardId);
         const tournamentCfg = await getTournamentConfig(tournament);
         if (cardInfo && tournamentCfg) {
-          const isAccepted = (status === 'accepted' || status === 'validated');
-          const isRefused  = (status === 'refused');
-          const action     = isRefused ? 'remove' : 'upsert';
-          const statusint  = isAccepted ? 1 : 0;
+          const statusintForFotis = statusToStatusInt(statusText);
 
-          const players = (cardInfo.players || []).map(p => ({
-            contactinfoid: p.player_id,
-            fullName:      p.player_name || null,
-            ...(action === 'upsert' ? {
-              statusint,
-              pdflink: cardInfo.fileUrl || '',
-            } : {}),
+          const players = (cardInfo.players || []).map(cardPlayer => ({
+            contactinfoid: cardPlayer.player_id,
+            fullName:      cardPlayer.player_name || null,
+            statusint:     statusintForFotis,
+            pdflink:       cardInfo.fileUrl || '',
           }));
 
           if (players.length) {
             fotisResult = await syncToFotis({
               tournament: tournamentCfg,
               subEvent:   cardInfo.subEvent,
-              action,
+              action:     'upsert',
               players,
             });
           } else {
