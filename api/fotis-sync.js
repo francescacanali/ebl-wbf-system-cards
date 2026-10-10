@@ -1,7 +1,8 @@
 // api/fotis-sync.js
 //
 // Pushes "this player has at least one system card on file for this
-// event" updates to Fotis's IIS endpoint (system_cards.asp).
+// event" updates to Fotis's IIS endpoint (system_cards.asp), together
+// with the card's review status (statusint 0/1/2, see below).
 //
 // Each tournament's R2 config entry needs:
 //   fotisBaseUrl: "https://db.eurobridge.org/path/to/console/"  (trailing slash)
@@ -16,6 +17,53 @@
 
 const TOKEN = process.env.FOTIS_SC_TOKEN || '';
 
+// ─────────────────────────────────────────────────────────────────
+// statusint convention in Fotis's tblPlayerEventSC
+//   0 = pending  (uploaded, not yet reviewed)
+//   1 = accepted (the admin UI writes 'validated'; older code 'accepted')
+//   2 = refused  (row is KEPT so the portal can show "refused")
+//   no row = no card (only admin-delete sends "remove")
+// ─────────────────────────────────────────────────────────────────
+export const STATUSINT_PENDING  = 0;
+export const STATUSINT_ACCEPTED = 1;
+export const STATUSINT_REFUSED  = 2;
+
+/**
+ * Turn a card status into the plain status text stored in D1.
+ * The admin page sends a refusal as an OBJECT
+ * ({status:'refused', reason:'...'}) and an acceptance as the
+ * string 'validated'; this accepts both shapes.
+ *
+ * Variables:
+ *   rawStatus       - the status as received (string or object)
+ *   statusText      - the plain, lower-case status text we return
+ */
+export function normalizeStatusText(rawStatus) {
+  let statusText = rawStatus;
+  if (rawStatus && typeof rawStatus === 'object') {
+    statusText = rawStatus.status;
+  }
+  return String(statusText || '').trim().toLowerCase();
+}
+
+/**
+ * Map a card status (string or admin-page object) to Fotis statusint.
+ *
+ * Variables:
+ *   rawStatus       - the status as received (string or object)
+ *   statusText      - the normalized status text
+ */
+export function statusToStatusInt(rawStatus) {
+  const statusText = normalizeStatusText(rawStatus);
+  if (statusText === 'accepted' || statusText === 'validated') {
+    return STATUSINT_ACCEPTED;
+  }
+  if (statusText === 'refused') {
+    return STATUSINT_REFUSED;
+  }
+  return STATUSINT_PENDING;
+}
+
 /**
  * @param {Object} args
  * @param {Object} args.tournament      Tournament record from R2 config
@@ -24,7 +72,7 @@ const TOKEN = process.env.FOTIS_SC_TOKEN || '';
  * @param {Array<{
  *   contactinfoid: number,
  *   fullName?: string,
- *   statusint?: number,   // 0=pending (default), 1=accepted
+ *   statusint?: number,   // 0=pending (default), 1=accepted, 2=refused
  *   pdflink?: string      // R2 public URL of the PDF (optional)
  * }>} args.players
  * @returns {Promise<{ok:boolean, skipped?:string, error?:string, applied?:any[]}>}
@@ -58,8 +106,16 @@ export async function syncToFotis({ tournament, subEvent, action, players }) {
       };
       // Only include optional fields if present, so we don't change wire
       // format for callers that don't care about them.
+      // Only 0, 1 and 2 are valid; anything else is sent as 0 (pending).
+      // (Previously this forced everything except 1 to 0, which would
+      // have silently turned "refused" (2) into "pending".)
       if (p.statusint !== undefined && p.statusint !== null) {
-        out.statusint = (Number(p.statusint) === 1) ? 1 : 0;
+        const requestedStatusInt = Number(p.statusint);
+        const isValidStatusInt =
+          requestedStatusInt === STATUSINT_PENDING  ||
+          requestedStatusInt === STATUSINT_ACCEPTED ||
+          requestedStatusInt === STATUSINT_REFUSED;
+        out.statusint = isValidStatusInt ? requestedStatusInt : STATUSINT_PENDING;
       }
       if (p.pdflink) {
         out.pdflink = String(p.pdflink);
