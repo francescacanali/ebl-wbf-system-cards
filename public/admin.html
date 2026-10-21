@@ -33,7 +33,8 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-primary);
 .header p{color:var(--text-secondary);font-size:13px}
 
 /* ---------- tabs ---------- */
-.main-tabs{display:flex;gap:26px;margin:0 0 26px;border-bottom:1px solid var(--border-color);overflow-x:auto}
+.main-tabs{display:flex;gap:26px;margin:0 0 26px;border-bottom:1px solid var(--border-color);overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.main-tabs::-webkit-scrollbar{display:none}
 .main-tab{display:inline-flex;align-items:center;gap:7px;padding:12px 0 11px;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;font:inherit;font-size:14px;font-weight:550;color:var(--text-secondary);cursor:pointer;white-space:nowrap}
 .main-tab:hover{color:var(--text-primary)}
 .main-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
@@ -246,6 +247,8 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-primary);
 
 <script>
 var API_BASE=window.location.origin+'/api';
+// Iframes must always use the custom domain: *.vercel.app is blocked in China.
+var PUBLIC_BASE='https://sc.bridge-for-peace.com';
 var CONFIG={tournaments:{}};
 var GEN_EVENTS={};              // events used only by the "Generate iframes" tab
 var MANAGE=[];                  // [{code,name,events:[{name,type,entities}],cards:[],warnings:[]}]
@@ -383,7 +386,7 @@ function generateCodes(){
   if(!code||!ev){div.style.display='none';return;}
   var t=CONFIG.tournaments[code]||{};
   var email=t.org==='wbf'?'info@worldbridge.org':'info@eurobridge.org';
-  var base=window.location.origin,evEnc=encodeURIComponent(ev);
+  var base=PUBLIC_BASE,evEnc=encodeURIComponent(ev);
   var freeze=encodeURIComponent('Upload closed - Contact '+email);
   var evData=(GEN_EVENTS[code]||{})[ev];
   var typeParam=evData&&evData.type==='pairs'?'&amp;type=pairs':'';
