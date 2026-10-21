@@ -40,7 +40,7 @@
 // server-side here and never exposed to the browser.
 
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
-import { d1 } from './db.js';
+import { d1, publicUrl } from './db.js';
 import {
   statusToStatusInt,
   STATUSINT_PENDING,
@@ -438,6 +438,6 @@ function computePlayerStatus(playerCards) {
   }
   return {
     statusint: chosenStatusInt,
-    pdflink:   chosenCard?.file_url || '',
+    pdflink:   publicUrl(chosenCard?.file_url) || '',
   };
 }

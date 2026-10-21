@@ -16,7 +16,7 @@
 // every field needed for the screenshots Francesca shared is included.
 
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
-import { d1 } from './db.js';
+import { d1, publicUrl } from './db.js';
 
 const R2 = new S3Client({
   region: 'auto',
@@ -225,7 +225,7 @@ function buildTeamBlock(t, allCards) {
     return {
       id:           c.id,
       fileName:     c.file_name,
-      fileUrl:      c.file_url,
+      fileUrl:      publicUrl(c.file_url),
       version,
       replaced:     siblings.length > 1 && !isNewest,
       hasSiblings:  siblings.length > 1,

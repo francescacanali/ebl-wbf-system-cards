@@ -1,5 +1,5 @@
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
-import { updateCardStatus, d1 } from './db.js';
+import { updateCardStatus, d1, publicUrl } from './db.js';
 import { syncToFotis, normalizeStatusText, statusToStatusInt } from './fotis-sync.js';
 
 const R2 = new S3Client({
@@ -66,7 +66,7 @@ async function getCardForSync(card_id) {
   );
   return {
     fileName: card.file_name,
-    fileUrl:  card.file_url,
+    fileUrl:  publicUrl(card.file_url),
     subEvent: card.sub_event,
     players:  playersRes.results || [],
   };

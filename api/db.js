@@ -135,3 +135,13 @@ export async function getOtherCardFileNamesForPlayer(tournament, sub_event, play
   );
   return (rows.results || []).map(r => r.file_name);
 }
+
+// Rewrites legacy R2 links (https://pub-xxxx.r2.dev/...) to the current
+// R2_PUBLIC_URL (e.g. https://cards.bridge-for-peace.com), so that cards
+// uploaded before the custom domain also open from China (r2.dev is blocked).
+// No-op if R2_PUBLIC_URL is still an r2.dev address or the URL is empty.
+export function publicUrl(url) {
+  const base = (process.env.R2_PUBLIC_URL || '').replace(/\/+$/, '');
+  if (!url || !base || /\.r2\.dev$/i.test(base)) return url;
+  return String(url).replace(/^https?:\/\/pub-[a-z0-9]+\.r2\.dev/i, base);
+}

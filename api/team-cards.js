@@ -15,7 +15,7 @@
 //    &player_ids=30303,17813   → only cards involving these players
 //    &status=accepted          → only cards with this status (pending/accepted/refused)
 
-import { d1, getPlayerSCStatus } from './db.js';
+import { d1, getPlayerSCStatus, publicUrl } from './db.js';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -103,7 +103,7 @@ export default async function handler(req, res) {
       cards:      filtered.map(c => ({
         id:             c.id,
         file_name:      c.file_name,
-        file_url:       c.file_url,
+        file_url:       publicUrl(c.file_url),
         sub_event:      c.sub_event,
         status:         c.status,
         refused_reason: c.refused_reason,

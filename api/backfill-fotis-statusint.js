@@ -30,7 +30,7 @@
 //       (separate from FOTIS_SC_TOKEN to avoid accidental triggers)
 
 import { S3Client, GetObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
-import { d1 } from './db.js';
+import { d1, publicUrl } from './db.js';
 import { syncToFotis, normalizeStatusText, statusToStatusInt } from './fotis-sync.js';
 
 const R2 = new S3Client({
@@ -166,7 +166,7 @@ export default async function handler(req, res) {
         contactinfoid: p.player_id,
         fullName:      p.player_name || null,
         statusint,
-        pdflink:       c.file_url || '',
+        pdflink:       publicUrl(c.file_url) || '',
       })).filter(p => p.contactinfoid);
 
       if (!players.length) {
@@ -182,7 +182,7 @@ export default async function handler(req, res) {
         results.push({
           card_id: c.id, fileName: c.file_name,
           subEvent: c.sub_event, status: c.status,
-          action, statusint, pdflink: c.file_url,
+          action, statusint, pdflink: publicUrl(c.file_url),
           playerCount: players.length,
           dryRun: true,
         });
