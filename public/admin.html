@@ -79,7 +79,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-primary);
 .group-heading{display:flex;align-items:baseline;gap:10px;margin:30px 0 10px;font-size:14px;font-weight:650;color:var(--text-secondary)}
 .group-heading:first-child{margin-top:0}
 .group-heading small{font-weight:400;color:var(--text-muted);font-size:12.5px}
-.tournament-section{background:var(--surface);border:1px solid var(--border-color);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.tournament-section{background:var(--surface);border:1px solid var(--border-color);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;overflow:clip}
 .tournament-section.is-archived:not(.loaded){background:transparent;border-style:dashed}
 .tournament-header{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:16px;cursor:pointer;width:100%;background:none;border:none;font:inherit;text-align:left;color:inherit}
 .tournament-header:hover{background:#f8f9f8}
@@ -122,11 +122,17 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-primary);
 .cards-table th:nth-child(4){width:11%}
 .cards-table th:nth-child(5){width:28%}
 .cards-table td{word-wrap:break-word;overflow-wrap:break-word}
-.status-badge{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600}
-.status-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
-.status-badge.pending{color:var(--warning)}
-.status-badge.validated{color:var(--success)}
-.status-badge.refused{color:var(--error)}
+.status-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700}
+.status-badge.pending{background:#fbe7a6;color:#7a5200}
+.status-badge.validated{background:var(--success-light);color:var(--success)}
+.status-badge.refused{background:var(--error-light);color:var(--error)}
+.pending-nav{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px;padding:8px 12px;background:#fffaeb;border:1px solid #ecd9a6;border-radius:6px;font-size:13px;color:#6b4a00}
+.pending-nav strong{font-weight:700}
+.pending-nav .pos{font-variant-numeric:tabular-nums;color:var(--text-secondary);margin-left:auto}
+.pending-nav button{padding:4px 11px;border:1px solid #e0c77f;background:#fff;color:#6b4a00;border-radius:5px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.pending-nav button:hover{background:#9a6a00;border-color:#9a6a00;color:#fff}
+.cards-table tr.pending-focus td{background:#fff4cf}
+.cards-table tr.pending-focus td:first-child{box-shadow:inset 3px 0 0 #9a6a00}
 .action-btns{display:flex;gap:4px;flex-wrap:wrap}
 .action-btn{padding:4px 9px;border-radius:5px;font:inherit;font-size:12px;font-weight:550;cursor:pointer;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-secondary);text-decoration:none;display:inline-block}
 .action-btn.view{color:var(--info);border-color:#c3d6e6}
@@ -533,6 +539,7 @@ async function showEv(i,j){
 }
 
 function renderEv(i,j){
+  pendingPos[i]=null;
   var c=document.getElementById('ec-'+i);
   var m=MANAGE[i],ev=m.events[j];
   if(!ev){c.innerHTML='<div class="empty-state">Event not found.</div>';return;}
@@ -577,6 +584,11 @@ function renderEv(i,j){
   var baseCount={};
   evCards.forEach(function(card){var b=card.fileName.replace(/_v\d+\.pdf$/i,'.pdf');baseCount[b]=(baseCount[b]||0)+1;});
 
+  if(evCards.length&&pending){
+    h+='<div class="pending-nav" id="pn-'+i+'"><span><strong>'+pending+'</strong> pending</span>'
+      +'<button onclick="jumpPending('+i+',-1)">\u2191 Previous</button><button onclick="jumpPending('+i+',1)">\u2193 Next pending</button>'
+      +'<span class="pos" id="pnpos-'+i+'"></span></div>';
+  }
   if(evCards.length){
     h+='<table class="cards-table"><thead><tr><th>'+(isPairs?'Pair':'Team')+'</th><th>Players</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
     evCards.forEach(function(card){
@@ -591,7 +603,8 @@ function renderEv(i,j){
       var base=card.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
       var hasMultiple=(baseCount[base]||1)>1;
       var vBadge=vNum>1?'<span class="version-badge">v'+vNum+'</span>':'';
-      var rowStyle=hasMultiple?' class="row-versioned"':'';
+      var rowCls=[];if(hasMultiple)rowCls.push('row-versioned');if(sc==='pending')rowCls.push('row-pending');
+      var rowStyle=rowCls.length?' class="'+rowCls.join(' ')+'"':'';
       var args=i+','+j+','+JSON.stringify(card.fileName).replace(/"/g,'&quot;');
       h+='<tr'+rowStyle+'><td><strong style="font-size:14px">'+esc(team)+'</strong></td>'
         +'<td><div style="font-size:13.5px;font-weight:500">'+players+'</div>'
@@ -612,6 +625,21 @@ function renderEv(i,j){
       +'<br><span style="font-size:13px">The '+m.cards.length+' cards counted in the header belong to the other events of this tournament.</span></div>';
   }
   c.innerHTML=h;
+}
+
+// Jump between pending cards of the open event, one at a time.
+var pendingPos={};
+function jumpPending(i,dir){
+  var box=document.getElementById('ec-'+i);if(!box)return;
+  var rows=box.querySelectorAll('tr.row-pending');if(!rows.length)return;
+  var k=pendingPos[i];
+  k=(k==null)?(dir>0?0:rows.length-1):(k+dir+rows.length)%rows.length;
+  pendingPos[i]=k;
+  box.querySelectorAll('tr.pending-focus').forEach(function(r){r.classList.remove('pending-focus');});
+  rows[k].classList.add('pending-focus');
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  rows[k].scrollIntoView({block:'center',behavior:reduce?'auto':'smooth'});
+  var pos=document.getElementById('pnpos-'+i);if(pos)pos.textContent=(k+1)+' of '+rows.length;
 }
 
 function getPlayersFromParts(parts,entities){
