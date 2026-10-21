@@ -390,9 +390,12 @@ function generateCodes(){
   var freeze=encodeURIComponent('Upload closed - Contact '+email);
   var evData=(GEN_EVENTS[code]||{})[ev];
   var typeParam=evData&&evData.type==='pairs'?'&amp;type=pairs':'';
-  var mk=function(extra){return '&lt;iframe src="'+base+'/?tournament='+encodeURIComponent(code)+'&amp;event='+evEnc+typeParam+extra+'" width="100%" height="800" style="border:none;"&gt;&lt;/iframe&gt;';};
+  // The listener resizes the iframe to the page height sent by the portal
+  // (no double scrollbar). If a site strips <script>, the iframe still works at 800px.
+  var listener='<script>window.addEventListener("message",function(e){if(e.origin!=="'+PUBLIC_BASE+'"||!e.data||e.data.type!=="sc-height")return;var f=document.getElementsByTagName("iframe");for(var i=0;i<f.length;i++)if(f[i].contentWindow===e.source)f[i].style.height=e.data.height+"px";});<\/script>';
+  var mk=function(extra){return esc('<iframe src="'+base+'/?tournament='+encodeURIComponent(code)+'&event='+encodeURIComponent(ev)+(evData&&evData.type==='pairs'?'&type=pairs':'')+extra+'" width="100%" height="800" style="border:none;display:block"></iframe>\n'+listener);};
   div.innerHTML='<div class="section-label">Open for uploads</div><div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>'+mk('')+'</code></div>'
-    +'<div class="section-label">Frozen</div><div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>'+mk('&amp;freeze=1&amp;freezeMsg='+freeze)+'</code></div>';
+    +'<div class="section-label">Frozen</div><div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>'+mk('&freeze=1&freezeMsg='+freeze)+'</code></div>';
   div.style.display='block';
 }
 function copyCode(btn){navigator.clipboard.writeText(btn.nextElementSibling.textContent);btn.textContent='Copied';btn.classList.add('copied');setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied');},1800);}
