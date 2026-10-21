@@ -39,14 +39,21 @@ export default async function handler(req, res) {
       ? `${tournamentCode}/${eventFolder}/`
       : `${tournamentCode}/`;
     
-    const command = new ListObjectsV2Command({
-      Bucket: process.env.R2_BUCKET_NAME,
-      Prefix: prefix
-    });
+    // R2 returns at most 1000 keys per call: follow the continuation token
+    // so large tournaments don't silently lose cards.
+    const contents = [];
+    let token;
+    do {
+      const response = await R2.send(new ListObjectsV2Command({
+        Bucket: process.env.R2_BUCKET_NAME,
+        Prefix: prefix,
+        ContinuationToken: token,
+      }));
+      contents.push(...(response.Contents || []));
+      token = response.IsTruncated ? response.NextContinuationToken : undefined;
+    } while (token);
     
-    const response = await R2.send(command);
-    
-    const cards = (response.Contents || [])
+    const cards = contents
       .filter(obj => obj.Key.endsWith('.pdf'))
       .filter(obj => {
         const fileName = obj.Key.split('/').pop();

@@ -4,171 +4,176 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>System Cards Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media=\'all\'">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--primary:#00854A;--primary-dark:#006838;--primary-light:#e6f5ed;--bg-light:#f8fafc;--bg-white:#fff;--text-primary:#1e293b;--text-secondary:#64748b;--text-muted:#94a3b8;--border-color:#e2e8f0;--success:#16a34a;--success-light:#dcfce7;--warning:#ca8a04;--warning-light:#fef9c3;--error:#dc2626;--error-light:#fee2e2;--info:#0284c7;--info-light:#e0f2fe}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg-light);color:var(--text-primary);min-height:100vh;line-height:1.6}
-.container{max-width:900px;margin:0 auto;padding:32px 20px}
-.header{text-align:center;margin-bottom:32px}
-.event-title{font-size:clamp(20px,4vw,28px);font-weight:800;margin:0 0 8px 0;color:var(--primary);line-height:1.2;padding:16px 20px;background:linear-gradient(135deg,var(--primary-light) 0%,#f0f7f4 100%);border-radius:12px;border:2px solid var(--primary)}
-.page-title{font-size:clamp(24px,4vw,36px);font-weight:800;margin:16px 0 8px 0;color:var(--text-primary)}
-.subtitle{color:var(--text-secondary);font-size:15px}
-.disclaimer-banner{background:var(--info-light);border:1px solid var(--info);border-radius:10px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#0369a1}
-.tab-buttons{display:flex;gap:12px;margin-bottom:24px;justify-content:center}
-.tab-btn{padding:16px 32px;border:2px solid var(--border-color);border-radius:12px;background:var(--bg-white);color:var(--text-secondary);font-size:16px;font-weight:600;cursor:pointer;transition:all .2s ease;display:flex;align-items:center;gap:10px}
-.tab-btn:hover{border-color:var(--primary);color:var(--primary)}
-.tab-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
-.tab-btn .icon{font-size:20px}
+:root{--primary:#0b6b43;--primary-dark:#08502f;--primary-light:#e9f2ed;--bg-light:#f4f5f3;--bg-secondary:#f4f5f3;--bg-white:#fff;--text-primary:#16201c;--text-secondary:#56615c;--text-muted:#8a948f;--border-color:#dfe3e0;--border-strong:#c9cfcb;--success:#1d7a4c;--success-light:#e5f3eb;--warning:#9a6a00;--warning-light:#fbf3dc;--error:#b42d2d;--error-light:#fbeaea;--info:#235f8f;--info-light:#eef3f8;--suit-red:#c0392b;
+--font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+body{font-family:var(--font);background:var(--bg-light);color:var(--text-primary);min-height:100vh;line-height:1.55;font-size:15px}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.ico{width:18px;height:18px;flex:none;vertical-align:-3px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.container{max-width:900px;margin:0 auto;padding:28px 20px 40px}
+.header{display:flex;flex-direction:column;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--border-color)}
+.page-title{order:-1;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--primary);margin:0 0 6px}
+.page-title .suits{font-family:"Segoe UI Symbol","Apple Symbols","DejaVu Sans","Noto Sans Symbols2",serif;font-size:13px;letter-spacing:1px;color:var(--text-primary);font-weight:400}
+.page-title .suits b{color:var(--suit-red);font-weight:400}
+.event-title{font-size:clamp(21px,3.6vw,28px);font-weight:700;line-height:1.2;letter-spacing:-.01em;color:var(--text-primary)}
+.subtitle{color:var(--text-secondary);font-size:14.5px;margin-top:4px}
+.disclaimer-banner{border-left:3px solid var(--info);background:var(--info-light);border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:20px;font-size:13px;color:#1f4a6e}
+.tab-buttons{display:flex;margin-bottom:20px;padding:3px;background:#e7eae7;border-radius:9px;width:max-content;max-width:100%}
+.tab-btn{padding:9px 20px;border:none;border-radius:7px;background:transparent;color:var(--text-secondary);font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px}
+.tab-btn:hover{color:var(--text-primary)}
+.tab-btn.active{background:var(--bg-white);color:var(--primary);box-shadow:0 1px 2px rgba(22,32,28,.12)}
+.tab-btn .icon{font-size:17px;line-height:1}
 .tab-content{display:none}.tab-content.active{display:block}
-.card{background:var(--bg-white);border:1px solid var(--border-color);border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-.form-title{font-size:20px;font-weight:700;margin-bottom:4px;color:var(--text-primary);display:flex;align-items:center;gap:10px}
+.card{background:var(--bg-white);border:1px solid var(--border-color);border-radius:10px;padding:24px;margin-bottom:16px}
+.form-title{font-size:18px;font-weight:650;margin-bottom:2px;color:var(--text-primary)}
 .form-subtitle{color:var(--text-secondary);font-size:14px;margin-bottom:20px}
 .form-group{margin-bottom:16px}
-.form-label{display:block;margin-bottom:6px;font-size:14px;font-weight:500;color:var(--text-primary)}
-.form-select,.form-input{width:100%;padding:12px 14px;background:var(--bg-white);border:1px solid var(--border-color);border-radius:8px;color:var(--text-primary);font-size:15px;font-family:inherit;cursor:pointer;transition:border-color .2s ease}
+.form-label{display:block;margin-bottom:6px;font-size:14px;font-weight:600;color:var(--text-primary)}
+.form-select,.form-input{width:100%;padding:10px 12px;background:var(--bg-white);border:1px solid var(--border-strong);border-radius:6px;color:var(--text-primary);font-size:15px;font-family:inherit}
+.form-select{cursor:pointer}
 .form-select:focus,.form-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
-.form-select.highlight{background:var(--primary-light);border:2px solid var(--primary);font-weight:500}
-.players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:8px}
-.player-checkbox{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg-light);border:2px solid transparent;border-radius:10px;cursor:pointer;transition:all .2s ease}
-.player-checkbox:hover{background:var(--primary-light)}
+.form-select.highlight{border-color:var(--primary);font-weight:500}
+.players-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:6px}
+.player-checkbox{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-white);border:1px solid var(--border-strong);border-radius:7px;cursor:pointer}
+.player-checkbox:hover{border-color:var(--primary)}
 .player-checkbox.selected{background:var(--primary-light);border-color:var(--primary)}
-.player-checkbox input{width:18px;height:18px;accent-color:var(--primary)}
-.player-name{font-weight:500;font-size:14px}
+.player-checkbox input{width:17px;height:17px;accent-color:var(--primary)}
+.player-name{font-weight:550;font-size:14px}
 .player-id{font-size:12px;color:var(--text-muted)}
 .hint-text{font-size:13px;color:var(--text-muted);margin-top:8px}
 .hint-text.success{color:var(--success)}.hint-text.error{color:var(--error)}
-.file-preview{background:var(--primary-light);border:1px solid var(--primary);border-radius:10px;padding:12px 16px;margin-top:16px;display:flex;align-items:center;gap:10px}
-.file-preview-icon{font-size:24px}
-.file-preview-name{font-weight:600;color:var(--primary);font-size:14px}
+.file-preview{background:var(--primary-light);border:1px solid #bcd8c8;border-radius:7px;padding:10px 14px;margin-top:16px;display:flex;align-items:center;gap:10px;color:var(--primary)}
+.file-preview-icon{display:flex;font-size:20px}
+.file-preview-name{font-weight:600;color:var(--primary);font-size:14px;word-break:break-all}
 .file-preview-label{font-size:12px;color:var(--text-secondary)}
-.upload-area{border:2px dashed var(--border-color);border-radius:12px;padding:40px;text-align:center;background:var(--bg-light);transition:all .2s ease;cursor:pointer;margin-top:16px}
+.upload-area{border:1.5px dashed var(--border-strong);border-radius:10px;padding:36px 20px;text-align:center;background:#fafbfa;cursor:pointer;margin-top:16px;transition:border-color .15s,background .15s}
 .upload-area:hover,.upload-area.dragover{border-color:var(--primary);background:var(--primary-light)}
-.upload-icon{font-size:40px;margin-bottom:12px}
-.upload-text{font-size:15px;font-weight:500;margin-bottom:4px;color:var(--text-primary)}
+.upload-icon{color:var(--primary);margin-bottom:10px;display:flex;justify-content:center}
+.upload-icon{font-size:34px;line-height:1}
+.upload-text{font-size:15px;font-weight:600;margin-bottom:2px;color:var(--text-primary)}
 .upload-hint{font-size:13px;color:var(--text-muted)}
-.confirm-box{background:var(--warning-light);border:1px solid var(--warning);border-radius:10px;padding:16px;margin-top:16px}
-.confirm-box-title{font-weight:600;color:#92400e;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.confirm-box-text{font-size:14px;color:#78350f;margin-bottom:12px}
-.confirm-box-players{background:#fef3c7;padding:10px 14px;border-radius:6px;font-weight:600;color:#92400e;margin-bottom:12px}
-.confirm-box-buttons{display:flex;gap:10px}
-.confirm-box-disclaimer{font-size:12px;color:#92400e;margin-top:12px;padding-top:12px;border-top:1px solid #f59e0b}
-.btn{padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s ease;border:none}
-.btn-cancel{background:#fef3c7;color:#92400e;border:1px solid #f59e0b}
-.btn-cancel:hover{background:#fde68a}
+.confirm-box{background:var(--warning-light);border:1px solid #e6cf8f;border-radius:8px;padding:16px;margin-top:16px}
+.confirm-box-title{font-weight:650;color:#6b4a00;margin-bottom:6px}
+.confirm-box-text{font-size:14px;color:#5c4300;margin-bottom:10px}
+.confirm-box-players{background:#fff;border:1px solid #ecdcae;padding:9px 12px;border-radius:6px;font-weight:600;color:#5c4300;margin-bottom:12px}
+.confirm-box-buttons{display:flex;gap:8px}
+.confirm-box-disclaimer{font-size:12px;color:#6b4a00;margin-top:12px;padding-top:12px;border-top:1px solid #e6cf8f}
+.btn{padding:9px 18px;border-radius:6px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;border:1px solid transparent}
+.btn-cancel{background:#fff;color:#5c4300;border-color:#e0c77f}
+.btn-cancel:hover{background:#fdf8ea}
 .btn-confirm{background:var(--primary);color:#fff}
 .btn-confirm:hover{background:var(--primary-dark)}
-.alert{padding:14px 18px;border-radius:10px;margin-top:16px;font-size:14px;font-weight:500}
-.alert-success{background:var(--success-light);color:var(--success);border:1px solid var(--success)}
-.alert-success .disclaimer-note{font-size:12px;font-weight:400;margin-top:10px;padding-top:10px;border-top:1px solid var(--success);color:#166534}
-.alert-error{background:var(--error-light);color:var(--error);border:1px solid var(--error)}
-.legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;padding:14px 18px;background:var(--bg-light);border-radius:10px;font-size:13px}
-.legend-item{display:flex;align-items:center;gap:8px}
-.legend-dot{width:12px;height:12px;border-radius:50%}
-.legend-dot.green{background:var(--success)}.legend-dot.yellow{background:var(--warning)}.legend-dot.red{background:var(--error)}
-.filters{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.alert{padding:12px 16px;border-radius:7px;margin-top:16px;font-size:14px;font-weight:500}
+.alert-success{background:var(--success-light);color:var(--success);border:1px solid #bcd8c8}
+.alert-success .disclaimer-note{font-size:12px;font-weight:400;margin-top:10px;padding-top:10px;border-top:1px solid #bcd8c8;color:#1d5a3a}
+.alert-error{background:var(--error-light);color:var(--error);border:1px solid #ecc9c9}
+.legend{display:flex;gap:8px 20px;flex-wrap:wrap;margin-bottom:18px;font-size:13px;color:var(--text-secondary)}
+.legend-item{display:flex;align-items:center;gap:7px}
+.legend-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.legend-dot.green{background:var(--success)}.legend-dot.yellow{background:#d39b12}.legend-dot.red{background:var(--error)}
+.filters{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
 .search-input{flex:1;min-width:200px}
-.recent-changes{background:#fffbeb;border:2px solid #fbbf24;border-radius:12px;margin-bottom:16px;overflow:hidden;box-shadow:0 2px 8px rgba(251,191,36,.18)}
-.recent-changes-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;gap:12px}
-.recent-changes-header:hover{background:#fef3c7}
-.recent-changes-title{font-size:14px;font-weight:700;color:#92400e;display:flex;align-items:center;gap:8px}
-.recent-changes-count{background:#f59e0b;color:#fff;border-radius:20px;padding:1px 8px;font-size:12px;font-weight:700}
-.recent-changes-chevron{color:#f59e0b;font-size:12px;transition:transform .25s;font-weight:700}
+.recent-changes{background:var(--bg-white);border:1px solid #e6cf8f;border-left:3px solid #d39b12;border-radius:0 8px 8px 0;margin-bottom:16px;overflow:hidden}
+.recent-changes-header{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;cursor:pointer;user-select:none;gap:12px}
+.recent-changes-header:hover{background:#fffcf3}
+.recent-changes-title{font-size:14px;font-weight:650;color:#6b4a00;display:flex;align-items:center;gap:8px}
+.recent-changes-count{background:#f3e3b5;color:#6b4a00;border-radius:20px;padding:0 8px;font-size:12px;font-weight:650}
+.recent-changes-chevron{color:#9a6a00;font-size:11px;transition:transform .2s}
 .recent-changes-chevron.open{transform:rotate(180deg)}
-.recent-changes-body{display:none;border-top:2px solid #fbbf24;max-height:340px;overflow-y:auto;background:#fffdf5}
+.recent-changes-body{display:none;border-top:1px solid #f0e2bb;max-height:340px;overflow-y:auto}
 .recent-changes-body.open{display:block}
-.change-item{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--border-color);font-size:13px}
+.change-item{display:flex;align-items:center;gap:12px;padding:9px 16px;border-bottom:1px solid var(--border-color);font-size:13px}
 .change-item:last-child{border-bottom:none}
 .change-item:hover{background:var(--bg-secondary)}
-.change-date{color:var(--text-muted);font-size:11px;min-width:110px;flex-shrink:0}
+.change-date{color:var(--text-muted);font-size:12px;min-width:110px;flex-shrink:0;font-variant-numeric:tabular-nums}
 .change-players{flex:1;font-weight:500;color:var(--text-primary)}
 .change-team{color:var(--text-secondary);font-size:12px}
-.change-badge{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;flex-shrink:0}
-.change-badge.new{background:#e8f5e9;color:#2e7d32}
-.change-badge.replaced{background:#fff3e0;color:#e65100}
-.change-link{color:var(--primary);text-decoration:none;font-size:12px;flex-shrink:0}
+.change-badge{font-size:11px;font-weight:600;padding:1px 7px;border-radius:4px;flex-shrink:0}
+.change-badge.new{background:var(--success-light);color:var(--success)}
+.change-badge.replaced{background:var(--warning-light);color:var(--warning)}
+.change-link{color:var(--primary);text-decoration:none;font-size:12.5px;font-weight:600;flex-shrink:0}
 .change-link:hover{text-decoration:underline}
 .search-wrapper{position:relative}
-.search-wrapper .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none}
-.search-wrapper input{padding-left:38px;background:#eef6ff;border:2px solid #93c5fd;border-radius:10px;color:#1e3a5f;font-weight:500}
-.search-wrapper input:focus{background:#fff;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.15);outline:none}
-.search-wrapper input::placeholder{color:#93c5fd}
-.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#93c5fd;font-size:16px;padding:0;display:none;line-height:1}
-.search-clear.visible{display:block;color:#3b82f6}
+.search-wrapper .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:14px;display:flex}
+.search-wrapper input{padding-left:38px}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:15px;padding:2px 4px;display:none;line-height:1}
+.search-clear.visible{display:block}
+.search-clear:hover{color:var(--text-primary)}
 .search-no-results{text-align:center;color:var(--text-muted);padding:32px 16px;font-size:14px}
 
-.team-card{background:var(--bg-white);border:1px solid var(--border-color);border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-.team-header{padding:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:background .2s ease}
-.team-header:hover{background:var(--bg-light)}
-.team-name{font-weight:600;font-size:16px}
-.team-country{font-size:12px;color:var(--text-muted);margin-top:2px}
-.team-status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-secondary)}
-.status-dot{width:12px;height:12px;border-radius:50%}
-.status-dot.green{background:var(--success)}.status-dot.yellow{background:var(--warning)}.status-dot.red{background:var(--error)}
+.team-card{background:var(--bg-white);border:1px solid var(--border-color);border-radius:8px;margin-bottom:8px;overflow:hidden}
+.team-header{padding:13px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:12px}
+.team-header:hover{background:#fafbfa}
+.team-name{font-weight:600;font-size:15.5px}
+.team-country{font-size:12.5px;color:var(--text-muted);margin-top:1px}
+.team-status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-secondary);flex:none}
+.status-dot{width:10px;height:10px;border-radius:50%}
+.status-dot.green{background:var(--success)}.status-dot.yellow{background:#d39b12}.status-dot.red{background:var(--error)}
 .team-details{padding:0 16px 16px;border-top:1px solid var(--border-color);display:none}
 .team-details.open{display:block}
 .cards-list{margin-top:12px}
-.card-item{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 14px;background:var(--bg-light);border-radius:8px;margin-bottom:8px}
+.card-item{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 14px;background:#fafbfa;border:1px solid var(--border-color);border-radius:7px;margin-bottom:8px}
 .card-info{display:flex;align-items:flex-start;gap:10px;flex:1}
-.card-icon{font-size:20px}
-.card-item-versioned{background:#fffbeb}
-.card-group{border:2px solid #fbbf24;border-radius:12px;margin-bottom:12px;overflow:hidden}
-.card-group .card-item{margin-bottom:0;border-bottom:1px dashed #fde68a}
+.card-icon{display:flex;font-size:18px;line-height:1.4}
+.card-item-versioned{background:#fffcf3}
+.card-group{border:1px solid #e6cf8f;border-left:3px solid #d39b12;border-radius:0 8px 8px 0;margin-bottom:10px;overflow:hidden}
+.card-group .card-item{margin-bottom:0;border:none;border-radius:0;border-bottom:1px dashed #efdfb3}
 .card-group .card-item:last-child{border-bottom:none}
-.card-item-versioned{background:#fffbeb}
-.card-players{font-weight:500;font-size:14px;line-height:1.6}
-.card-date{font-size:12px;color:var(--text-muted);margin-top:4px}
-.card-status{font-size:11px;padding:4px 10px;border-radius:4px;margin-top:6px;display:inline-block}
+.card-players{font-weight:550;font-size:14px;line-height:1.6}
+.card-date{font-size:12.5px;color:var(--text-muted);margin-top:3px}
+.card-status{font-size:12px;font-weight:600;padding:2px 8px;border-radius:4px;margin-top:6px;display:inline-block}
 .card-status.validated{background:var(--success-light);color:var(--success)}
 .card-status.pending{background:var(--warning-light);color:var(--warning)}
-.card-status.replaced{background:#fff3cd;color:#e65100;font-weight:700}
+.card-status.replaced{background:#f3e3b5;color:#6b4a00;margin-left:4px}
 .card-status.refused{background:var(--error-light);color:var(--error)}
-.status-help{font-size:11px;color:var(--info);cursor:pointer;margin-left:6px;text-decoration:underline;position:relative}
+.status-help{font-size:12px;color:var(--info);cursor:pointer;margin-left:8px;text-decoration:underline;position:relative}
 .status-help:hover .tooltip{display:block}
-.tooltip{display:none;position:absolute;bottom:100%;left:50%;transform:translateX(-50%);width:280px;background:#1e293b;color:#fff;padding:10px 12px;border-radius:8px;font-size:11px;line-height:1.5;z-index:100;margin-bottom:8px;text-decoration:none;font-weight:400}
-.tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#1e293b}
-.refused-reason{font-size:12px;color:var(--error);margin-top:4px;padding:8px 12px;background:var(--error-light);border-radius:6px}
-.card-actions{display:flex;gap:8px;flex-shrink:0}
-.btn-small{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s ease;border:none;text-decoration:none}
-.btn-view{background:var(--primary-light);color:var(--primary)}
-.btn-view:hover{background:var(--primary);color:#fff}
-.btn-copy{background:var(--bg-white);color:var(--text-secondary);border:1px solid var(--border-color)}
-.btn-copy:hover{background:var(--bg-light)}
-.btn-copy.copied{background:var(--success-light);color:var(--success);border-color:var(--success)}
-.no-cards{color:var(--text-muted);font-size:14px;font-style:italic}
-.instructions{background:var(--bg-white);border:1px solid var(--border-color);border-radius:12px;padding:20px;margin-top:24px}
-.instructions h3{font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.instructions ul{margin-left:24px;color:var(--text-secondary);font-size:14px}
-.instructions li{margin-bottom:6px}
-.instructions a{color:var(--primary)}
-.instructions .disclaimer-box{background:var(--info-light);border:1px solid var(--info);border-radius:8px;padding:12px 14px;margin-top:16px;font-size:13px;color:#0369a1}
-.contact-banner{background:var(--primary-light);border:1px solid var(--primary);border-radius:10px;padding:14px 20px;margin-top:20px;text-align:center;font-size:14px}
-.contact-banner strong{color:var(--primary)}
+.tooltip{display:none;position:absolute;bottom:100%;left:50%;transform:translateX(-50%);width:280px;background:var(--text-primary);color:#fff;padding:10px 12px;border-radius:6px;font-size:12px;line-height:1.5;z-index:100;margin-bottom:8px;text-decoration:none;font-weight:400}
+.tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--text-primary)}
+.refused-reason{font-size:12.5px;color:var(--error);margin-top:6px;padding:7px 10px;background:var(--error-light);border-radius:5px}
+.card-actions{display:flex;gap:6px;flex-shrink:0}
+.btn-small{padding:6px 12px;border-radius:5px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;border:1px solid transparent;text-decoration:none}
+.btn-view{background:var(--primary);color:#fff}
+.btn-view:hover{background:var(--primary-dark)}
+.btn-copy{background:var(--bg-white);color:var(--text-secondary);border-color:var(--border-strong)}
+.btn-copy:hover{border-color:var(--primary);color:var(--primary)}
+.btn-copy.copied{background:var(--success-light);color:var(--success);border-color:#bcd8c8}
+.no-cards{color:var(--text-muted);font-size:14px}
+.instructions{background:var(--bg-white);border:1px solid var(--border-color);border-radius:10px;padding:20px 24px;margin-top:20px}
+.instructions h3{font-size:16px;font-weight:650;margin-bottom:10px}
+.instructions ul{margin-left:20px;color:var(--text-secondary);font-size:14px}
+.instructions li{margin-bottom:4px}
+.instructions a{color:var(--primary);font-weight:600}
+.instructions .disclaimer-box{border-left:3px solid var(--info);background:var(--info-light);border-radius:0 6px 6px 0;padding:10px 14px;margin-top:16px;font-size:13px;color:#1f4a6e}
+.contact-banner{padding:16px 0 0;margin-top:20px;text-align:center;font-size:14px;color:var(--text-secondary)}
+.contact-banner strong{color:var(--text-primary)}
 .contact-banner a{color:var(--primary);font-weight:600}
 .loading-container{text-align:center;padding:40px}
-.spinner{width:36px;height:36px;border:3px solid var(--border-color);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+.spinner{width:26px;height:26px;border:2px solid var(--border-color);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.freeze-banner{background:#fef3c7;border:1px solid #f59e0b;border-radius:10px;padding:14px 20px;margin-bottom:20px;text-align:center;font-size:14px;color:#92400e}
-@media(max-width:600px){.tab-buttons{flex-direction:column}.tab-btn{justify-content:center}.filters{flex-direction:column}.card-item{flex-direction:column;align-items:flex-start;gap:10px}.card-actions{width:100%}.btn-small{flex:1;text-align:center}.confirm-box-buttons{flex-direction:column}.legend{flex-direction:column;gap:10px}.tooltip{width:220px;left:0;transform:none}}
+.freeze-banner{background:var(--warning-light);border:1px solid #e6cf8f;border-radius:7px;padding:12px 18px;margin-bottom:20px;text-align:center;font-size:14px;color:#6b4a00}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media(max-width:600px){.container{padding:20px 14px 32px}.tab-buttons{width:100%}.tab-btn{flex:1;justify-content:center;padding:9px 10px;font-size:14px}.filters{flex-direction:column}.card-item{flex-direction:column;align-items:flex-start;gap:10px}.card-actions{width:100%}.btn-small{flex:1;text-align:center}.confirm-box-buttons{flex-direction:column}.tooltip{width:220px;left:0;transform:none}.change-item{flex-wrap:wrap}.change-date{min-width:0}}
 </style>
 </head>
 <body>
 <div class="container">
 <div class="header">
 <div class="event-title" id="event-title">Loading...</div>
-<h1 class="page-title">System Cards Portal</h1>
-<p class="subtitle">Upload and manage system cards</p>
+<h1 class="page-title"><span class="suits" aria-hidden="true">♠︎<b>♥︎♦︎</b>♣︎</span>System cards</h1>
+<p class="subtitle">Upload your system card and check the cards of every team in this event.</p>
 </div>
 <div class="disclaimer-banner">
 <strong>ℹ️ Important:</strong> Staff only verifies that uploaded files are valid and readable PDFs. The accuracy and compliance of System Card contents with current regulations remains the sole responsibility of the players.
 </div>
 <div class="tab-buttons">
-<button class="tab-btn" id="upload-btn" onclick="showTab('upload')"><span class="icon">📤</span> Upload System Card</button>
-<button class="tab-btn active" onclick="showTab('view')"><span class="icon">📋</span> View All System Cards</button>
+<button class="tab-btn" id="upload-btn" onclick="showTab('upload')"><span class="icon">📤</span> Upload a system card</button>
+<button class="tab-btn active" onclick="showTab('view')"><span class="icon">📋</span> View all system cards</button>
 </div>
 <div id="upload-tab" class="tab-content">
 <div class="card">
-<h2 class="form-title">📤 Upload Your System Card</h2>
+<h2 class="form-title">📤 Upload your system card</h2>
 <p class="form-subtitle" id="upload-subtitle">Select your team and players, then upload your system card (PDF format)</p>
 <div class="form-group">
 <label class="form-label" id="entity-label">Team</label>
@@ -183,18 +188,18 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div class="file-preview"><span class="file-preview-icon">📄</span><div><div class="file-preview-label">System Card for:</div><div class="file-preview-name" id="file-name-preview"></div></div></div>
 </div>
 <div id="upload-container" style="display:none">
-<div class="upload-area" id="drop-zone"><div class="upload-icon">📄</div><p class="upload-text">Drop your PDF here or click to browse</p><p class="upload-hint">Max 10MB - PDF only</p></div>
+<div class="upload-area" id="drop-zone"><div class="upload-icon">📄</div><p class="upload-text">Drop your PDF here or click to browse</p><p class="upload-hint">PDF only, up to 10 MB</p></div>
 <input type="file" id="file-input" accept=".pdf,application/pdf" style="display:none">
 </div>
 <div id="confirm-container" style="display:none">
 <div class="confirm-box">
-<div class="confirm-box-title">⚠️ Confirm Upload</div>
+<div class="confirm-box-title">⚠️ Confirm upload</div>
 <p class="confirm-box-text">You are about to upload a System Card for:</p>
 <div class="confirm-box-players" id="confirm-players"></div>
 <p class="confirm-box-text">This will replace any existing System Card for these players.</p>
 <div class="confirm-box-buttons">
 <button class="btn btn-cancel" onclick="cancelUpload()">Cancel</button>
-<button class="btn btn-confirm" onclick="confirmUpload()">Yes, Upload</button>
+<button class="btn btn-confirm" onclick="confirmUpload()">Upload</button>
 </div>
 <div class="confirm-box-disclaimer">
 <strong>ℹ️ Important:</strong> Staff only verifies that uploaded files are valid and readable PDFs. The accuracy and compliance of System Card contents with current regulations remains the sole responsibility of the players.
@@ -206,8 +211,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 </div>
 <div id="view-tab" class="tab-content active">
 <div class="card">
-<h2 class="form-title">📋 All Uploaded System Cards</h2>
-<p class="form-subtitle">View and download all system cards for this event</p>
+<h2 class="form-title">📋 All system cards</h2>
+<p class="form-subtitle">Open a team to see and download its cards.</p>
 <div class="legend">
 <div class="legend-item"><span class="legend-dot green"></span><span>All System Cards submitted and file accepted</span></div>
 <div class="legend-item"><span class="legend-dot yellow"></span><span>System Cards pending or missing</span></div>
@@ -215,7 +220,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 </div>
 <div class="recent-changes" id="recent-changes-panel" style="display:none">
 <div class="recent-changes-header" onclick="toggleRecentChanges()">
-<span class="recent-changes-title">🕐 Recent Changes <span class="recent-changes-count" id="recent-count">0</span></span>
+<span class="recent-changes-title">🕐 Recent changes <span class="recent-changes-count" id="recent-count">0</span></span>
 <span class="recent-changes-chevron" id="rc-chevron">▼</span>
 </div>
 <div class="recent-changes-body" id="rc-body"></div>
@@ -239,7 +244,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <li>Player names must <strong>exactly match</strong> registration</li>
 <li>Handwritten cards are <strong>not allowed</strong></li>
 </ul>
-<p style="margin-top:12px">Need a blank template? <a href="https://www.worldbridge.org/wbf-documents-resources/wbf-system-card-templates-and-other-systems-information/" target="_blank">📄 Download System Card Templates</a></p>
+<p style="margin-top:12px">Need a blank template? <a href="https://www.worldbridge.org/wbf-documents-resources/wbf-system-card-templates-and-other-systems-information/" target="_blank">📄 Download system card templates</a></p>
 <div class="disclaimer-box">
 <strong>ℹ️ Important:</strong> Staff only verifies that uploaded files are valid and readable PDFs. The accuracy and compliance of System Card contents with current regulations remains the sole responsibility of the players.
 </div>
@@ -262,7 +267,7 @@ document.getElementById('event-title').textContent=CONFIG.eventTitle;
 var entities=[],uploadedCards=[],validationStatus={},selectedEntity=null,selectedPlayers=[],pendingFile=null;
 
 document.addEventListener('DOMContentLoaded',function(){
-if(isFrozen){var ub=document.getElementById('upload-btn');if(ub){ub.style.opacity='0.5';ub.style.pointerEvents='none';ub.innerHTML='<span class="icon">🔒</span> Upload Closed';}var bn=document.createElement('div');bn.className='freeze-banner';bn.innerHTML='<strong>⚠️ '+freezeMessage+'</strong>';var tb=document.querySelector('.tab-buttons');if(tb)tb.parentNode.insertBefore(bn,tb);}
+if(isFrozen){var ub=document.getElementById('upload-btn');if(ub){ub.style.opacity='0.5';ub.style.pointerEvents='none';ub.innerHTML='<span class="icon">🔒</span> Upload closed';}var bn=document.createElement('div');bn.className='freeze-banner';bn.innerHTML='<strong>⚠️ '+freezeMessage+'</strong>';var tb=document.querySelector('.tab-buttons');if(tb)tb.parentNode.insertBefore(bn,tb);}
 if(CONFIG.entityType==='pairs'){document.getElementById('entity-label').textContent='Pair';document.getElementById('upload-subtitle').textContent='Select your pair, then upload your system card (PDF format)';var si=document.getElementById('search-input');if(si)si.placeholder='Search by player name...';}
 loadEntities().then(function(){return loadUploadedCards();}).then(function(){return loadValidationStatus();}).then(function(){setupDragDrop();setupFileInput();});
 });
@@ -329,7 +334,7 @@ var isReplaced=hasAnySibling&&!isNewest;
 var cs=getCardStatus(c.fileName);
 var pn=getPlayersFromFileName(c.fileName,e);var verNum=c.fileName.match(/_v(\d+)\.pdf$/i)?(parseInt(c.fileName.match(/_v(\d+)\.pdf$/i)[1])):1;
 var cardIcon=hasAnySibling?'🔄':'📄';
-var verBadge=verNum>1?'<span style="background:#fff3cd;color:#856404;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-left:6px">v'+verNum+'</span>':'';
+var verBadge=verNum>1?'<span style="background:#fbf3dc;color:#9a6a00;border:1px solid #ecd9a6;font-size:11px;font-weight:650;padding:0 6px;border-radius:4px;margin-left:6px">v'+verNum+'</span>':'';
 if(baseThis!==lastBase2){
 if(lastBase2!==null&&baseMap[lastBase2]&&baseMap[lastBase2].length>1)h+='</div>';
 if(hasAnySibling)h+='<div class="card-group">';
@@ -555,9 +560,9 @@ function setupFileInput(){document.getElementById('file-input').addEventListener
 
 function handleFile(f){var us=document.getElementById('upload-status');us.innerHTML='';if(selectedPlayers.length<2){us.innerHTML='<div class="alert alert-error">❌ Please select at least 2 players first</div>';return;}if(f.type!=='application/pdf'){us.innerHTML='<div class="alert alert-error">❌ Only PDF files are allowed</div>';return;}if(f.size>10*1024*1024){us.innerHTML='<div class="alert alert-error">❌ File too large (max 10MB)</div>';return;}showConfirmBox(f);}
 
-function processUpload(f){var us=document.getElementById('upload-status'),dz=document.getElementById('drop-zone');document.getElementById('upload-container').style.display='block';dz.innerHTML='<div class="spinner"></div><p style="color:var(--primary)">Uploading...</p>';var rd=new FileReader();rd.onload=function(ev){var by=new Uint8Array(ev.target.result),hd='';for(var i=0;i<5&&i<by.length;i++)hd+=String.fromCharCode(by[i]);if(hd!=='%PDF-'){us.innerHTML='<div class="alert alert-error">❌ Invalid PDF file</div>';resetDropZone();return;}var fn=generateFileName();var ef=generateEventFolder();var fd=new FormData();fd.append('file',f);fd.append('tournamentCode',CONFIG.tournamentCode);fd.append('teamName',selectedEntity.name);fd.append('eventFolder',ef);fd.append('eventName',CONFIG.eventFilter);var ids=selectedPlayers.map(function(p){return p.wbfId;});fd.append('playerIds',ids.join(','));fd.append('player_ids',JSON.stringify(ids));fd.append('player_names',JSON.stringify(selectedPlayers.map(function(p){return p.fullName;})));fd.append('subEvent',CONFIG.eventFilter||'');fd.append('fileName',fn);fetch(API_BASE+'/upload.js',{method:'POST',body:fd}).then(function(r){if(!r.ok)throw new Error('Upload failed');var na=selectedPlayers.map(function(p){return p.fullName;});us.innerHTML='<div class="alert alert-success">✅ Uploaded successfully!<br><strong>Players:</strong> '+na.join(' & ')+'<br><small>Reloading page...</small><div class="disclaimer-note"><strong>ℹ️ Important:</strong> '+DISCLAIMER_TEXT+'</div></div>';setTimeout(function(){window.location.reload();},2000);}).catch(function(err){us.innerHTML='<div class="alert alert-error">❌ '+(err.message||'Upload failed')+'</div>';resetDropZone();});};rd.readAsArrayBuffer(f);}
+function processUpload(f){var us=document.getElementById('upload-status'),dz=document.getElementById('drop-zone');document.getElementById('upload-container').style.display='block';dz.innerHTML='<div class="spinner"></div><p style="color:var(--primary)">Uploading...</p>';var rd=new FileReader();rd.onload=function(ev){var by=new Uint8Array(ev.target.result),hd='';for(var i=0;i<5&&i<by.length;i++)hd+=String.fromCharCode(by[i]);if(hd!=='%PDF-'){us.innerHTML='<div class="alert alert-error">❌ Invalid PDF file</div>';resetDropZone();return;}var fn=generateFileName();var ef=generateEventFolder();var fd=new FormData();fd.append('file',f);fd.append('tournamentCode',CONFIG.tournamentCode);fd.append('teamName',selectedEntity.name);fd.append('eventFolder',ef);fd.append('eventName',CONFIG.eventFilter);var ids=selectedPlayers.map(function(p){return p.wbfId;});fd.append('playerIds',ids.join(','));fd.append('player_ids',JSON.stringify(ids));fd.append('player_names',JSON.stringify(selectedPlayers.map(function(p){return p.fullName;})));fd.append('subEvent',CONFIG.eventFilter||'');fd.append('fileName',fn);fetch(API_BASE+'/upload.js',{method:'POST',body:fd}).then(function(r){if(!r.ok)throw new Error('Upload failed');var na=selectedPlayers.map(function(p){return p.fullName;});us.innerHTML='<div class="alert alert-success">✅ System card uploaded.<br><strong>Players:</strong> '+na.join(' & ')+'<br><small>Reloading page...</small><div class="disclaimer-note"><strong>ℹ️ Important:</strong> '+DISCLAIMER_TEXT+'</div></div>';setTimeout(function(){window.location.reload();},2000);}).catch(function(err){us.innerHTML='<div class="alert alert-error">❌ '+(err.message||'Upload failed')+'</div>';resetDropZone();});};rd.readAsArrayBuffer(f);}
 
-function resetDropZone(){document.getElementById('drop-zone').innerHTML='<div class="upload-icon">📄</div><p class="upload-text">Drop your PDF here or click to browse</p><p class="upload-hint">Max 10MB - PDF only</p>';document.getElementById('file-input').value='';}
+function resetDropZone(){document.getElementById('drop-zone').innerHTML='<div class="upload-icon">📄</div><p class="upload-text">Drop your PDF here or click to browse</p><p class="upload-hint">PDF only, up to 10 MB</p>';document.getElementById('file-input').value='';}
 </script>
 </body>
 </html>

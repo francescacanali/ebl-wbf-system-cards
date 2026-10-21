@@ -4,176 +4,168 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>System Cards Admin Console</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media=\'all\'">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --primary:#00854A;--primary-dark:#006337;--primary-light:#e8f6ef;
-  --ink:#0d1b16;--surface:#ffffff;--canvas:#f4f7f5;
-  --text-primary:#152420;--text-secondary:#5b6b65;--text-muted:#93a29c;
-  --border-color:#e3ebe7;--border-strong:#cddbd4;
-  --success:#0f9d58;--success-light:#e3f7ec;
-  --warning:#b8860b;--warning-light:#fdf6dd;
-  --error:#d64545;--error-light:#fdecec;
-  --info:#0b7fc4;--info-light:#e5f3fc;
-  --radius:14px;--radius-sm:9px;
-  --shadow-sm:0 1px 2px rgba(13,27,22,.05);
-  --shadow:0 2px 4px rgba(13,27,22,.04),0 8px 24px -12px rgba(13,27,22,.14);
-  --shadow-lg:0 24px 60px -24px rgba(13,27,22,.32);
-  --ease:cubic-bezier(.22,.61,.36,1);
+  --primary:#0b6b43;--primary-dark:#08502f;--primary-light:#e9f2ed;
+  --ink:#16201c;--surface:#ffffff;--canvas:#f3f4f2;
+  --text-primary:#16201c;--text-secondary:#56615c;--text-muted:#8a948f;
+  --border-color:#e1e4e1;--border-strong:#c9cfcb;
+  --success:#1d7a4c;--success-light:#e5f3eb;
+  --warning:#9a6a00;--warning-light:#fbf3dc;
+  --error:#b42d2d;--error-light:#fbeaea;
+  --info:#235f8f;--info-light:#e8f0f7;
+  --suit-red:#c0392b;
+  --radius:10px;--radius-sm:6px;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
 html{-webkit-text-size-adjust:100%}
-body{
-  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-  background:var(--canvas);color:var(--text-primary);min-height:100vh;line-height:1.6;
-  background-image:radial-gradient(900px 420px at 12% -12%,rgba(0,133,74,.10),transparent 62%),radial-gradient(700px 380px at 96% 0%,rgba(11,127,196,.07),transparent 58%);
-  background-attachment:fixed;
-}
-.container{max-width:1240px;margin:0 auto;padding:28px 20px 64px}
+body{font-family:var(--font);background:var(--canvas);color:var(--text-primary);min-height:100vh;line-height:1.55;font-size:14.5px}
+.container{max-width:1240px;margin:0 auto;padding:0 20px 64px}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 
 /* ---------- header ---------- */
-.header{
-  position:relative;overflow:hidden;margin-bottom:26px;padding:32px 30px;border-radius:22px;color:#fff;
-  background:linear-gradient(128deg,var(--primary-dark) 0%,var(--primary) 62%,#12a865 100%);
-  box-shadow:var(--shadow-lg);
-}
-.header::after{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background:
-    repeating-linear-gradient(115deg,rgba(255,255,255,.06) 0 1px,transparent 1px 13px),
-    radial-gradient(520px 220px at 88% -30%,rgba(255,255,255,.22),transparent 70%);
-}
-.header-inner{position:relative;z-index:1;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.header-mark{
-  width:52px;height:52px;flex:none;border-radius:16px;display:grid;place-items:center;font-size:24px;
-  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(6px);
-}
-.header h1{font-family:'Space Grotesk','Inter',sans-serif;font-size:27px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
-.header p{opacity:.86;font-size:14px;margin-top:2px}
+.header{display:flex;align-items:center;gap:16px;padding:22px 0 18px}
+.suits{font-family:"Segoe UI Symbol","Apple Symbols","DejaVu Sans","Noto Sans Symbols2",serif;display:grid;grid-template-columns:repeat(2,14px);gap:1px 3px;font-size:14px;line-height:14px;flex:none;padding:6px 8px;border:1px solid var(--border-strong);border-radius:8px;background:var(--surface);text-align:center}
+.suits span:nth-child(2),.suits span:nth-child(3){color:var(--suit-red)}
+.header h1{font-size:19px;font-weight:650;letter-spacing:-.01em;line-height:1.25}
+.header p{color:var(--text-secondary);font-size:13px}
 
 /* ---------- tabs ---------- */
-.main-tabs{display:flex;gap:4px;margin-bottom:24px;padding:5px;background:var(--surface);border:1px solid var(--border-color);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow-x:auto}
-.main-tab{padding:10px 18px;background:none;border:none;font:inherit;font-size:14px;font-weight:600;color:var(--text-secondary);cursor:pointer;border-radius:var(--radius-sm);white-space:nowrap;transition:background .18s var(--ease),color .18s var(--ease)}
-.main-tab:hover{background:var(--primary-light);color:var(--primary-dark)}
-.main-tab.active{background:var(--primary);color:#fff;box-shadow:0 6px 16px -8px rgba(0,133,74,.85)}
-.tab-content{display:none;animation:rise .3s var(--ease)}
+.main-tabs{display:flex;gap:26px;margin:0 0 26px;border-bottom:1px solid var(--border-color);overflow-x:auto}
+.main-tab{display:inline-flex;align-items:center;gap:7px;padding:12px 0 11px;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;font:inherit;font-size:14px;font-weight:550;color:var(--text-secondary);cursor:pointer;white-space:nowrap}
+.main-tab:hover{color:var(--text-primary)}
+.main-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-content{display:none}
 .tab-content.active{display:block}
-@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-.card{background:var(--surface);border:1px solid var(--border-color);border-radius:var(--radius);padding:26px;margin-bottom:20px;box-shadow:var(--shadow-sm)}
-.card-title{font-family:'Space Grotesk','Inter',sans-serif;font-size:17px;font-weight:700;letter-spacing:-.01em;margin-bottom:18px}
+.card{background:var(--surface);border:1px solid var(--border-color);border-radius:var(--radius);padding:24px;margin-bottom:18px}
+.card-title{font-size:16px;font-weight:650;margin-bottom:16px}
 .form-group{margin-bottom:16px}
-.form-label{display:block;margin-bottom:6px;font-size:13px;font-weight:600;color:var(--text-secondary)}
-.form-input,.form-select{width:100%;padding:11px 13px;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font:inherit;font-size:14.5px;background:var(--surface);color:var(--text-primary);transition:border-color .16s,box-shadow .16s}
-.form-input:focus,.form-select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,133,74,.14)}
-.form-hint{font-size:12px;color:var(--text-muted);margin-top:5px}
-.radio-group{display:flex;gap:20px;margin-top:8px}
-.radio-label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px}
-.radio-label input{width:17px;height:17px;accent-color:var(--primary)}
-.btn{padding:11px 22px;border-radius:var(--radius-sm);font:inherit;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:transform .14s var(--ease),box-shadow .16s,background .16s}
-.btn:active{transform:translateY(1px)}
-.btn-primary{background:var(--primary);color:#fff;box-shadow:0 8px 18px -10px rgba(0,133,74,.9)}
-.btn-primary:hover{background:var(--primary-dark)}
-.btn-success{background:var(--success);color:#fff}
-.btn-danger{background:var(--error);color:#fff}
-.btn-danger:hover{background:#b93636}
-.btn-ghost{background:var(--canvas);color:var(--text-secondary);border:1px solid var(--border-strong)}
+.form-label{display:block;margin-bottom:5px;font-size:13px;font-weight:600;color:var(--text-primary)}
+.form-input,.form-select{width:100%;max-width:620px;padding:9px 11px;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font:inherit;font-size:14.5px;background:var(--surface);color:var(--text-primary)}
+.form-input:focus,.form-select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.form-hint{font-size:12.5px;color:var(--text-muted);margin-top:4px}
+.radio-group{display:flex;gap:20px;margin-top:6px}
+.radio-label{display:flex;align-items:center;gap:7px;cursor:pointer;font-size:14px}
+.radio-label input{width:16px;height:16px;accent-color:var(--primary)}
+.btn{padding:9px 18px;border-radius:var(--radius-sm);font:inherit;font-size:14px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:background .15s,border-color .15s,color .15s}
+.btn-primary,.btn-success{background:var(--primary);color:#fff}
+.btn-primary:hover,.btn-success:hover{background:var(--primary-dark)}
+.btn-danger{background:var(--surface);color:var(--error);border-color:#e8c3c3}
+.btn-danger:hover{background:var(--error);color:#fff;border-color:var(--error)}
+.btn-ghost{background:var(--surface);color:var(--text-secondary);border-color:var(--border-strong)}
 .btn-ghost:hover{border-color:var(--primary);color:var(--primary)}
-.btn-sm{padding:7px 14px;font-size:13px}
+.btn-sm{padding:6px 12px;font-size:13px}
 
-.tournament-list{display:flex;flex-direction:column;gap:10px}
-.tournament-item{background:var(--canvas);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:15px 17px;display:flex;justify-content:space-between;align-items:center;gap:14px;transition:border-color .18s,transform .18s var(--ease)}
-.tournament-item:hover{border-color:var(--border-strong);transform:translateX(2px)}
-.tournament-item h4{font-size:15px;font-weight:600;margin-bottom:3px}
+.tournament-list{display:flex;flex-direction:column}
+.tournament-item{padding:13px 0;border-top:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;gap:14px}
+.tournament-item:first-child{border-top:none;padding-top:0}
+.tournament-item h4{font-size:14.5px;font-weight:600;margin-bottom:1px}
 .tournament-item p{font-size:12.5px;color:var(--text-muted)}
-.badge{display:inline-block;padding:2px 8px;border-radius:5px;font-size:10.5px;font-weight:700;letter-spacing:.04em;margin-left:8px;vertical-align:middle}
-.badge.ebl{background:var(--primary-light);color:var(--primary-dark)}
-.badge.wbf{background:var(--info-light);color:var(--info)}
-.section-label{font-size:11.5px;font-weight:700;color:var(--text-muted);margin:18px 0 8px;text-transform:uppercase;letter-spacing:.09em}
-.code-block{background:#0f1f19;color:#d9ece4;padding:14px 16px;border-radius:var(--radius-sm);font-family:'JetBrains Mono',monospace;font-size:12px;overflow-x:auto;margin-top:8px;position:relative}
+.item-actions{display:flex;gap:6px;flex:none}
+.tournament-list.archived .tournament-item h4{color:var(--text-secondary);font-weight:500}
+.badge{display:inline-block;padding:0 6px;border-radius:4px;font-size:11px;font-weight:650;margin-left:6px;vertical-align:1px;border:1px solid}
+.badge.ebl{color:var(--primary);border-color:#bcd8c8;background:var(--primary-light)}
+.badge.wbf{color:var(--info);border-color:#c3d6e6;background:var(--info-light)}
+.section-label{font-size:13px;font-weight:600;color:var(--text-secondary);margin:18px 0 6px}
+.code-block{background:#f7f8f7;border:1px solid var(--border-color);color:var(--ink);padding:12px 90px 12px 14px;border-radius:var(--radius-sm);font-family:var(--mono);font-size:12px;overflow-x:auto;position:relative}
 .code-block code{white-space:pre-wrap;word-break:break-all}
-.copy-btn{position:absolute;top:8px;right:8px;padding:5px 12px;background:var(--primary);color:#fff;border:none;border-radius:6px;font:inherit;font-size:11px;font-weight:600;cursor:pointer}
-.copy-btn.copied{background:var(--success)}
+.copy-btn{position:absolute;top:8px;right:8px;padding:4px 11px;background:var(--surface);color:var(--primary);border:1px solid var(--border-strong);border-radius:5px;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.copy-btn.copied{background:var(--primary);color:#fff;border-color:var(--primary)}
 
-.tournament-section{background:var(--surface);border:1px solid var(--border-color);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow-sm)}
-.tournament-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px;cursor:pointer;transition:background .16s}
-.tournament-header:hover{background:var(--primary-light)}
-.tournament-title{font-family:'Space Grotesk','Inter',sans-serif;font-weight:700;font-size:16px;display:flex;align-items:center;gap:10px}
-.chev{display:inline-block;transition:transform .22s var(--ease);color:var(--text-muted);font-size:13px}
-.tournament-section.open .chev{transform:rotate(90deg)}
-.tournament-stats{display:flex;gap:8px;flex-wrap:wrap}
-.pill{font-size:11.5px;font-weight:600;color:var(--text-secondary);background:var(--canvas);border:1px solid var(--border-color);border-radius:999px;padding:3px 11px}
-.pill.alert{background:var(--error-light);border-color:#f6cdcd;color:var(--error)}
+/* ---------- manage ---------- */
+.group-heading{display:flex;align-items:baseline;gap:10px;margin:30px 0 10px;font-size:14px;font-weight:650;color:var(--text-secondary)}
+.group-heading:first-child{margin-top:0}
+.group-heading small{font-weight:400;color:var(--text-muted);font-size:12.5px}
+.tournament-section{background:var(--surface);border:1px solid var(--border-color);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.tournament-section.is-archived:not(.loaded){background:transparent;border-style:dashed}
+.tournament-header{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:16px;cursor:pointer;width:100%;background:none;border:none;font:inherit;text-align:left;color:inherit}
+.tournament-header:hover{background:#f8f9f8}
+.tournament-title{font-weight:650;font-size:15px;display:flex;align-items:center;gap:12px}
+.is-archived .tournament-title{font-weight:550;color:var(--text-secondary)}
+.chev{display:inline-block;width:7px;height:7px;border-right:1.5px solid var(--text-muted);border-bottom:1.5px solid var(--text-muted);transform:rotate(-45deg);transition:transform .2s;flex:none}
+.tournament-section.open .chev{transform:rotate(45deg)}
+.tournament-stats{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--text-secondary)}
+.pill{white-space:nowrap}
+.pill b{font-weight:650;color:var(--text-primary);font-variant-numeric:tabular-nums}
+.pill.alert,.pill.alert b{color:var(--error)}
 .tournament-content{display:none;border-top:1px solid var(--border-color)}
 .tournament-content.open{display:block}
-.event-tabs{display:flex;gap:6px;padding:13px 16px;background:var(--canvas);border-bottom:1px solid var(--border-color);flex-wrap:wrap}
-.event-tab{padding:7px 15px;background:var(--surface);border:1px solid var(--border-strong);border-radius:999px;font:inherit;font-size:12.5px;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all .16s var(--ease)}
+.event-tabs{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--border-color);flex-wrap:wrap;background:#fafbfa}
+.event-tab{padding:6px 12px;background:var(--surface);border:1px solid var(--border-strong);border-radius:6px;font:inherit;font-size:13px;font-weight:550;color:var(--text-secondary);cursor:pointer;display:inline-flex;align-items:center;gap:8px}
 .event-tab:hover{border-color:var(--primary);color:var(--primary)}
 .event-tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
-.event-tab{display:inline-flex;align-items:center;gap:7px}
-.tab-count{font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--canvas);color:var(--text-muted);border:1px solid var(--border-color)}
-.tab-count.has{background:var(--primary-light);color:var(--primary-dark);border-color:#bfe3d1}
-.event-tab.active .tab-count{background:rgba(255,255,255,.2);color:#fff;border-color:transparent}
-.event-tab.orphan{border-color:#f0c9c9;color:var(--error);background:var(--error-light)}
+.tab-count{font-size:12px;font-weight:450;color:var(--text-muted);font-variant-numeric:tabular-nums}
+.tab-count.has{color:var(--primary);font-weight:600}
+.event-tab.active .tab-count{color:rgba(255,255,255,.82)}
+.event-tab.orphan{border-color:#e8c3c3;color:var(--error);background:var(--error-light)}
 .event-tab.orphan.active{background:var(--error);border-color:var(--error);color:#fff}
-.event-content{padding:22px}
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px;margin-bottom:22px}
-.stat-card{background:var(--canvas);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:15px 12px;text-align:center}
-.stat-value{font-family:'Space Grotesk','Inter',sans-serif;font-size:27px;font-weight:700;color:var(--primary);line-height:1.1}
-.stat-label{font-size:11px;color:var(--text-muted);margin-top:5px;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.event-content{padding:20px}
+.stats-row{display:flex;flex-wrap:wrap;margin-bottom:20px;border:1px solid var(--border-color);border-radius:var(--radius-sm)}
+.stat-card{flex:1 1 110px;padding:12px 16px;border-left:1px solid var(--border-color)}
+.stat-card:first-child{border-left:none}
+.stat-value{font-size:24px;font-weight:650;line-height:1.15;font-variant-numeric:tabular-nums}
+.stat-label{font-size:12.5px;color:var(--text-secondary);margin-top:2px}
 .stat-card.warning .stat-value{color:var(--warning)}
 .stat-card.error .stat-value{color:var(--error)}
 .stat-card.success .stat-value{color:var(--success)}
 
 .cards-table{width:100%;border-collapse:collapse;table-layout:fixed}
-.cards-table th,.cards-table td{padding:12px;text-align:left;border-bottom:1px solid var(--border-color);vertical-align:top}
-.cards-table th{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;background:var(--canvas)}
-.cards-table tbody tr:hover{background:#fafcfb}
+.cards-table th,.cards-table td{padding:11px 10px;text-align:left;border-bottom:1px solid var(--border-color);vertical-align:top}
+.cards-table th{font-size:12.5px;font-weight:600;color:var(--text-secondary);border-bottom-color:var(--border-strong)}
+.cards-table tbody tr:hover{background:#fafbfa}
 .cards-table th:nth-child(1){width:15%}
 .cards-table th:nth-child(2){width:35%}
 .cards-table th:nth-child(3){width:11%}
 .cards-table th:nth-child(4){width:11%}
 .cards-table th:nth-child(5){width:28%}
 .cards-table td{word-wrap:break-word;overflow-wrap:break-word}
-.status-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700}
-.status-badge.pending{background:var(--warning-light);color:var(--warning)}
-.status-badge.validated{background:var(--success-light);color:var(--success)}
-.status-badge.refused{background:var(--error-light);color:var(--error)}
-.action-btns{display:flex;gap:5px;flex-wrap:wrap}
-.action-btn{padding:6px 11px;border-radius:6px;font:inherit;font-size:11px;font-weight:600;cursor:pointer;border:none;text-decoration:none;display:inline-block;transition:all .14s}
-.action-btn.view{background:var(--info-light);color:var(--info)}
-.action-btn.view:hover{background:var(--info);color:#fff}
-.action-btn.validate{background:var(--success-light);color:var(--success)}
-.action-btn.validate:hover{background:var(--success);color:#fff}
-.action-btn.refuse{background:var(--error-light);color:var(--error)}
-.action-btn.refuse:hover{background:var(--error);color:#fff}
-.action-btn.pending{background:var(--warning-light);color:var(--warning)}
-.action-btn.pending:hover{background:var(--warning);color:#fff}
-.action-btn.delete{background:#fbdada;color:#8f2323}
-.action-btn.delete:hover{background:#8f2323;color:#fff}
-.refuse-form{margin-top:8px;display:flex;gap:8px}
-.refuse-form input{flex:1;padding:8px 11px;border:1px solid var(--border-strong);border-radius:6px;font:inherit;font-size:13px}
-.refuse-form button{padding:8px 15px;background:var(--error);color:#fff;border:none;border-radius:6px;font:inherit;font-weight:600;cursor:pointer}
-.loading{text-align:center;padding:40px;color:var(--text-muted);font-size:14px}
-.spinner{width:30px;height:30px;border:3px solid var(--border-color);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+.status-badge{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600}
+.status-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.status-badge.pending{color:var(--warning)}
+.status-badge.validated{color:var(--success)}
+.status-badge.refused{color:var(--error)}
+.action-btns{display:flex;gap:4px;flex-wrap:wrap}
+.action-btn{padding:4px 9px;border-radius:5px;font:inherit;font-size:12px;font-weight:550;cursor:pointer;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-secondary);text-decoration:none;display:inline-block}
+.action-btn.view{color:var(--info);border-color:#c3d6e6}
+.action-btn.view:hover{background:var(--info);color:#fff;border-color:var(--info)}
+.action-btn.validate{color:var(--success);border-color:#bcd8c8}
+.action-btn.validate:hover{background:var(--success);color:#fff;border-color:var(--success)}
+.action-btn.pending:hover{background:var(--warning);color:#fff;border-color:var(--warning)}
+.action-btn.refuse{color:var(--error);border-color:#e8c3c3}
+.action-btn.refuse:hover{background:var(--error);color:#fff;border-color:var(--error)}
+.action-btn.delete{color:var(--text-muted);border-color:var(--border-color)}
+.action-btn.delete:hover{color:var(--error);border-color:#e8c3c3}
+.refuse-form{margin-top:8px;display:flex;flex-direction:column;gap:6px;padding:10px;background:var(--error-light);border:1px solid #ecc9c9;border-radius:6px}
+.refuse-form select,.refuse-form textarea{width:100%;padding:6px 8px;border:1px solid var(--border-strong);border-radius:5px;font:inherit;font-size:13px;background:#fff;color:var(--text-primary)}
+.refuse-form textarea{resize:vertical;min-height:52px;line-height:1.4}
+.refuse-form select:focus,.refuse-form textarea:focus{outline:none;border-color:var(--error);box-shadow:0 0 0 3px rgba(180,45,45,.12)}
+.refuse-form .refuse-actions{display:flex;gap:6px;justify-content:flex-end}
+.refuse-form button{padding:6px 12px;background:var(--error);color:#fff;border:1px solid var(--error);border-radius:5px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.refuse-form button.refuse-cancel{background:#fff;color:var(--text-secondary);border-color:var(--border-strong)}
+.loading{text-align:center;padding:36px;color:var(--text-muted);font-size:14px}
+.spinner{width:24px;height:24px;border:2px solid var(--border-color);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 10px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.empty-state{text-align:center;padding:40px;color:var(--text-muted)}
-.err-box{background:var(--error-light);border:1px solid #f6cdcd;color:#8f2323;border-radius:var(--radius-sm);padding:13px 15px;font-size:13px;margin:14px 22px}
-.err-box code{font-family:'JetBrains Mono',monospace;font-size:11.5px;word-break:break-all}
+.empty-state{text-align:center;padding:32px;color:var(--text-muted)}
+.err-box{background:var(--error-light);border:1px solid #ecc9c9;color:#7d2020;border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;margin:14px 20px}
+.err-box code{font-family:var(--mono);font-size:11.5px;word-break:break-all}
+.note{font-size:13px;color:var(--text-secondary);margin:-8px 0 16px}
+.version-badge{background:var(--warning-light);color:var(--warning);font-size:11px;font-weight:650;padding:0 6px;border-radius:4px;margin-right:6px;border:1px solid #ecd9a6}
+.row-versioned{background:#fffcf3;box-shadow:inset 3px 0 0 #d9a93a}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
-@media (max-width:640px){.container{padding:18px 14px 48px}.header{padding:24px 20px}.event-content{padding:16px}.cards-table{table-layout:auto}}
+@media (max-width:640px){.container{padding:0 14px 48px}.event-content{padding:14px}.cards-table{table-layout:auto}.tournament-header{flex-direction:column;align-items:flex-start}.main-tabs{gap:18px}.tournament-item{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
 
 <div id="auth-screen" style="display:none;position:fixed;inset:0;background:var(--canvas);z-index:9999;align-items:center;justify-content:center;">
-<div style="background:var(--surface);padding:40px 36px;border-radius:20px;box-shadow:var(--shadow-lg);text-align:center;max-width:400px;width:90%;">
-<div style="font-size:44px;margin-bottom:14px;">🔐</div>
-<h2 style="font-family:'Space Grotesk',sans-serif;margin-bottom:6px;">Admin Console</h2>
+<div style="background:var(--surface);padding:36px 32px;border-radius:12px;border:1px solid var(--border-color);text-align:center;max-width:400px;width:90%;">
+<div style="font-size:40px;margin-bottom:10px;">🔐</div>
+<h2 style="font-size:19px;font-weight:650;margin-bottom:4px;">System Cards admin</h2>
 <p style="color:var(--text-secondary);margin-bottom:22px;font-size:14px;">Enter your password to continue</p>
-<input type="password" id="password-input" onkeypress="if(event.key==='Enter')login()" placeholder="Password" style="width:100%;padding:13px 15px;border:1px solid var(--border-strong);border-radius:10px;font:inherit;font-size:15px;margin-bottom:14px;">
+<input type="password" id="password-input" onkeypress="if(event.key==='Enter')login()" placeholder="Password" style="width:100%;padding:13px 15px;border:1px solid var(--border-strong);border-radius:6px;font:inherit;font-size:15px;margin-bottom:14px;">
 <div id="auth-error" style="display:none;background:var(--error-light);color:var(--error);padding:10px;border-radius:8px;margin-bottom:14px;font-size:13.5px;">Password not recognised. Try again.</div>
 <button onclick="login()" class="btn btn-primary" style="width:100%;padding:13px;font-size:15px;">Log in</button>
 </div>
@@ -182,16 +174,16 @@ body{
 <div id="main-content" style="display:none;">
 <div class="container">
 
-<div class="header"><div class="header-inner">
-<div class="header-mark">🎴</div>
-<div><h1>System Cards Admin Console</h1><p>Manage system cards across all EBL and WBF tournaments</p></div>
-</div></div>
+<header class="header">
+<div class="suits" aria-hidden="true"><span>♠︎</span><span>♥︎</span><span>♦︎</span><span>♣︎</span></div>
+<div><h1>System Cards admin</h1><p>EBL and WBF tournaments</p></div>
+</header>
 
 <div class="main-tabs">
 <button class="main-tab active" data-tab="tournaments">⚙️ Tournaments</button>
-<button class="main-tab" data-tab="manage">📋 Manage Cards</button>
-<button class="main-tab" data-tab="generate">🔗 Generate Iframes</button>
-<button class="main-tab" data-tab="pairs-table">📑 SC Links</button>
+<button class="main-tab" data-tab="manage">📋 Manage cards</button>
+<button class="main-tab" data-tab="generate">🔗 Iframe codes</button>
+<button class="main-tab" data-tab="pairs-table">📑 SC links</button>
 </div>
 
 <!-- ============ TOURNAMENTS ============ -->
@@ -205,7 +197,8 @@ body{
 <div class="form-group"><label class="form-label">Pairs URL</label><input type="text" id="new-pairs" class="form-input" placeholder="https://db.eurobridge.org/..."><div class="form-hint">Leave empty if this tournament has no pair events.</div></div>
 <button class="btn btn-primary" onclick="addTournament()">Add tournament</button>
 </div>
-<div class="card"><div class="card-title">📋 Configured tournaments</div><div id="tournament-list" class="tournament-list"><div class="loading"><div class="spinner"></div>Loading…</div></div></div>
+<div class="card"><div class="card-title">📋 Active tournaments</div><p class="note">Loaded every time you open Manage cards.</p><div id="tournament-list" class="tournament-list"><div class="loading"><div class="spinner"></div>Loading…</div></div></div>
+<div class="card" id="archived-card" style="display:none"><div class="card-title">🗄️ Archived tournaments</div><p class="note">Finished events. Cards and upload pages stay online, but the console only loads them when you open one.</p><div id="archived-list" class="tournament-list archived"></div></div>
 </div>
 
 <!-- ============ MANAGE ============ -->
@@ -220,7 +213,7 @@ body{
 <!-- ============ GENERATE ============ -->
 <div id="generate-tab" class="tab-content">
 <div class="card">
-<div class="card-title">🔗 Generate iframe codes</div>
+<div class="card-title">🔗 Iframe codes</div>
 <div class="form-group"><label class="form-label">Tournament</label><select id="gen-tournament" class="form-select" onchange="loadEventsForGen()"><option value="">Select…</option></select></div>
 <div id="gen-events-wrap" style="display:none"><div class="form-group"><label class="form-label">Event</label><select id="gen-event" class="form-select" onchange="generateCodes()"><option value="">Select…</option></select></div></div>
 <div id="gen-codes" style="display:none"></div>
@@ -230,7 +223,7 @@ body{
 <!-- ============ SC LINKS ============ -->
 <div id="pairs-table-tab" class="tab-content">
 <div class="card">
-<div class="card-title">📑 SC Links</div>
+<div class="card-title">📑 SC links</div>
 <div class="form-group" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
 <div style="flex:1;min-width:200px"><label class="form-label">Tournament</label>
 <select id="pt-tournament" class="form-input" onchange="onPtTournamentChange()"><option value="">Select tournament…</option></select></div>
@@ -296,15 +289,43 @@ async function loadConfig(){
   renderList();
 }
 
+function isArchived(code){var t=(CONFIG.tournaments||{})[code];return !!(t&&t.archived);}
+function activeCodes(){return Object.keys(CONFIG.tournaments||{}).filter(function(c){return !isArchived(c);});}
+function archivedCodes(){return Object.keys(CONFIG.tournaments||{}).filter(isArchived);}
+
+function tournamentRow(code){
+  var x=CONFIG.tournaments[code]||{};var org=(x.org||'ebl').toLowerCase();var q=JSON.stringify(code).replace(/"/g,'&quot;');
+  var meta='Code '+esc(code)+(x.teamsUrl?', teams':'')+(x.pairsUrl?', pairs':'')+(x.archived&&x.archivedAt?' — archived '+esc(new Date(x.archivedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})):'');
+  var actions=x.archived
+    ? '<button class="btn btn-ghost btn-sm" onclick="setArchived('+q+',false)">Restore</button><button class="btn btn-danger btn-sm" onclick="delTournament('+q+')">Delete</button>'
+    : '<button class="btn btn-ghost btn-sm" onclick="setArchived('+q+',true)">Archive</button>';
+  return '<div class="tournament-item"><div><h4>'+esc(x.name||code)+'<span class="badge '+esc(org)+'">'+esc(org.toUpperCase())+'</span></h4><p>'+meta+'</p></div><div class="item-actions">'+actions+'</div></div>';
+}
+
 function renderList(){
-  var c=document.getElementById('tournament-list');var t=CONFIG.tournaments||{};var k=Object.keys(t);
-  if(k.length===0){c.innerHTML='<div class="empty-state">No tournaments yet. Add one above.</div>';return;}
-  c.innerHTML=k.map(function(code){
-    var x=t[code]||{};var org=(x.org||'ebl').toLowerCase();
-    return '<div class="tournament-item"><div><h4>'+esc(x.name||code)+' <span class="badge '+esc(org)+'">'+esc(org.toUpperCase())+'</span></h4>'
-      +'<p>Code: <strong>'+esc(code)+'</strong>'+(x.teamsUrl?' • Teams ✓':' • Teams —')+(x.pairsUrl?' • Pairs ✓':' • Pairs —')+'</p></div>'
-      +'<button class="btn btn-danger btn-sm" onclick="delTournament('+JSON.stringify(code).replace(/"/g,'&quot;')+')">Delete</button></div>';
-  }).join('');
+  var c=document.getElementById('tournament-list'),ac=activeCodes(),ar=archivedCodes();
+  c.innerHTML=ac.length?ac.map(tournamentRow).join(''):'<div class="empty-state">No active tournaments. Add one above, or restore one from the archive.</div>';
+  var card=document.getElementById('archived-card');
+  card.style.display=ar.length?'block':'none';
+  document.getElementById('archived-list').innerHTML=ar.map(tournamentRow).join('');
+}
+
+async function setArchived(code,flag){
+  var cur=CONFIG.tournaments[code];if(!cur)return;
+  var data=Object.assign({},cur,{archived:flag});
+  if(flag)data.archivedAt=new Date().toISOString();else delete data.archivedAt;
+  var r=await fetch(API_BASE+'/config.js',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'update',tournamentCode:code,tournamentData:data})});
+  if(!r.ok){alert('Could not '+(flag?'archive':'restore')+' the tournament (HTTP '+r.status+').');return;}
+  var d=await r.json();CONFIG=d.config;renderList();manageLoaded=false;
+}
+
+// Builds <option>s for a tournament <select>: active first, archived grouped below.
+function fillTournamentSelect(sel,placeholder){
+  var cur=sel.value;sel.innerHTML='<option value="">'+placeholder+'</option>';
+  activeCodes().forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=CONFIG.tournaments[c].name||c;sel.appendChild(o);});
+  var ar=archivedCodes();
+  if(ar.length){var g=document.createElement('optgroup');g.label='Archived';ar.forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=CONFIG.tournaments[c].name||c;g.appendChild(o);});sel.appendChild(g);}
+  if(cur)sel.value=cur;
 }
 
 async function addTournament(){
@@ -329,14 +350,7 @@ async function delTournament(code){
 }
 
 /* ---------- generate iframes ---------- */
-function populateGenSelect(){
-  var s=document.getElementById('gen-tournament');var cur=s.value;
-  s.innerHTML='<option value="">Select…</option>';
-  Object.keys(CONFIG.tournaments||{}).forEach(function(c){
-    var o=document.createElement('option');o.value=c;o.textContent=CONFIG.tournaments[c].name||c;s.appendChild(o);
-  });
-  if(cur)s.value=cur;
-}
+function populateGenSelect(){fillTournamentSelect(document.getElementById('gen-tournament'),'Select…');}
 
 async function loadEventsForGen(){
   var code=document.getElementById('gen-tournament').value;
@@ -382,102 +396,129 @@ function fmtDate(d){return d?new Date(d).toLocaleDateString('en-GB',{day:'2-digi
 /* ============================================================
    MANAGE CARDS  — index-based DOM ids, isolated failures
    ============================================================ */
+async function fetchTournament(code){
+  var t=CONFIG.tournaments[code]||{};
+  var r=await Promise.all([
+    getJSON(API_BASE+'/teams.js?tournament='+encodeURIComponent(code),{teams:[]}),
+    getJSON(API_BASE+'/pairs.js?tournament='+encodeURIComponent(code),{pairs:[]}),
+    getJSON(API_BASE+'/cards.js?tournament='+encodeURIComponent(code),{cards:[]})
+  ]);
+  var teams=r[0].data.teams||[],pairs=r[1].data.pairs||[],cards=r[2].data.cards||[];
+  var warnings=[];
+  if(!r[0].ok)warnings.push('teams.js — '+r[0].error);
+  if(!r[1].ok)warnings.push('pairs.js — '+r[1].error);
+  if(!r[2].ok)warnings.push('cards.js — '+r[2].error);
+  if(r[0].ok&&t.teamsUrl&&teams.length===0)warnings.push('teams.js answered with an empty list. Open '+API_BASE+'/teams.js?tournament='+code+' to check the source page and the parser.');
+
+  var map={};
+  teams.forEach(function(x){var k=x.event||'(no event)';(map[k]=map[k]||{name:k,type:'teams',entities:[]}).entities.push(x);});
+  pairs.forEach(function(x){var k=x.event||'(no event)';(map[k]=map[k]||{name:k,type:'pairs',entities:[]}).entities.push(x);});
+  var events=Object.keys(map).sort().map(function(k){return map[k];});
+
+  // Match cards to events on a normalised key, so "#26100 Open Teams",
+  // "Open_Teams" and "open teams" all land in the same place.
+  var byKey={};
+  events.forEach(function(ev){ev.cards=[];ev.folder=ev.name.replace(/^#\d+\s*/,'').replace(/\s+/g,'_');byKey[evKey(ev.name)]=ev;});
+  var orphans={};
+  cards.forEach(function(c){
+    var ev=byKey[evKey(c.folder)];
+    if(ev)ev.cards.push(c);
+    else{var f=c.folder||'(tournament root)';(orphans[f]=orphans[f]||[]).push(c);}
+  });
+  Object.keys(orphans).sort().forEach(function(f){
+    events.push({name:f.replace(/_/g,' '),folder:f,type:'teams',entities:[],cards:orphans[f],orphan:true});
+  });
+  var orphanCount=Object.keys(orphans).reduce(function(n,f){return n+orphans[f].length;},0);
+  if(orphanCount)warnings.push(orphanCount+' card(s) sit in folders that match no event: '+Object.keys(orphans).join(', ')+'. They are shown in the red tabs below.');
+
+  return {code:code,name:t.name||code,archived:!!t.archived,loaded:true,events:events,cards:cards,warnings:warnings,teamCount:teams.length,pairCount:pairs.length,orphanCount:orphanCount};
+}
+
+// Only active tournaments are fetched up front. Archived ones are listed
+// but not requested until someone opens them.
 async function loadManage(force){
   var c=document.getElementById('manage-container');
-  c.innerHTML='<div class="loading"><div class="spinner"></div>Loading tournaments…</div>';
-  var codes=Object.keys(CONFIG.tournaments||{});
-  if(!codes.length){c.innerHTML='<div class="empty-state">No tournaments configured.</div>';return;}
-
-  // Every tournament is fetched independently and in parallel:
-  // one failing endpoint can no longer wipe out the whole list.
-  MANAGE=await Promise.all(codes.map(async function(code){
-    var t=CONFIG.tournaments[code]||{};
-    var r=await Promise.all([
-      getJSON(API_BASE+'/teams.js?tournament='+encodeURIComponent(code),{teams:[]}),
-      getJSON(API_BASE+'/pairs.js?tournament='+encodeURIComponent(code),{pairs:[]}),
-      getJSON(API_BASE+'/cards.js?tournament='+encodeURIComponent(code),{cards:[]})
-    ]);
-    var teams=r[0].data.teams||[],pairs=r[1].data.pairs||[],cards=r[2].data.cards||[];
-    var warnings=[];
-    if(!r[0].ok)warnings.push('teams.js — '+r[0].error);
-    if(!r[1].ok)warnings.push('pairs.js — '+r[1].error);
-    if(!r[2].ok)warnings.push('cards.js — '+r[2].error);
-    if(r[0].ok&&t.teamsUrl&&teams.length===0)warnings.push('teams.js answered with an empty list. Open '+API_BASE+'/teams.js?tournament='+code+' to check the source page and the parser.');
-
-    var map={};
-    teams.forEach(function(x){var k=x.event||'(no event)';(map[k]=map[k]||{name:k,type:'teams',entities:[]}).entities.push(x);});
-    pairs.forEach(function(x){var k=x.event||'(no event)';(map[k]=map[k]||{name:k,type:'pairs',entities:[]}).entities.push(x);});
-    var events=Object.keys(map).sort().map(function(k){return map[k];});
-
-    // Match cards to events on a normalised key, so "#26100 Open Teams",
-    // "Open_Teams" and "open teams" all land in the same place.
-    var byKey={};
-    events.forEach(function(ev){ev.cards=[];ev.folder=ev.name.replace(/^#\d+\s*/,'').replace(/\s+/g,'_');byKey[evKey(ev.name)]=ev;});
-    var orphans={};
-    cards.forEach(function(c){
-      var ev=byKey[evKey(c.folder)];
-      if(ev)ev.cards.push(c);
-      else{var f=c.folder||'(tournament root)';(orphans[f]=orphans[f]||[]).push(c);}
-    });
-    // Any folder with no matching event still gets its own tab — cards are
-    // never silently hidden.
-    Object.keys(orphans).sort().forEach(function(f){
-      events.push({name:f.replace(/_/g,' '),folder:f,type:'teams',entities:[],cards:orphans[f],orphan:true});
-    });
-    var orphanCount=Object.keys(orphans).reduce(function(n,f){return n+orphans[f].length;},0);
-    if(orphanCount)warnings.push(orphanCount+' card(s) sit in folders that match no event: '+Object.keys(orphans).join(', ')+'. They are shown in the ⚠ tabs below.');
-
-    return {code:code,name:t.name||code,events:events,cards:cards,warnings:warnings,teamCount:teams.length,pairCount:pairs.length,orphanCount:orphanCount};
-  }));
-
+  c.innerHTML='<div class="loading"><div class="spinner"></div>Loading active tournaments…</div>';
+  var ac=activeCodes(),ar=archivedCodes();
+  if(!ac.length&&!ar.length){c.innerHTML='<div class="empty-state">No tournaments configured.</div>';return;}
+  var active=await Promise.all(ac.map(fetchTournament));
+  var archived=ar.map(function(code){var t=CONFIG.tournaments[code]||{};return {code:code,name:t.name||code,archived:true,loaded:false,events:[],cards:[],warnings:[]};});
+  MANAGE=active.concat(archived);
+  validationData={};
   manageLoaded=true;
   renderManage();
 }
 
-function renderManage(){
-  var c=document.getElementById('manage-container');
-  var brokenCount=MANAGE.filter(function(m){return m.warnings.length;}).length;
-  document.getElementById('manage-summary').textContent=MANAGE.length+' tournaments loaded'+(brokenCount?' — '+brokenCount+' need attention':'');
-
-  c.innerHTML=MANAGE.map(function(m,i){
+function sectionHTML(m,i){
+  var cls='tournament-section'+(m.archived?' is-archived':'')+(m.loaded?' loaded':'');
+  var stats;
+  if(!m.loaded){
+    stats='<span class="pill">Not loaded — open to load</span>';
+  }else{
     var entries=m.teamCount+m.pairCount;
-    var h='<div class="tournament-section" id="ts-'+i+'">'
-      +'<div class="tournament-header" onclick="toggleT('+i+')">'
-      +'<div class="tournament-title"><span class="chev">▶</span>'+esc(m.name)+'</div>'
-      +'<div class="tournament-stats">'
-      +'<span class="pill">'+m.events.length+' events</span>'
-      +'<span class="pill'+(entries===0?' alert':'')+'">'+entries+' entries</span>'
-      +'<span class="pill">'+m.cards.length+' cards in tournament</span>'
-      +(m.warnings.length?'<span class="pill alert">⚠ '+m.warnings.length+'</span>':'')
-      +'</div></div><div class="tournament-content" id="tc-'+i+'">';
-
-    if(m.warnings.length){
-      h+='<div class="err-box"><strong>Could not load everything for this tournament</strong><br>'
-        +m.warnings.map(function(w){return '<code>'+esc(w)+'</code>';}).join('<br>')+'</div>';
-    }
-    if(m.events.length){
-      h+='<div class="event-tabs" id="tabs-'+i+'">'
-        +m.events.map(function(ev,j){
-          var n=ev.cards.length;
-          var label=ev.orphan
-            ? '\u26A0 '+esc(ev.name)+' \u00B7 '+n+' cards'
-            : esc(ev.name)+' <span class="tab-count">'+ev.entities.length+(ev.type==='pairs'?' pairs':' teams')+'</span>'
-              +'<span class="tab-count'+(n?' has':'')+'">'+n+' cards</span>';
-          return '<button class="event-tab'+(ev.orphan?' orphan':'')+(j===0?' active':'')+'" onclick="showEv('+i+','+j+')">'+label+'</button>';
-        }).join('')
-        +'</div><div class="event-content" id="ec-'+i+'"></div>';
-    }else{
-      h+='<div class="empty-state">No events found for this tournament.<br><span style="font-size:13px">Check the Teams/Pairs URL in the Tournaments tab, then reload.</span></div>';
-    }
-    return h+'</div></div>';
-  }).join('');
+    stats='<span class="pill"><b>'+m.events.length+'</b> '+(m.events.length===1?'event':'events')+'</span>'
+      +'<span class="pill'+(entries===0?' alert':'')+'"><b>'+entries+'</b> entries</span>'
+      +'<span class="pill"><b>'+m.cards.length+'</b> cards</span>'
+      +(m.warnings.length?'<span class="pill alert"><b>'+m.warnings.length+'</b> to check</span>':'');
+  }
+  var h='<div class="'+cls+'" id="ts-'+i+'">'
+    +'<button type="button" class="tournament-header" onclick="toggleT('+i+')" aria-expanded="false">'
+    +'<span class="tournament-title"><span class="chev"></span>'+esc(m.name)+'</span>'
+    +'<span class="tournament-stats">'+stats+'</span></button>'
+    +'<div class="tournament-content" id="tc-'+i+'">';
+  if(!m.loaded)return h+'</div></div>';
+  if(m.warnings.length){
+    h+='<div class="err-box"><strong>Some data for this tournament could not be loaded</strong><br>'
+      +m.warnings.map(function(w){return '<code>'+esc(w)+'</code>';}).join('<br>')+'</div>';
+  }
+  if(m.events.length){
+    h+='<div class="event-tabs" id="tabs-'+i+'">'
+      +m.events.map(function(ev,j){
+        var n=ev.cards.length;
+        var label=ev.orphan
+          ? esc(ev.name)+' <span class="tab-count">'+n+' cards, no matching event</span>'
+          : esc(ev.name)+' <span class="tab-count">'+ev.entities.length+(ev.type==='pairs'?' pairs':' teams')+'</span>'
+            +'<span class="tab-count'+(n?' has':'')+'">'+n+' cards</span>';
+        return '<button class="event-tab'+(ev.orphan?' orphan':'')+(j===0?' active':'')+'" onclick="showEv('+i+','+j+')">'+label+'</button>';
+      }).join('')
+      +'</div><div class="event-content" id="ec-'+i+'"></div>';
+  }else{
+    h+='<div class="empty-state">No events found for this tournament.<br><span style="font-size:13px">Check the Teams/Pairs URL in the Tournaments tab, then reload.</span></div>';
+  }
+  return h+'</div></div>';
 }
 
-function toggleT(i){
-  var sec=document.getElementById('ts-'+i),box=document.getElementById('tc-'+i);
+function renderManage(){
+  var c=document.getElementById('manage-container');
+  var act=[],arc=[];
+  MANAGE.forEach(function(m,i){(m.archived?arc:act).push(i);});
+  var broken=MANAGE.filter(function(m){return m.loaded&&m.warnings.length;}).length;
+  document.getElementById('manage-summary').textContent=act.length+' active'+(act.length===1?' tournament':' tournaments')+(arc.length?', '+arc.length+' archived':'')+(broken?' — '+broken+' to check':'');
+  var h='';
+  if(act.length)h+=act.map(function(i){return sectionHTML(MANAGE[i],i);}).join('');
+  else h+='<div class="empty-state">No active tournaments.</div>';
+  if(arc.length){
+    h+='<div class="group-heading">Archived <small>loaded only when you open one</small></div>'
+      +arc.map(function(i){return sectionHTML(MANAGE[i],i);}).join('');
+  }
+  c.innerHTML=h;
+}
+
+async function toggleT(i){
+  var m=MANAGE[i];
+  if(!m.loaded){
+    var sec=document.getElementById('ts-'+i);
+    sec.querySelector('.tournament-stats').innerHTML='<span class="pill">Loading…</span>';
+    var loaded=await fetchTournament(m.code);
+    MANAGE[i]=m=loaded;
+    var tmp=document.createElement('div');tmp.innerHTML=sectionHTML(m,i);
+    sec.replaceWith(tmp.firstChild);
+  }
+  var sec2=document.getElementById('ts-'+i),box=document.getElementById('tc-'+i);
   var open=!box.classList.contains('open');
-  box.classList.toggle('open',open);sec.classList.toggle('open',open);
-  if(open&&MANAGE[i].events.length&&!document.getElementById('ec-'+i).innerHTML)showEv(i,0);
+  box.classList.toggle('open',open);sec2.classList.toggle('open',open);
+  sec2.querySelector('.tournament-header').setAttribute('aria-expanded',open);
+  if(open&&m.events.length&&!document.getElementById('ec-'+i).innerHTML)showEv(i,0);
 }
 
 async function showEv(i,j){
@@ -528,7 +569,7 @@ function renderEv(i,j){
   if(ev.orphan){
     h='<div class="err-box"><strong>These cards are stored in <code>'+esc(m.code)+'/'+esc(ev.folder)+'/</code>, which matches no event in the entry list.</strong><br>'
       +'Most often the iframe was published without <code>&amp;event=…</code>, so uploads fell into the default <code>CC</code> folder. '
-      +'Fix the iframe in the Generate Iframes tab, then move these files in R2 into the right event folder.</div>'+h;
+      +'Fix the iframe in the Iframe codes tab, then move these files in R2 into the right event folder.</div>'+h;
   }else if(entities.length===0){
     h+='<div class="err-box">No '+entityLabel.toLowerCase()+' came back for this event. The upload page reads the same endpoint, so if it works there, reload this tab.</div>';
   }
@@ -549,12 +590,12 @@ function renderEv(i,j){
       var vMatch=card.fileName.match(/_v(\d+)\.pdf$/i),vNum=vMatch?parseInt(vMatch[1]):1;
       var base=card.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
       var hasMultiple=(baseCount[base]||1)>1;
-      var vBadge=vNum>1?'<span style="background:#e8a33d;color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;margin-right:6px">v'+vNum+'</span>':'';
-      var rowStyle=hasMultiple?' style="background:#fffaf0;box-shadow:inset 3px 0 0 #e8a33d"':'';
+      var vBadge=vNum>1?'<span class="version-badge">v'+vNum+'</span>':'';
+      var rowStyle=hasMultiple?' class="row-versioned"':'';
       var args=i+','+j+','+JSON.stringify(card.fileName).replace(/"/g,'&quot;');
-      h+='<tr'+rowStyle+'><td><strong style="font-size:14.5px">'+esc(team)+'</strong></td>'
-        +'<td>'+vBadge+'<div style="font-size:13.5px;font-weight:500;display:inline-block">'+players+'</div>'
-        +'<div style="font-size:11px;color:var(--text-muted);margin-top:3px;font-family:\'JetBrains Mono\',monospace">'+esc(card.fileName)+'</div></td>'
+      h+='<tr'+rowStyle+'><td><strong style="font-size:14px">'+esc(team)+'</strong></td>'
+        +'<td><div style="font-size:13.5px;font-weight:500">'+players+'</div>'
+        +'<div style="font-size:11px;color:var(--text-muted);margin-top:3px;font-family:var(--mono)">'+vBadge+esc(card.fileName)+'</div></td>'
         +'<td>'+fmtDate(card.lastModified)+'</td>'
         +'<td><span class="status-badge '+sc+'">'+st+'</span>'+(reason?'<br><small style="color:var(--error)">'+esc(reason)+'</small>':'')+'</td>'
         +'<td><div class="action-btns">'
@@ -563,7 +604,7 @@ function renderEv(i,j){
         +'<button class="action-btn pending" onclick="doVal('+args+',\'pending\')">Reset</button>'
         +'<button class="action-btn refuse" onclick="showRefuse(this)">Refuse</button>'
         +'<button class="action-btn delete" onclick="doDelete('+args+')">Delete</button>'
-        +'</div><div class="refuse-form" style="display:none"><input placeholder="Reason…"><button onclick="doRefuse(this,'+args+')">Save</button></div></td></tr>';
+        +'</div><div class="refuse-form" style="display:none">'+refusePresetSelect()+'<textarea class="refuse-text" rows="2" placeholder="Choose a reason above or write your own…"></textarea><div class="refuse-actions"><button class="refuse-cancel" onclick="showRefuse(this)">Cancel</button><button onclick="doRefuse(this,'+args+')">Refuse card</button></div></div></td></tr>';
     });
     h+='</tbody></table>';
   }else{
@@ -584,10 +625,33 @@ function getPlayersFromParts(parts,entities){
   return lines.join('<br>');
 }
 
-function showRefuse(btn){var f=btn.parentNode.nextElementSibling;f.style.display=f.style.display==='none'?'flex':'none';}
+var REFUSE_REASONS=[
+  "The names on the system card don't match the selected players. Please fix this and re-upload.",
+  "The system card is rotated. Please fix this and re-upload.",
+  "Invalid template. Please use a valid template and re-upload.",
+  "Please remove the blank page(s) and re-upload.",
+  "The players' names must be written on the system card. Please fix this and re-upload.",
+  "The system card exceeds the maximum number of extra sheets allowed."
+];
+function refusePresetSelect(){
+  return '<select class="refuse-preset" onchange="pickRefuseReason(this)"><option value="">Choose a reason…</option>'
+    +REFUSE_REASONS.map(function(r,k){return '<option value="'+k+'">'+esc(r)+'</option>';}).join('')
+    +'<option value="other">Other — write your own</option></select>';
+}
+function pickRefuseReason(sel){
+  var ta=sel.parentNode.querySelector('.refuse-text');
+  if(sel.value==='other'){ta.value='';ta.focus();}
+  else if(sel.value!==''){ta.value=REFUSE_REASONS[+sel.value];}
+}
+function showRefuse(btn){
+  var f=btn.closest('td').querySelector('.refuse-form');
+  var open=f.style.display==='none';
+  f.style.display=open?'flex':'none';
+  if(open)f.querySelector('.refuse-preset').focus();
+}
 async function doRefuse(btn,i,j,fn){
-  var reason=btn.previousElementSibling.value.trim();
-  if(!reason){alert('Enter a reason.');return;}
+  var reason=btn.closest('.refuse-form').querySelector('.refuse-text').value.trim();
+  if(!reason){alert('Choose a reason or write one.');return;}
   await doVal(i,j,fn,{status:'refused',reason:reason});
 }
 
@@ -618,12 +682,8 @@ async function doDelete(i,j,fn){
    SC LINKS
    ============================================================ */
 function initPairsTable(){
-  var sel=document.getElementById('pt-tournament'),cur=sel.value;
-  sel.innerHTML='<option value="">Select tournament…</option>';
-  Object.keys(CONFIG.tournaments||{}).forEach(function(code){
-    var o=document.createElement('option');o.value=code;o.textContent=CONFIG.tournaments[code].name||code;sel.appendChild(o);
-  });
-  if(cur)sel.value=cur;
+  var sel=document.getElementById('pt-tournament');
+  fillTournamentSelect(sel,'Select tournament…');
   if(sel.value)buildPairsTable();
 }
 
@@ -714,7 +774,7 @@ async function buildPairsTable(){
   var lastCardDate=newest&&newest.lastModified?new Date(newest.lastModified).toLocaleString('en-GB'):'N/A';
 
   container.innerHTML='<div style="text-align:center;padding:30px 16px">'
-    +'<div style="font-size:44px;margin-bottom:10px">📊</div>'
+    +'<div style="font-size:40px;margin-bottom:8px">📊</div>'
     +'<p style="font-size:16px;font-weight:600;margin-bottom:6px">'+rows.length+' pairs across '+allCards.length+' system cards</p>'
     +'<p style="color:var(--text-muted);font-size:13px;margin-bottom:22px">Download the full table as a spreadsheet.</p>'
     +'<button class="btn btn-success" style="padding:14px 30px;font-size:15px" onclick="exportPairsExcel()">⬇️ Download Excel</button>'
