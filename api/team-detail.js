@@ -192,27 +192,42 @@ export default async function handler(req, res) {
 function buildTeamBlock(t, allCards) {
   const teamSan = sanitize(t.name);
 
-  // Cards belonging to this team — match by filename prefix
+  // Roster IDs of this team (as strings, NPCs included: a card is never
+  // filed under a captain alone, but including them is harmless).
+  const rosterIds = new Set((t.players || []).map(p => String(p.wbfId)));
+
+  // Cards belonging to this team.
+  //
+  // Historically we matched ONLY by filename prefix (TEAMNAME_...), which
+  // breaks as soon as the organisers rename a team on Fotis: the cards
+  // uploaded under the old name no longer start with the new prefix and
+  // the team shows "No System Cards" even though everything is uploaded.
+  //
+  // We now match by the players on the card (WBF IDs from D1, or parsed
+  // from the filename for older rows), which never change when a team is
+  // renamed. The filename prefix is kept as a fallback for legacy cards
+  // that carry no player IDs at all.
   const cardsForTeam = allCards
-    .filter(c => c.file_name && c.file_name.startsWith(teamSan + '_'))
+    .filter(c => c.file_name && cardBelongsToTeam(c, teamSan, rosterIds))
     .slice()
     .sort((a, b) => {
-      // Same grouping logic as the player view: group by base, newest first
-      const baseA = a.file_name.replace(/_v\d+\.pdf$/i, '.pdf');
-      const baseB = b.file_name.replace(/_v\d+\.pdf$/i, '.pdf');
-      if (baseA !== baseB) return baseA.localeCompare(baseB);
+      // Group by pair (same players), newest first inside each group
+      const keyA = versionGroupKey(a);
+      const keyB = versionGroupKey(b);
+      if (keyA !== keyB) return keyA.localeCompare(keyB);
       return new Date(b.uploaded_at) - new Date(a.uploaded_at);
     });
 
-  // Tag each card with version + replaced flag
-  const baseMap = {};
+  // Tag each card with version + replaced flag. Versions are grouped by
+  // the set of players (not by filename), so a card re-uploaded after a
+  // rename (NEWNAME_...) correctly replaces the one filed as OLDNAME_...
+  const groupMap = {};
   for (const c of cardsForTeam) {
-    const base = c.file_name.replace(/_v\d+\.pdf$/i, '.pdf');
-    (baseMap[base] = baseMap[base] || []).push(c);
+    const key = versionGroupKey(c);
+    (groupMap[key] = groupMap[key] || []).push(c);
   }
   const cards = cardsForTeam.map(c => {
-    const base     = c.file_name.replace(/_v\d+\.pdf$/i, '.pdf');
-    const siblings = baseMap[base] || [c];
+    const siblings = groupMap[versionGroupKey(c)] || [c];
     const isNewest = siblings.every(s =>
       s === c || new Date(s.uploaded_at) <= new Date(c.uploaded_at)
     );
@@ -295,6 +310,46 @@ function buildTeamBlock(t, allCards) {
 }
 
 // ───────────────────────── helpers ─────────────────────────
+
+// WBF IDs attached to a card: D1 players first, otherwise parsed from the
+// filename (format TEAM_ID1_SURNAME1_ID2_SURNAME2[_vN].pdf).
+function cardPlayerIds(c) {
+  const fromDb = (c.players || [])
+    .map(p => String(p.player_id ?? '').trim())
+    .filter(id => /^\d+$/.test(id));
+  if (fromDb.length) return [...new Set(fromDb)];
+  return playerIdsFromFileName(c.file_name);
+}
+
+function playerIdsFromFileName(fileName) {
+  const parts = String(fileName || '')
+    .replace(/\.pdf$/i, '')
+    .replace(/_v\d+$/i, '')
+    .split('_');
+  const ids = [];
+  for (let i = 1; i < parts.length; i += 2) {
+    if (/^\d+$/.test(parts[i])) ids.push(parts[i]);
+  }
+  return [...new Set(ids)];
+}
+
+// A card belongs to a team when every player on it is on that team's
+// roster (rename-proof), or — for legacy cards without IDs — when the
+// filename starts with the team's sanitised name.
+function cardBelongsToTeam(c, teamSan, rosterIds) {
+  const ids = cardPlayerIds(c);
+  if (ids.length >= 2 && ids.every(id => rosterIds.has(id))) return true;
+  // Legacy fallback (also keeps anything that matched before this fix).
+  return c.file_name.startsWith(teamSan + '_');
+}
+
+// Key that identifies "the same card, different version": the sorted set
+// of player IDs, falling back to the filename without _vN.
+function versionGroupKey(c) {
+  const ids = cardPlayerIds(c);
+  if (ids.length) return 'P:' + ids.slice().sort().join('-');
+  return 'F:' + String(c.file_name).replace(/_v\d+\.pdf$/i, '.pdf');
+}
 
 function displayStatus(raw) {
   // Admin UI writes 'validated' when accepting a card; the legacy convention

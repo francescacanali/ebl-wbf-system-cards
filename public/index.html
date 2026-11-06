@@ -321,13 +321,13 @@ function renderEntitiesList(){var ct=document.getElementById('entities-list');if
 // Build a map: base filename -> array of cards sharing that base
 var baseMap={};
 for(var bi=0;bi<ca.length;bi++){
-var bk=ca[bi].fileName.replace(/_v\d+\.pdf$/i,'.pdf');
+var bk=cardGroupKey(ca[bi].fileName);
 if(!baseMap[bk])baseMap[bk]=[];
 baseMap[bk].push(bi);
 }
 var lastBase2=null;
 for(var j=0;j<ca.length;j++){var c=ca[j];
-var baseThis=c.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
+var baseThis=cardGroupKey(c.fileName);
 var siblings=baseMap[baseThis]||[j];
 var hasAnySibling=siblings.length>1;
 var isNewest=true;
@@ -352,13 +352,15 @@ if(lastBase2&&baseMap[lastBase2]&&baseMap[lastBase2].length>1)h+='</div>';
 function getCardsForEntity(e,eventPrefix){
 // New format: files are in event folder, filename is TEAM_ID1_SURNAME1_ID2_SURNAME2.pdf
 var teamSan=sanitize(e.name),r=[];
+var rosterIds={};for(var ri=0;ri<e.players.length;ri++)rosterIds[String(e.players[ri].wbfId)]=true;
 // Clean event folder: "#26100 U26 Online Teams" -> "U26_Online_Teams"
 var eventFolder=CONFIG.eventFilter.replace(/^#\d+\s*/, '').replace(/\s+/g,'_');
 for(var i=0;i<uploadedCards.length;i++){
 var card=uploadedCards[i];
 var fn=card.fileName;
-// Match cards that start with team name and are in the correct event folder (if filtering)
-if(fn.startsWith(teamSan+'_')){
+// Match cards by the players on them (WBF IDs in the filename), so cards
+// survive a team rename; fall back to the team-name prefix for legacy files.
+if(cardMatchesEntity(fn,teamSan,rosterIds)){
 // If we have an event filter, only show cards from that folder
 if(CONFIG.eventFilter && card.folder){
 var cleanCardFolder=card.folder.replace(/^#\d+\s*/, '').replace(/\s+/g,'_');
@@ -370,13 +372,21 @@ r.push(card);
 // Sort ascending by date so v1 comes before v2
 // Sort: group by base filename (strips _v2 etc), newest first within each group
 r.sort(function(a,b){
-var baseA=a.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
-var baseB=b.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
+var baseA=cardGroupKey(a.fileName);
+var baseB=cardGroupKey(b.fileName);
 if(baseA!==baseB)return baseA.localeCompare(baseB);
 return new Date(b.lastModified)-new Date(a.lastModified); // newest first within group
 });
 return r;
 }
+
+// WBF IDs encoded in a filename: TEAM_ID1_SURNAME1_ID2_SURNAME2[_vN].pdf
+function cardIdsFromName(fn){var parts=String(fn||'').replace(/\.pdf$/i,'').replace(/_v\d+$/i,'').split('_'),ids=[],seen={};for(var i=1;i<parts.length;i+=2){if(/^\d+$/.test(parts[i])&&!seen[parts[i]]){seen[parts[i]]=1;ids.push(parts[i]);}}return ids;}
+// A card belongs to a team/pair when all its players are on the roster
+// (rename-proof), or when the filename starts with the current name.
+function cardMatchesEntity(fn,teamSan,rosterIds){var ids=cardIdsFromName(fn);if(ids.length>=2){var all=true;for(var i=0;i<ids.length;i++)if(!rosterIds[ids[i]]){all=false;break;}if(all)return true;}return fn.indexOf(teamSan+'_')===0;}
+// Versions of the same card = same set of players (even across a rename).
+function cardGroupKey(fn){var ids=cardIdsFromName(fn);if(ids.length)return 'P:'+ids.slice().sort().join('-');return 'F:'+String(fn).replace(/_v\d+\.pdf$/i,'.pdf');}
 
 function getCardStatus(fn){var s=validationStatus[fn];var helpHtml='<span class="status-help">What does this mean?<span class="tooltip">'+DISCLAIMER_TEXT+'</span></span>';if(!s||s==='pending')return{cssClass:'pending',label:'Pending file check',reason:null,helpHtml:''};if(s==='validated')return{cssClass:'validated',label:'✓ File accepted',reason:null,helpHtml:helpHtml};if(typeof s==='object'&&s.status==='refused')return{cssClass:'refused',label:'✗ File issue',reason:s.reason||'No reason provided',helpHtml:''};return{cssClass:'pending',label:'Pending file check',reason:null,helpHtml:''};}
 
