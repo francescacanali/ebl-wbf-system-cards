@@ -159,6 +159,7 @@ body{font-family:var(--font);background:var(--canvas);color:var(--text-primary);
 .err-box{background:var(--error-light);border:1px solid #ecc9c9;color:#7d2020;border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;margin:14px 20px}
 .err-box code{font-family:var(--mono);font-size:11.5px;word-break:break-all}
 .note{font-size:13px;color:var(--text-secondary);margin:-8px 0 16px}
+.renamed-chip{display:inline-flex;align-items:center;gap:4px;margin-top:5px;padding:2px 8px;border-radius:999px;font-size:10.5px;font-weight:600;letter-spacing:.02em;color:#3b5bdb;background:linear-gradient(135deg,rgba(76,110,245,.12),rgba(132,94,247,.12));border:1px solid rgba(76,110,245,.28);box-shadow:0 1px 6px rgba(76,110,245,.12);white-space:nowrap;cursor:help}
 .version-badge{background:var(--warning-light);color:var(--warning);font-size:11px;font-weight:650;padding:0 6px;border-radius:4px;margin-right:6px;border:1px solid #ecd9a6}
 .row-versioned{background:#fffcf3;box-shadow:inset 3px 0 0 #d9a93a}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
@@ -556,16 +557,15 @@ function renderEv(i,j){
 
   var evCards=(ev.cards||[]).slice();
   evCards.sort(function(a,b){
-    var ba=a.fileName.replace(/_v\d+\.pdf$/i,'.pdf'),bb=b.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
+    var ba=cardGroupKey(a.fileName),bb=cardGroupKey(b.fileName);
     if(ba!==bb)return ba.localeCompare(bb);
     return new Date(b.lastModified)-new Date(a.lastModified);
   });
 
-  var entityTeams={};entities.forEach(function(e){entityTeams[sanitize(e.name)]=e;});
   var withCards=0,pending=0,accepted=0,refused=0,seenTeams={};
   evCards.forEach(function(card){
-    var team=card.fileName.split('_')[0];
-    if(entityTeams[team]&&!seenTeams[team]){seenTeams[team]=1;withCards++;}
+    var ent=entityForCard(card.fileName,entities);
+    if(ent&&!seenTeams[ent.name]){seenTeams[ent.name]=1;withCards++;}
     var s=val[card.fileName];
     if(s==='validated')accepted++;
     else if(s==='refused'||(s&&typeof s==='object'&&s.status==='refused'))refused++;
@@ -588,7 +588,7 @@ function renderEv(i,j){
   }
 
   var baseCount={};
-  evCards.forEach(function(card){var b=card.fileName.replace(/_v\d+\.pdf$/i,'.pdf');baseCount[b]=(baseCount[b]||0)+1;});
+  evCards.forEach(function(card){var b=cardGroupKey(card.fileName);baseCount[b]=(baseCount[b]||0)+1;});
 
   if(evCards.length&&pending){
     h+='<div class="pending-nav" id="pn-'+i+'"><span><strong>'+pending+'</strong> pending</span>'
@@ -603,16 +603,20 @@ function renderEv(i,j){
       else if(s==='refused'){sc='refused';st='Refused';}
       else if(s&&typeof s==='object'&&s.status==='refused'){sc='refused';st='Refused';reason=s.reason||'';}
       var parts=card.fileName.replace(/\.pdf$/i,'').split('_');
-      var team=parts[0]||'Unknown';
+      var filedAs=parts[0]||'Unknown';
+      var ent=entityForCard(card.fileName,entities);
+      var team=ent?ent.name:filedAs;
+      var renamed=ent&&sanitize(ent.name)!==filedAs;
       var players=getPlayersFromParts(parts,entities);
       var vMatch=card.fileName.match(/_v(\d+)\.pdf$/i),vNum=vMatch?parseInt(vMatch[1]):1;
-      var base=card.fileName.replace(/_v\d+\.pdf$/i,'.pdf');
+      var base=cardGroupKey(card.fileName);
       var hasMultiple=(baseCount[base]||1)>1;
       var vBadge=vNum>1?'<span class="version-badge">v'+vNum+'</span>':'';
       var rowCls=[];if(hasMultiple)rowCls.push('row-versioned');if(sc==='pending')rowCls.push('row-pending');
       var rowStyle=rowCls.length?' class="'+rowCls.join(' ')+'"':'';
       var args=i+','+j+','+JSON.stringify(card.fileName).replace(/"/g,'&quot;');
-      h+='<tr'+rowStyle+'><td><strong style="font-size:14px">'+esc(team)+'</strong></td>'
+      h+='<tr'+rowStyle+'><td><strong style="font-size:14px">'+esc(team)+'</strong>'
+        +(renamed?'<div class="renamed-chip" title="Uploaded before the team was renamed. The card is still linked to this team through the players\' WBF IDs.">\u21BB filed as '+esc(filedAs)+'</div>':'')+'</td>'
         +'<td><div style="font-size:13.5px;font-weight:500">'+players+'</div>'
         +'<div style="font-size:11px;color:var(--text-muted);margin-top:3px;font-family:var(--mono)">'+vBadge+esc(card.fileName)+'</div></td>'
         +'<td>'+fmtDate(card.lastModified)+'</td>'
@@ -646,6 +650,25 @@ function jumpPending(i,dir){
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   rows[k].scrollIntoView({block:'center',behavior:reduce?'auto':'smooth'});
   var pos=document.getElementById('pnpos-'+i);if(pos)pos.textContent=(k+1)+' of '+rows.length;
+}
+
+// WBF IDs encoded in a filename: TEAM_ID1_SURNAME1_ID2_SURNAME2[_vN].pdf
+function cardIdsFromName(fn){var parts=String(fn||'').replace(/\.pdf$/i,'').replace(/_v\d+$/i,'').split('_'),ids=[],seen={};for(var i=1;i<parts.length;i+=2){if(/^\d+$/.test(parts[i])&&!seen[parts[i]]){seen[parts[i]]=1;ids.push(parts[i]);}}return ids;}
+// Versions of the same card = same set of players (even across a team rename).
+function cardGroupKey(fn){var ids=cardIdsFromName(fn);if(ids.length)return 'P:'+ids.slice().sort().join('-');return 'F:'+String(fn).replace(/_v\d+\.pdf$/i,'.pdf');}
+// Current team/pair of a card: the one whose roster holds all its players
+// (rename-proof); falls back to the filename prefix for legacy files.
+function entityForCard(fn,entities){
+  var ids=cardIdsFromName(fn);
+  if(ids.length>=2){
+    for(var k=0;k<(entities||[]).length;k++){
+      var roster={};(entities[k].players||[]).forEach(function(p){roster[String(p.wbfId)]=1;});
+      if(ids.every(function(id){return roster[id];}))return entities[k];
+    }
+  }
+  var prefix=String(fn||'').split('_')[0];
+  for(var j=0;j<(entities||[]).length;j++)if(sanitize(entities[j].name)===prefix)return entities[j];
+  return null;
 }
 
 function getPlayersFromParts(parts,entities){

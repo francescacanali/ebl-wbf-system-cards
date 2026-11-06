@@ -375,8 +375,9 @@ function addToListInMap(targetMap, mapKey, listValue) {
 }
 
 // Set card.replaced = true on every card that has a newer version of
-// the same file in the same sub-event (A.pdf vs A_v2.pdf). Same rule
-// as team-detail.js: newest uploaded_at of a base name is current.
+// the same card in the same sub-event (A.pdf vs A_v2.pdf, or the same
+// players filed under an old team name). Same rule as team-detail.js:
+// newest uploaded_at of a group is current.
 //   cards              - array of D1 cards (modified in place)
 //   cardsByVersionKey  - Map "subEvent|baseFileName" -> [cards]
 //   versionKey         - that key for one card
@@ -386,8 +387,14 @@ function addToListInMap(targetMap, mapKey, listValue) {
 function markReplacedCards(cards) {
   const cardsByVersionKey = new Map();
   for (const card of cards) {
+    // Same pair of players = same card, even if the team was renamed
+    // between uploads (OLDNAME_1_A_2_B.pdf -> NEWNAME_1_A_2_B.pdf).
+    const playerIds    = [...new Set((card.players || [])
+      .map(p => String(p.player_id ?? '').trim())
+      .filter(id => /^\d+$/.test(id)))].sort();
     const baseFileName = String(card.file_name || '').replace(/_v\d+\.pdf$/i, '.pdf');
-    const versionKey   = normalizeSubEvent(card.sub_event) + '|' + baseFileName;
+    const versionKey   = normalizeSubEvent(card.sub_event) + '|' +
+      (playerIds.length ? 'P:' + playerIds.join('-') : 'F:' + baseFileName);
     addToListInMap(cardsByVersionKey, versionKey, card);
   }
   for (const siblingCards of cardsByVersionKey.values()) {
