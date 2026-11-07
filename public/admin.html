@@ -658,18 +658,8 @@ function cardIdsFromName(fn){var parts=String(fn||'').replace(/\.pdf$/i,'').repl
 function cardGroupKey(fn){var ids=cardIdsFromName(fn);if(ids.length)return 'P:'+ids.slice().sort().join('-');return 'F:'+String(fn).replace(/_v\d+\.pdf$/i,'.pdf');}
 // Current team/pair of a card: the one whose roster holds all its players
 // (rename-proof); falls back to the filename prefix for legacy files.
-function entityForCard(fn,entities){
-  var ids=cardIdsFromName(fn);
-  if(ids.length>=2){
-    for(var k=0;k<(entities||[]).length;k++){
-      var roster={};(entities[k].players||[]).forEach(function(p){roster[String(p.wbfId)]=1;});
-      if(ids.every(function(id){return roster[id];}))return entities[k];
-    }
-  }
-  var prefix=String(fn||'').split('_')[0];
-  for(var j=0;j<(entities||[]).length;j++)if(sanitize(entities[j].name)===prefix)return entities[j];
-  return null;
-}
+function bestEntityForCard(fn,list){var ids=cardIdsFromName(fn),prefix=String(fn||'').split('_')[0],toks=[];if(!ids.length){toks=String(fn||'').replace(/\.pdf$/i,'').replace(/_v\d+$/i,'').split('_').slice(1).filter(function(x){return x&&!/^\d+$/.test(x);}).map(function(x){return sanitize(x);});}var best=null,bs=0,bp=false;for(var k=0;k<(list||[]).length;k++){var e=list[k],ri={},rs={};(e.players||[]).forEach(function(p){ri[String(p.wbfId)]=1;String(p.fullName||'').trim().split(/\s+/).forEach(function(w){var s2=sanitize(w);if(s2.length>1)rs[s2]=1;});});var sc=0;if(ids.length){for(var i=0;i<ids.length;i++)if(ri[ids[i]])sc++;}else{for(var j=0;j<toks.length;j++)if(rs[toks[j]])sc++;}var ip=sanitize(e.name)===prefix;if(sc>bs||(sc===bs&&sc>0&&ip&&!bp)){best=e;bs=sc;bp=ip;}}if(!best){for(var m=0;m<(list||[]).length;m++)if(sanitize(list[m].name)===prefix){best=list[m];break;}}return best;}
+function entityForCard(fn,entities){return bestEntityForCard(fn,entities);}
 
 function getPlayersFromParts(parts,entities){
   var lookup={};

@@ -360,7 +360,7 @@ var card=uploadedCards[i];
 var fn=card.fileName;
 // Match cards by the players on them (WBF IDs in the filename), so cards
 // survive a team rename; fall back to the team-name prefix for legacy files.
-if(cardMatchesEntity(fn,teamSan,rosterIds)){
+if(cardMatchesEntity(fn,teamSan,rosterIds,e)){
 // If we have an event filter, only show cards from that folder
 if(CONFIG.eventFilter && card.folder){
 var cleanCardFolder=card.folder.replace(/^#\d+\s*/, '').replace(/\s+/g,'_');
@@ -384,7 +384,12 @@ return r;
 function cardIdsFromName(fn){var parts=String(fn||'').replace(/\.pdf$/i,'').replace(/_v\d+$/i,'').split('_'),ids=[],seen={};for(var i=1;i<parts.length;i+=2){if(/^\d+$/.test(parts[i])&&!seen[parts[i]]){seen[parts[i]]=1;ids.push(parts[i]);}}return ids;}
 // A card belongs to a team/pair when all its players are on the roster
 // (rename-proof), or when the filename starts with the current name.
-function cardMatchesEntity(fn,teamSan,rosterIds){var ids=cardIdsFromName(fn);if(ids.length>=2){var all=true;for(var i=0;i<ids.length;i++)if(!rosterIds[ids[i]]){all=false;break;}if(all)return true;}return fn.indexOf(teamSan+'_')===0;}
+// Owner = the team/pair sharing the most players with the card (by WBF ID,
+// or by surname for legacy files); ties and no-match fall back to the
+// filename prefix. Survives renames and roster substitutions.
+function bestEntityForCard(fn,list){var ids=cardIdsFromName(fn),prefix=String(fn||'').split('_')[0],toks=[];if(!ids.length){toks=String(fn||'').replace(/\.pdf$/i,'').replace(/_v\d+$/i,'').split('_').slice(1).filter(function(x){return x&&!/^\d+$/.test(x);}).map(function(x){return sanitize(x);});}var best=null,bs=0,bp=false;for(var k=0;k<(list||[]).length;k++){var e=list[k],ri={},rs={};(e.players||[]).forEach(function(p){ri[String(p.wbfId)]=1;String(p.fullName||'').trim().split(/\s+/).forEach(function(w){var s2=sanitize(w);if(s2.length>1)rs[s2]=1;});});var sc=0;if(ids.length){for(var i=0;i<ids.length;i++)if(ri[ids[i]])sc++;}else{for(var j=0;j<toks.length;j++)if(rs[toks[j]])sc++;}var ip=sanitize(e.name)===prefix;if(sc>bs||(sc===bs&&sc>0&&ip&&!bp)){best=e;bs=sc;bp=ip;}}if(!best){for(var m=0;m<(list||[]).length;m++)if(sanitize(list[m].name)===prefix){best=list[m];break;}}return best;}
+var _ownerCache={list:null,map:{}};
+function cardMatchesEntity(fn,teamSan,rosterIds,e){if(_ownerCache.list!==entities){_ownerCache={list:entities,map:{}};}if(!(fn in _ownerCache.map))_ownerCache.map[fn]=bestEntityForCard(fn,entities);var own=_ownerCache.map[fn];return own?own===e:fn.indexOf(teamSan+'_')===0;}
 // Versions of the same card = same set of players (even across a rename).
 function cardGroupKey(fn){var ids=cardIdsFromName(fn);if(ids.length)return 'P:'+ids.slice().sort().join('-');return 'F:'+String(fn).replace(/_v\d+\.pdf$/i,'.pdf');}
 

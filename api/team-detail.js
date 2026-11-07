@@ -165,14 +165,18 @@ export default async function handler(req, res) {
 
     // 5. Build the response per team, optionally narrowed to one team
     const wanted = team
-      ? inEvent.filter(t => t.name.toUpperCase() === team.toUpperCase())
+      ? inEvent.filter(t => t.name.toUpperCase() === team.toUpperCase()
+                         || sanitize(t.name) === sanitize(team))
       : inEvent;
 
     if (team && !wanted.length) {
       return res.status(404).json({ error: `Team "${team}" not found in ${subEvent}` });
     }
 
-    const result = wanted.map(t => buildTeamBlock(t, visibleCards));
+    // Decide once, across ALL teams of the event, which team owns each
+    // card, so a card is never shown under two teams and never lost.
+    const owners = assignCardOwners(inEvent, visibleCards);
+    const result = wanted.map(t => buildTeamBlock(t, visibleCards, owners));
 
     return res.status(200).json({
       tournament,
@@ -189,12 +193,7 @@ export default async function handler(req, res) {
 
 // ───────────────────────── per-team logic ─────────────────────────
 
-function buildTeamBlock(t, allCards) {
-  const teamSan = sanitize(t.name);
-
-  // Roster IDs of this team (as strings, NPCs included: a card is never
-  // filed under a captain alone, but including them is harmless).
-  const rosterIds = new Set((t.players || []).map(p => String(p.wbfId)));
+function buildTeamBlock(t, allCards, owners) {
 
   // Cards belonging to this team.
   //
@@ -203,12 +202,10 @@ function buildTeamBlock(t, allCards) {
   // uploaded under the old name no longer start with the new prefix and
   // the team shows "No System Cards" even though everything is uploaded.
   //
-  // We now match by the players on the card (WBF IDs from D1, or parsed
-  // from the filename for older rows), which never change when a team is
-  // renamed. The filename prefix is kept as a fallback for legacy cards
-  // that carry no player IDs at all.
+  // Ownership is now decided by assignCardOwners() from the players on
+  // the card (see there), which survives renames and roster changes.
   const cardsForTeam = allCards
-    .filter(c => c.file_name && cardBelongsToTeam(c, teamSan, rosterIds))
+    .filter(c => c.file_name && owners.get(c) === t)
     .slice()
     .sort((a, b) => {
       // Group by pair (same players), newest first inside each group
@@ -249,10 +246,14 @@ function buildTeamBlock(t, allCards) {
       statusLabel:  display.label,                      // pretty
       statusKind:   display.kind,                       // pending|accepted|refused
       refusedReason: c.refused_reason || null,
-      players:      c.players.map(p => ({
-        id:   p.player_id,
-        name: p.player_name,
-      })),
+      // D1 players, or (when D1 has none) the IDs encoded in the filename,
+      // so coverage still works for cards whose D1 write failed.
+      players:      (c.players.length
+        ? c.players.map(p => ({ id: p.player_id, name: p.player_name }))
+        : playerIdsFromFileName(c.file_name).map(id => ({
+            id,
+            name: ((t.players || []).find(p => String(p.wbfId) === id) || {}).fullName || null,
+          }))),
     };
   });
 
@@ -333,14 +334,66 @@ function playerIdsFromFileName(fileName) {
   return [...new Set(ids)];
 }
 
-// A card belongs to a team when every player on it is on that team's
-// roster (rename-proof), or — for legacy cards without IDs — when the
-// filename starts with the team's sanitised name.
-function cardBelongsToTeam(c, teamSan, rosterIds) {
-  const ids = cardPlayerIds(c);
-  if (ids.length >= 2 && ids.every(id => rosterIds.has(id))) return true;
-  // Legacy fallback (also keeps anything that matched before this fix).
-  return c.file_name.startsWith(teamSan + '_');
+// Surname-like tokens of a filename (everything after the team prefix
+// that is not a number or a _vN suffix), used for legacy files that
+// carry no WBF IDs, e.g. FRANCE_BESSIS_COMBESCURE.pdf.
+function nameTokensFromFileName(fileName) {
+  return String(fileName || '')
+    .replace(/\.pdf$/i, '')
+    .replace(/_v\d+$/i, '')
+    .split('_')
+    .slice(1)
+    .filter(tok => tok && !/^\d+$/.test(tok))
+    .map(tok => sanitize(tok));
+}
+
+// Decide which team owns each card. A card goes to the team whose roster
+// shares the MOST players with it:
+//   - by WBF ID (from D1, or from the filename), which survives renames
+//     and also roster changes (a substituted player no longer blocks it);
+//   - for legacy files without IDs, by surnames in the filename.
+// Ties, and cards matching no roster at all, go to the team whose
+// sanitised name is the filename prefix (the old behaviour).
+// Returns Map card -> team (cards with no owner are left out).
+function assignCardOwners(teams, cards) {
+  const info = teams.map(t => {
+    const ids = new Set();
+    const surnames = new Set();
+    for (const p of (t.players || [])) {
+      ids.add(String(p.wbfId));
+      const words = String(p.fullName || '').trim().split(/\s+/);
+      for (const w of words) {
+        const san = sanitize(w);
+        if (san.length > 1) surnames.add(san);
+      }
+    }
+    return { team: t, san: sanitize(t.name), ids, surnames };
+  });
+
+  const owners = new Map();
+  for (const c of cards) {
+    if (!c.file_name) continue;
+    const prefix = String(c.file_name).split('_')[0];
+    const ids = cardPlayerIds(c);
+    const tokens = ids.length ? [] : nameTokensFromFileName(c.file_name);
+
+    let best = null, bestScore = 0, bestPrefix = false;
+    for (const ti of info) {
+      const score = ids.length
+        ? ids.filter(id => ti.ids.has(id)).length
+        : tokens.filter(tok => ti.surnames.has(tok)).length;
+      const isPrefix = ti.san === prefix;
+      if (score > bestScore || (score === bestScore && score > 0 && isPrefix && !bestPrefix)) {
+        best = ti.team; bestScore = score; bestPrefix = isPrefix;
+      }
+    }
+    if (!best) {
+      const byPrefix = info.find(ti => ti.san === prefix);
+      if (byPrefix) best = byPrefix.team;
+    }
+    if (best) owners.set(c, best);
+  }
+  return owners;
 }
 
 // Key that identifies "the same card, different version": the sorted set
